@@ -1,0 +1,256 @@
+{%- comment -%}
+  Sam's Food - Kitchen Recipes Section
+  4 Editorial Recipe Cards with prep times, ingredients, and paired pantry products
+{%- endcomment -%}
+
+<section
+  id="sams-recipes"
+  class="sams-recipes-section"
+  style="padding-block-start: min({{ section.settings.pad_top }}px, 11vw); padding-block-end: min({{ section.settings.pad_bottom }}px, 11vw); background: {{ section.settings.bg_color }};"
+>
+  <div class="page-width" style="max-width: 1240px; margin: 0 auto; padding-inline: 20px;">
+    <!-- Section Header -->
+    <div style="text-align: center; margin-bottom: clamp(24px, 5vw, 44px);" class="sams-fade-up">
+      <span class="sams-eyebrow">{{ section.settings.eyebrow }}</span>
+      <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 0 0 10px; color: var(--espresso); font-family: var(--font-editorial);">
+        {{ section.settings.heading }}
+      </h2>
+      <div class="sams-gold-divider"></div>
+      <p style="font-size: 1.05rem; color: var(--muted); margin: 0 auto; max-width: 580px; font-family: var(--font-clean);">
+        {{ section.settings.subheading }}
+      </p>
+    </div>
+
+    <!-- Recipes Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 24px;">
+      {%- for block in section.blocks -%}
+        <div
+          class="sams-card sams-media-zoom sams-fade-up"
+          style="display: flex; flex-direction: column; background: #FFFFFF; border-radius: var(--radius-card); overflow: hidden;"
+          {{ block.shopify_attributes }}
+        >
+          <!-- Recipe Image -->
+          <div style="position: relative; aspect-ratio: 16 / 10; background: var(--sesame); overflow: hidden;">
+            {%- if block.settings.image != blank -%}
+              {{
+                block.settings.image
+                | image_url: width: 600
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '300, 500, 600',
+                  alt: block.settings.title,
+                  style: 'width: 100%; height: 100%; object-fit: cover;'
+              }}
+            {%- else -%}
+              {%- assign recipe_img = '' -%}
+              {%- if block.settings.title contains 'Hummus' -%}
+                {%- assign recipe_img = 'sams-hummus-pita-dip.jpg' -%}
+              {%- elsif block.settings.title contains 'Falafel' -%}
+                {%- assign recipe_img = 'sams-falafel-platter-topdown.jpg' -%}
+              {%- elsif block.settings.title contains 'Fattoush' or block.settings.title contains 'Molasses' -%}
+                {%- assign recipe_img = 'sams-recipe-fattoush.jpg' -%}
+              {%- elsif block.settings.title contains 'Paratha' or block.settings.title contains 'Flour' -%}
+                {%- assign recipe_img = 'sams-flour-5kg-field.jpg' -%}
+              {%- endif -%}
+
+              {%- if recipe_img != blank -%}
+                <img
+                  src="{{ recipe_img | asset_url }}"
+                  alt="{{ block.settings.title }}"
+                  loading="lazy"
+                  decoding="async"
+                  width="600"
+                  height="375"
+                  style="width: 100%; height: 100%; object-fit: cover; display: block;"
+                >
+              {%- else -%}
+                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, #FAF1E4 0%, #E2D3BE 100%);">
+                  <span style="font-family: var(--font-editorial); font-size: 1.25rem; font-style: italic; color: var(--gold);">
+                    {{ block.settings.title }}
+                  </span>
+                </div>
+              {%- endif -%}
+            {%- endif -%}
+
+            <div style="position: absolute; top: 12px; inset-inline-end: 12px; background: rgba(255,255,255,0.92); backdrop-filter: blur(4px); padding: 4px 10px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 600; color: var(--espresso);">
+              {{ block.settings.prep_time }}
+            </div>
+          </div>
+
+          <!-- Recipe Body -->
+          <div style="padding: 22px; display: flex; flex-direction: column; flex-grow: 1;">
+            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); font-weight: 600; margin-bottom: 6px;">
+              {{ block.settings.category }}
+            </div>
+
+            <h3 style="font-family: var(--font-editorial); font-size: 1.3rem; margin: 0 0 10px; color: var(--espresso);">
+              {{ block.settings.title }}
+            </h3>
+
+            <p style="font-family: var(--font-clean); font-size: 0.9rem; line-height: 1.55; color: var(--muted); margin: 0 0 20px; flex-grow: 1;">
+              {{ block.settings.description }}
+            </p>
+
+            <div style="padding-top: 14px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-size: 12px; font-weight: 600; color: var(--saffron-deep);">
+                Uses {{ block.settings.pantry_item }}
+              </span>
+              <a
+                href="{{ block.settings.recipe_link | default: '/blogs/recipes' }}"
+                style="color: var(--espresso); font-size: 13px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;"
+              >
+                Recipe
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Sams Recipes",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "FROM OUR LAHORE TABLE"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Recipes to Inspire Your Table"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Simple, soulful Middle Eastern meals cooked with our pantry ingredients."
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#FBF6EE"
+    },
+    {
+      "type": "range",
+      "id": "pad_top",
+      "label": "Padding Top",
+      "min": 40,
+      "max": 140,
+      "step": 4,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "pad_bottom",
+      "label": "Padding Bottom",
+      "min": 40,
+      "max": 140,
+      "step": 4,
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "recipe",
+      "name": "Recipe Card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "category",
+          "label": "Category",
+          "default": "Mezze Dip"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Classic Restaurant Hummus"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Whip Sam's roasted tahina with cooked chickpeas, fresh lemon, ice water and garlic until light and cloud-like."
+        },
+        {
+          "type": "text",
+          "id": "prep_time",
+          "label": "Prep Time",
+          "default": "10 Mins"
+        },
+        {
+          "type": "text",
+          "id": "pantry_item",
+          "label": "Pantry Item Used",
+          "default": "Sam's Tahina"
+        },
+        {
+          "type": "url",
+          "id": "recipe_link",
+          "label": "Recipe Link"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Recipe Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sams Recipes",
+      "blocks": [
+        {
+          "type": "recipe",
+          "settings": {
+            "category": "Mezze Dip",
+            "title": "Classic Velvety Hummus",
+            "description": "Blend Sam's roasted tahina with chickpeas, lemon and iced water for the creamiest swirl.",
+            "prep_time": "10 Mins",
+            "pantry_item": "Sam's Tahina"
+          }
+        },
+        {
+          "type": "recipe",
+          "settings": {
+            "category": "Main Wrap",
+            "title": "Golden Falafel Pita Wrap",
+            "description": "Air-fry crispy falafels and layer in warm pita bread with shredded pickles and garlicky tahini sauce.",
+            "prep_time": "15 Mins",
+            "pantry_item": "Sam's Falafel"
+          }
+        },
+        {
+          "type": "recipe",
+          "settings": {
+            "category": "Fresh Salad",
+            "title": "Fattoush Salad with Tangy Molasses",
+            "description": "Crisp romaine, radishes and toasted pita chips tossed in glossy, tart pomegranate molasses dressing.",
+            "prep_time": "12 Mins",
+            "pantry_item": "Pomegranate Molasses"
+          }
+        },
+        {
+          "type": "recipe",
+          "settings": {
+            "category": "Artisan Bread",
+            "title": "Wholesome 9-Grain Paratha",
+            "description": "Flaky, nutty multi-grain flatbread prepared with stone-ground flour and ghee, bursting with natural fiber.",
+            "prep_time": "20 Mins",
+            "pantry_item": "Multigrain Flour"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

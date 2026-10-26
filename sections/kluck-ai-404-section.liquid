@@ -1,0 +1,307 @@
+{%- comment -%}
+  Kluck AI — 404 / not-found page section (self-contained CSS + JS).
+{%- endcomment -%}
+
+{%- assign section_scheme = section.settings.color_scheme | default: 'scheme-1' -%}
+
+{%- style -%}
+  #Kluck404-{{ section.id }} {
+    --font-h: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    --font-b: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    --font-sub: {{ settings.type_subheading_font.family | default: settings.type_heading_font.family }}, sans-serif;
+    --font-btn: {{ settings.type_accent_font.family | default: settings.type_body_font.family }}, sans-serif;
+    --container-width: {{ section.settings.container_width }}px;
+    --radius: {{ section.settings.image_radius }}px;
+    --wm-gradient: {{ section.settings.watermark_gradient }};
+    --wm-size-m: {{ section.settings.watermark_size_mobile }}vw;
+    --wm-size-d: {{ section.settings.watermark_size_desktop }}vw;
+    --wm-opacity: {{ section.settings.watermark_opacity | divided_by: 100.0 }};
+    --heading-m: {{ section.settings.heading_size_mobile }}px;
+    --heading-d: {{ section.settings.heading_size_desktop }}px;
+    --text-m: {{ section.settings.text_size_mobile }}px;
+    --text-d: {{ section.settings.text_size_desktop }}px;
+    --btn-1-bg: {{ section.settings.btn_1_bg }};
+    --btn-1-text: {{ section.settings.btn_1_text }};
+    --btn-2-bg: {{ section.settings.btn_2_bg }};
+    --btn-2-text: {{ section.settings.btn_2_text }};
+    --btn-2-border: {{ section.settings.btn_2_border }};
+    --m404-pt-mobile: {{ section.settings.padding_top_mobile }}px;
+    --m404-pb-mobile: {{ section.settings.padding_bottom_mobile }}px;
+    --m404-pt-desktop: {{ section.settings.padding_top_desktop }}px;
+    --m404-pb-desktop: {{ section.settings.padding_bottom_desktop }}px;
+  }
+
+  #Kluck404-{{ section.id }}.m404-outer {
+    padding-top: var(--m404-pt-mobile);
+    padding-bottom: var(--m404-pb-mobile);
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+  @media screen and (min-width: 769px) {
+    #Kluck404-{{ section.id }}.m404-outer {
+      padding-top: var(--m404-pt-desktop);
+      padding-bottom: var(--m404-pb-desktop);
+      min-height: 90vh;
+    }
+  }
+  #Kluck404-{{ section.id }} .modern-404-inner-wrap {
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  #Kluck404-{{ section.id }} .modern-404__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 50px;
+    align-items: center;
+  }
+  @media screen and (min-width: 900px) {
+    #Kluck404-{{ section.id }} .modern-404__inner {
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+    }
+    #Kluck404-{{ section.id }} .modern-404-root--image-left .modern-404__content-wrapper { order: 2; }
+    #Kluck404-{{ section.id }} .modern-404-root--image-left .modern-404__image-wrapper { order: 1; }
+  }
+  #Kluck404-{{ section.id }} .modern-404__content-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 0;
+  }
+  #Kluck404-{{ section.id }} .modern-404__watermark {
+    font-family: var(--font-h);
+    position: absolute;
+    top: 50%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+    font-size: var(--wm-size-m);
+    font-weight: 700;
+    line-height: 1;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0;
+    transition: opacity 1.5s ease 0.3s;
+    background: var(--wm-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+  }
+  @media screen and (min-width: 900px) {
+    #Kluck404-{{ section.id }} .modern-404__watermark {
+      font-size: var(--wm-size-d);
+      left: 50%;
+    }
+  }
+  #Kluck404-{{ section.id }} .modern-404__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  #Kluck404-{{ section.id }} .modern-404__subtitle {
+    font-family: var(--font-sub);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: currentColor;
+    opacity: 0.9;
+    font-weight: 600;
+    margin: 0;
+  }
+  #Kluck404-{{ section.id }} .modern-404__heading {
+    font-family: var(--font-h);
+    font-size: var(--heading-m);
+    color: currentColor;
+    margin: 0;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-weight: 500;
+  }
+  #Kluck404-{{ section.id }} .modern-404__text {
+    font-family: var(--font-b);
+    font-size: var(--text-m);
+    color: currentColor;
+    opacity: 0.85;
+    line-height: 1.6;
+    margin: 0 0 10px 0;
+    max-width: 90%;
+  }
+  @media screen and (min-width: 900px) {
+    #Kluck404-{{ section.id }} .modern-404__heading { font-size: var(--heading-d); }
+    #Kluck404-{{ section.id }} .modern-404__text { font-size: var(--text-d); }
+  }
+  #Kluck404-{{ section.id }} .modern-404__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 10px;
+  }
+  #Kluck404-{{ section.id }} .modern-404__btn {
+    font-family: var(--font-btn);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 32px;
+    border-radius: 99px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+  }
+  #Kluck404-{{ section.id }} .modern-404__btn:hover { transform: translateY(-2px); }
+  #Kluck404-{{ section.id }} .modern-404__btn--primary {
+    background-color: var(--btn-1-bg);
+    color: var(--btn-1-text);
+  }
+  #Kluck404-{{ section.id }} .modern-404__btn--secondary {
+    background-color: var(--btn-2-bg);
+    color: var(--btn-2-text);
+    border: 1px solid var(--btn-2-border);
+  }
+  #Kluck404-{{ section.id }} .modern-404__image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+  @media screen and (min-width: 900px) {
+    #Kluck404-{{ section.id }} .modern-404__image-wrapper { aspect-ratio: 3 / 4; }
+  }
+  #Kluck404-{{ section.id }} .modern-404__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.08);
+    transition: transform 2s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  #Kluck404-{{ section.id }} .modern-404-root.is-loaded .modern-404__image { transform: scale(1); }
+  #Kluck404-{{ section.id }} .animate-el {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  #Kluck404-{{ section.id }} .modern-404-root.is-loaded .animate-el {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  #Kluck404-{{ section.id }} .delay-1 { transition-delay: 0.1s; }
+  #Kluck404-{{ section.id }} .delay-2 { transition-delay: 0.2s; }
+  #Kluck404-{{ section.id }} .delay-3 { transition-delay: 0.3s; }
+  #Kluck404-{{ section.id }} .delay-4 { transition-delay: 0.4s; }
+  #Kluck404-{{ section.id }} .modern-404-root.is-loaded .modern-404__watermark {
+    opacity: var(--wm-opacity);
+  }
+{%- endstyle -%}
+
+<div id="Kluck404-{{ section.id }}" class="m404-outer color-{{ section_scheme }} gradient">
+  <div class="modern-404-root{% if section.settings.image_position == 'left' %} modern-404-root--image-left{% endif %}">
+    <div class="modern-404-inner-wrap">
+      <div class="modern-404__inner">
+        <div class="modern-404__content-wrapper">
+          <div class="modern-404__watermark">{{ section.settings.watermark_text }}</div>
+          <div class="modern-404__content">
+            {%- if section.settings.subtitle != blank -%}
+              <p class="modern-404__subtitle animate-el delay-1">{{ section.settings.subtitle }}</p>
+            {%- endif -%}
+            {%- if section.settings.heading != blank -%}
+              <h1 class="modern-404__heading animate-el delay-2">{{ section.settings.heading }}</h1>
+            {%- endif -%}
+            {%- if section.settings.text != blank -%}
+              <p class="modern-404__text animate-el delay-3">{{ section.settings.text }}</p>
+            {%- endif -%}
+            <div class="modern-404__buttons animate-el delay-4">
+              {%- if section.settings.btn_1_label != blank -%}
+                <a
+                  href="{% if section.settings.btn_1_link != blank %}{{ section.settings.btn_1_link }}{% else %}{{ routes.root_url }}{% endif %}"
+                  class="modern-404__btn modern-404__btn--primary"
+                >{{ section.settings.btn_1_label }}</a>
+              {%- endif -%}
+              {%- if section.settings.btn_2_label != blank -%}
+                <a
+                  href="{% if section.settings.btn_2_link != blank %}{{ section.settings.btn_2_link }}{% else %}{{ routes.all_products_collection_url }}{% endif %}"
+                  class="modern-404__btn modern-404__btn--secondary"
+                >{{ section.settings.btn_2_label }}</a>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+        <div class="modern-404__image-wrapper animate-el delay-1">
+          {%- if section.settings.image != blank -%}
+            {{
+              section.settings.image
+              | image_url: width: 1000
+              | image_tag: class: 'modern-404__image', loading: 'eager', widths: '400, 600, 800, 1000'
+            }}
+          {%- else -%}
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'modern-404__image' }}
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var root = document.querySelector('#Kluck404-{{ section.id }} .modern-404-root');
+    if (!root) return;
+    setTimeout(function () { root.classList.add('is-loaded'); }, 100);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Kluck AI - 404",
+  "tag": "section",
+  "class": "section-kluck-ai-404",
+  "settings": [
+    { "type": "range", "id": "container_width", "min": 900, "max": 1600, "step": 20, "unit": "px", "label": "Container width", "default": 1400 },
+    { "type": "select", "id": "image_position", "label": "Image position", "options": [
+      { "value": "right", "label": "Right" },
+      { "value": "left", "label": "Left" }
+    ], "default": "right" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "text", "id": "watermark_text", "label": "Watermark", "default": "404" },
+    { "type": "text", "id": "watermark_gradient", "label": "Watermark gradient", "default": "linear-gradient(180deg, rgba(251, 239, 234, 1), rgba(251, 239, 234, 0) 100%)" },
+    { "type": "range", "id": "watermark_size_desktop", "min": 10, "max": 40, "step": 1, "unit": "vw", "label": "Watermark size desktop", "default": 24 },
+    { "type": "range", "id": "watermark_size_mobile", "min": 20, "max": 60, "step": 1, "unit": "vw", "label": "Watermark size mobile", "default": 48 },
+    { "type": "range", "id": "watermark_opacity", "min": 0, "max": 100, "step": 5, "unit": "%", "label": "Watermark opacity", "default": 80 },
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Error 404" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Looks like you strayed off the path." },
+    { "type": "range", "id": "heading_size_desktop", "min": 28, "max": 80, "step": 2, "unit": "px", "label": "Heading size desktop", "default": 56 },
+    { "type": "range", "id": "heading_size_mobile", "min": 24, "max": 56, "step": 2, "unit": "px", "label": "Heading size mobile", "default": 40 },
+    { "type": "textarea", "id": "text", "label": "Body text", "default": "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable." },
+    { "type": "range", "id": "text_size_desktop", "min": 14, "max": 24, "step": 1, "unit": "px", "label": "Text size desktop", "default": 18 },
+    { "type": "range", "id": "text_size_mobile", "min": 12, "max": 20, "step": 1, "unit": "px", "label": "Text size mobile", "default": 16 },
+    { "type": "text", "id": "btn_1_label", "label": "Primary button", "default": "Back to Home" },
+    { "type": "url", "id": "btn_1_link", "label": "Primary button link" },
+    { "type": "color", "id": "btn_1_bg", "label": "Primary button bg", "default": "#000000" },
+    { "type": "color", "id": "btn_1_text", "label": "Primary button text", "default": "#ffffff" },
+    { "type": "text", "id": "btn_2_label", "label": "Secondary button", "default": "Shop Best Sellers" },
+    { "type": "url", "id": "btn_2_link", "label": "Secondary button link" },
+    { "type": "color", "id": "btn_2_bg", "label": "Secondary button bg", "default": "transparent" },
+    { "type": "color", "id": "btn_2_text", "label": "Secondary button text", "default": "#000000" },
+    { "type": "color", "id": "btn_2_border", "label": "Secondary button border", "default": "#000000" },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "range", "id": "image_radius", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Image radius", "default": 24 },
+    { "type": "range", "id": "padding_top_desktop", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Padding top desktop", "default": 60 },
+    { "type": "range", "id": "padding_bottom_desktop", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Padding bottom desktop", "default": 60 },
+    { "type": "range", "id": "padding_top_mobile", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding top mobile", "default": 40 },
+    { "type": "range", "id": "padding_bottom_mobile", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding bottom mobile", "default": 40 }
+  ],
+  "presets": [{ "name": "Kluck AI - 404" }]
+}
+{% endschema %}

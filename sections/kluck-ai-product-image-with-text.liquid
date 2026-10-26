@@ -1,0 +1,256 @@
+{% comment %}
+  Split Feature Banner - Customizable Pro
+  - Features: Adjustable Text Column Width, Section Max Width, Full Typography Control.
+  - Mobile: Automatically stacks vertically.
+{% endcomment %}
+
+{% style %}
+  #sb-{{ section.id }} {
+    /* LAYOUT */
+    --text-width: {{ section.settings.text_column_width }}%;
+    --section-max-width: {{ section.settings.section_width }}px;
+    
+    /* TEXT SIZES */
+    --h-size: {{ section.settings.heading_size }}px;
+    --p-size: {{ section.settings.body_size }}px;
+    --e-size: {{ section.settings.eyebrow_size }}px;
+    
+    /* SPACING */
+    --pt: {{ section.settings.padding_top }}px;
+    --pb: {{ section.settings.padding_bottom }}px;
+    --radius: {{ section.settings.border_radius }}px;
+  }
+{% endstyle %}
+
+<style>
+  #sb-{{ section.id }} .sb-section {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    padding-top: var(--pt);
+    padding-bottom: var(--pb);
+    padding-left: 20px;
+    padding-right: 20px;
+    display: flex;
+    justify-content: center; /* Centers the container if width < 100% */
+  }
+
+  #sb-{{ section.id }} .sb-container {
+    width: 100%;
+    max-width: var(--section-max-width); /* User controlled width */
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    min-height: 500px;
+    position: relative;
+  }
+
+  /* --- TEXT COLUMN --- */
+  #sb-{{ section.id }} .sb-content {
+    flex: 0 0 var(--text-width); /* Dynamic width split */
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 2;
+  }
+
+  #sb-{{ section.id }} .sb-eyebrow {
+    font-size: var(--e-size);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    color: var(--color-foreground);
+    opacity: 0.85;
+  }
+
+  #sb-{{ section.id }} h2 {
+    font-size: var(--h-size);
+    line-height: 1.1;
+    color: var(--color-foreground-heading);
+    margin: 0 0 20px 0;
+    max-width: 480px;
+  }
+
+  #sb-{{ section.id }} p {
+    font-size: var(--p-size);
+    line-height: 1.6;
+    color: var(--color-foreground);
+    margin: 0 0 30px 0;
+    max-width: 420px;
+  }
+
+  /* BUTTON */
+  #sb-{{ section.id }} .sb-btn {
+    display: inline-block;
+    background-color: var(--color-primary-button-background);
+    color: var(--color-primary-button-text);
+    border: 1px solid var(--color-primary-button-border);
+    padding: 15px 36px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition: transform 0.2s ease, all 0.2s ease;
+  }
+  #sb-{{ section.id }} .sb-btn:hover {
+    transform: translateY(-2px);
+    background-color: var(--color-primary-button-hover-background);
+    color: var(--color-primary-button-hover-text);
+    border-color: var(--color-primary-button-hover-border);
+  }
+
+  /* --- IMAGE COLUMN --- */
+  #sb-{{ section.id }} .sb-image-wrap {
+    flex: 1; /* Fills remaining space */
+    position: relative;
+    overflow: hidden;
+    min-height: 400px;
+  }
+
+  #sb-{{ section.id }} .sb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* --- WATERMARK --- */
+  #sb-{{ section.id }} .sb-watermark {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 150px; /* Could be variable if needed */
+    line-height: 0.8;
+    color: {{ section.settings.watermark_color }};
+    opacity: 0.9;
+    z-index: 2;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  /* --- MOBILE RESPONSIVE --- */
+  @media (max-width: 900px) {
+    #sb-{{ section.id }} .sb-container {
+      flex-direction: column-reverse;
+      height: auto;
+    }
+
+    #sb-{{ section.id }} .sb-content {
+      flex: auto; width: 100%; padding: 40px 20px;
+    }
+
+    #sb-{{ section.id }} .sb-image-wrap {
+      flex: auto; width: 100%; height: 350px;
+    }
+
+    /* Mobile Text Scaling */
+    #sb-{{ section.id }} h2 { font-size: calc(var(--h-size) * 0.75); }
+    #sb-{{ section.id }} .sb-watermark { font-size: 90px; top: 5%; }
+  }
+</style>
+
+<div id="sb-{{ section.id }}" class="color-{{ section.settings.color_scheme }}">
+  <div class="sb-section">
+    <div class="sb-container color-{{ section.settings.card_color_scheme }}">
+      
+      <!-- 1. TEXT CONTENT -->
+      <div class="sb-content">
+        {% if section.settings.eyebrow != blank %}
+          <span class="sb-eyebrow">{{ section.settings.eyebrow }}</span>
+        {% endif %}
+        
+        {% if section.settings.heading != blank %}
+          <h2>{{ section.settings.heading }}</h2>
+        {% endif %}
+        
+        {% if section.settings.text != blank %}
+          <p>{{ section.settings.text }}</p>
+        {% endif %}
+        
+        {% if section.settings.btn_link != blank %}
+          <a href="{{ section.settings.btn_link }}" class="sb-btn">
+            {{ section.settings.btn_label }}
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- 2. IMAGE & WATERMARK -->
+      <div class="sb-image-wrap">
+        {% if section.settings.watermark_text != blank %}
+          <div class="sb-watermark">
+            {{ section.settings.watermark_text }}
+          </div>
+        {% endif %}
+
+        {%- comment -%} Shows the product's first image, falls back to section setting, then placeholder {%- endcomment -%}
+        {% if product != blank and product.featured_image != blank %}
+          <img src="{{ product.featured_image | image_url: width: 1200 }}" class="sb-img" alt="{{ product.featured_image.alt | escape | default: product.title }}" loading="lazy">
+        {% elsif section.settings.image != blank %}
+          <img src="{{ section.settings.image | image_url: width: 1200 }}" alt="{{ section.settings.image.alt | escape | default: section.settings.heading }}" class="sb-img" loading="lazy">
+        {% else %}
+          {{ 'product-1' | placeholder_svg_tag: 'sb-img' }}
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Image with Text Banner",
+  "settings": [
+    { "type": "header", "content": "Section Layout" },
+    { "type": "range", "id": "section_width", "label": "Container Max Width", "min": 800, "max": 1800, "step": 50, "default": 1400, "unit": "px" },
+    { "type": "range", "id": "text_column_width", "label": "Text Split Ratio", "min": 30, "max": 70, "step": 1, "default": 50, "unit": "%", "info": "Percentage of width dedicated to text vs image." },
+    { "type": "range", "id": "border_radius", "min": 0, "max": 60, "default": 20, "label": "Corner Radius" },
+    
+    { "type": "header", "content": "Color Schemes" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Outer Section Scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color_scheme",
+      "id": "card_color_scheme",
+      "label": "Inner Card Scheme",
+      "default": "scheme-2"
+    },
+
+    { "type": "header", "content": "Text Customization" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Gentle And Safe" },
+    { "type": "textarea", "id": "heading", "label": "Heading", "default": "Made for sensitive skin" },
+    { "type": "textarea", "id": "text", "label": "Body Copy", "default": "We create safe products that really work." },
+    
+    { "type": "range", "id": "heading_size", "label": "Heading Font Size", "min": 24, "max": 80, "default": 42 },
+    { "type": "range", "id": "body_size", "label": "Body Font Size", "min": 12, "max": 24, "default": 16 },
+    { "type": "range", "id": "eyebrow_size", "label": "Eyebrow Font Size", "min": 10, "max": 20, "default": 14 },
+
+    { "type": "header", "content": "Watermark Feature" },
+    { "type": "text", "id": "watermark_text", "label": "Watermark Text", "default": "glossy" },
+    { "type": "color", "id": "watermark_color", "label": "Watermark Color", "default": "#ffffff" },
+
+    { "type": "header", "content": "Button Settings" },
+    { "type": "text", "id": "btn_label", "label": "Label", "default": "Shop Now" },
+    { "type": "url", "id": "btn_link", "label": "Link" },
+
+    { "type": "header", "content": "Media Override" },
+    { "type": "image_picker", "id": "image", "label": "Fallback Feature Image", "info": "Will only show if no product image is available." },
+
+    { "type": "header", "content": "Spacing" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "default": 60, "label": "Top Padding" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "default": 60, "label": "Bottom Padding" }
+  ],
+  "presets": [
+    { "name": "Split Feature Banner" }
+  ]
+}
+{% endschema %}

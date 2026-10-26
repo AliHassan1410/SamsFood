@@ -1,0 +1,131 @@
+{% comment %}
+  Sam's Food collection banner (Lumenook layout port).
+  Collection image (21:9 desktop, 4:5 mobile) under a dark espresso overlay. Eyebrow from the
+  collection's custom.eyebrow metafield, H1 = title, intro = first paragraph of the description,
+  product count below. Without an image it falls back to a plain ivory header.
+{% endcomment %}
+{%- liquid
+  assign intro = collection.description | split: '</p>' | first | strip_html | strip
+  assign eyebrow = collection.metafields.custom.eyebrow.value | default: 'The Pantry'
+  assign count = collection.products_count
+-%}
+<section class="sams-banner-collection{% if collection.image %} sams-banner-collection--image{% endif %}">
+  {%- if collection.image -%}
+    <div class="sams-banner-collection__media">
+      {{
+        collection.image
+        | image_url: width: 2400
+        | image_tag: widths: '750, 1100, 1500, 1900, 2400', sizes: '100vw', fetchpriority: 'high', loading: 'eager', class: 'sams-banner-collection__image', alt: ''
+      }}
+    </div>
+  {%- endif -%}
+  <div class="page-width sams-banner-collection__content">
+    <p class="sams-eyebrow sams-banner-collection__eyebrow">{{ eyebrow }}</p>
+    <h1 class="sams-banner-collection__title">{{ collection.title }}</h1>
+    {%- if intro != blank -%}
+      <p class="sams-banner-collection__intro">{{ intro }}</p>
+    {%- endif -%}
+    {%- if count > 0 -%}
+      <p class="sams-banner-collection__count">{{ count }} {% if count == 1 %}product{% else %}products{% endif %}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .sams-banner-collection {
+    position: relative;
+    background: var(--ivory);
+    padding-block: clamp(40px, 6vw, 80px) clamp(24px, 3vw, 40px);
+  }
+
+  .sams-banner-collection--image {
+    color: var(--ivory);
+    display: grid;
+    min-block-size: min(125vw, 70vh);
+    align-items: end;
+  }
+
+  @media screen and (max-width: 749px) {
+    .sams-banner-collection--image {
+      min-block-size: 0;
+      aspect-ratio: 4 / 5;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .sams-banner-collection--image {
+      min-block-size: 0;
+      aspect-ratio: 21 / 9;
+    }
+  }
+
+  .sams-banner-collection__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .sams-banner-collection__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgb(43 22 14 / 0.35);
+  }
+
+  .sams-banner-collection__image {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  .sams-banner-collection__content {
+    position: relative;
+  }
+
+  .sams-banner-collection--image .sams-eyebrow {
+    color: var(--gold-light);
+  }
+
+  .sams-banner-collection__title {
+    font-family: var(--font-editorial);
+    font-weight: 500;
+    font-size: clamp(36px, 5vw, 56px);
+    line-height: 1.1;
+    color: var(--espresso);
+    margin: 8px 0 12px;
+  }
+
+  .sams-banner-collection--image .sams-banner-collection__title {
+    color: var(--ivory);
+  }
+
+  .sams-banner-collection__intro {
+    max-inline-size: 640px;
+    margin: 0 0 12px;
+    font-family: var(--font-clean);
+    color: var(--espresso);
+  }
+
+  .sams-banner-collection--image .sams-banner-collection__intro {
+    color: var(--ivory);
+  }
+
+  .sams-banner-collection__count {
+    font-family: var(--font-clean);
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .sams-banner-collection--image .sams-banner-collection__count {
+    color: var(--ivory);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Sam's collection banner",
+  "settings": [],
+  "enabled_on": { "templates": ["collection"] },
+  "presets": [{ "name": "Sam's collection banner" }]
+}
+{% endschema %}

@@ -1,0 +1,220 @@
+{%- assign section_scheme = section.settings.color_scheme | default: 'scheme-1' -%}
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+{% assign home = store_gen.home_page %}
+{% assign ht = home.text %}
+{% assign use_mf = section.settings.use_kluck_ai_metafields %}
+{% assign homeData = section.settings.homeData %}
+{% if ht == blank and homeData.text != blank %}{% assign ht = homeData.text %}{% endif %}
+
+{% assign review_heading = section.settings.review_heading | default: 'What customers say' %}
+{% assign review_eyebrow = section.settings.review_eyebrow | default: 'Reviews' %}
+{% assign customer_name_1 = section.settings.customer_name_1 | default: 'Reviewer Name' %}
+{% assign customer_review_1 = section.settings.customer_review_1 | default: 'Enter customer review over here' %}
+{% assign customer_name_2 = section.settings.customer_name_2 | default: 'Reviewer Name' %}
+{% assign customer_review_2 = section.settings.customer_review_2 | default: 'Enter customer review over here' %}
+{% assign customer_name_3 = section.settings.customer_name_3 | default: 'Reviewer Name' %}
+{% assign customer_review_3 = section.settings.customer_review_3 | default: 'Enter customer review over here' %}
+{% if use_mf %}
+  {% if ht.customer_name_1 != blank %}{% assign customer_name_1 = ht.customer_name_1 %}{% endif %}
+  {% if ht.customer_review_1 != blank %}{% assign customer_review_1 = ht.customer_review_1 %}{% endif %}
+  {% if ht.customer_name_2 != blank %}{% assign customer_name_2 = ht.customer_name_2 %}{% endif %}
+  {% if ht.customer_review_2 != blank %}{% assign customer_review_2 = ht.customer_review_2 %}{% endif %}
+  {% if ht.customer_name_3 != blank %}{% assign customer_name_3 = ht.customer_name_3 %}{% endif %}
+  {% if ht.customer_review_3 != blank %}{% assign customer_review_3 = ht.customer_review_3 %}{% endif %}
+{% endif %}
+
+{% if shop.metafields.app.block_control.value %}
+<style>
+  #shopify-section-{{ section.id }} {
+    width: 100%;
+    max-width: none;
+  }
+    #cr-{{ section.id }} {
+  --c-ink: var(--color-foreground-heading, #111);
+  --c-ink-muted: var(--color-foreground-muted, rgba(0,0,0,0.55));
+  --c-surface: var(--color-background, #fff);
+  --c-accent: var(--color-accent, var(--color-primary-button-background, currentColor));
+  --c-accent-soft: var(--color-accent-soft, var(--color-background, #f5f5f5));
+  --c-on-accent: var(--color-on-accent, #fff);
+  --c-border: var(--color-border, rgba(0,0,0,0.08));
+  --c-heading-font: var(--section-heading-font, Georgia, 'Times New Roman', serif);
+  --c-body-font: var(--section-body-font, system-ui, sans-serif);  background: var(--c-surface); }
+  #cr-{{ section.id }} .cr-inner { max-width: 1400px; margin: 0 auto; padding: 64px 20px; }
+  #cr-{{ section.id }} .cr-head { text-align: center; }
+  #cr-{{ section.id }} .cr-eyebrow { margin: 0; font-size: 12px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: var(--c-accent); }
+  #cr-{{ section.id }} h2 {
+    margin: 12px 0 0; font-family: var(--c-heading-font); font-size: 2.25rem; color: var(--c-ink); font-weight: 400;
+  }
+  #cr-{{ section.id }} .cr-grid { display: none; gap: 24px; margin-top: 48px; }
+  #cr-{{ section.id }} .cr-card {
+    display: flex; flex-direction: column; height: 100%; border-radius: 16px; border: 1px solid var(--c-border);
+    background: var(--c-accent-soft); padding: 28px 24px;
+  }
+  #cr-{{ section.id }} .cr-meta { display: flex; align-items: center; gap: 12px; }
+  #cr-{{ section.id }} .cr-avatar {
+    width: 44px; height: 44px; border-radius: 50%; background: var(--c-border); color: var(--c-ink);
+    display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; flex-shrink: 0;
+  }
+  #cr-{{ section.id }} .cr-name { margin: 0; font-size: 13px; font-weight: 600; color: var(--c-ink); }
+  #cr-{{ section.id }} .cr-stars { margin-top: 16px; color: var(--c-accent); letter-spacing: 2px; font-size: 14px; }
+  #cr-{{ section.id }} .cr-quote {
+    margin: 16px 0 0; flex: 1; font-family: var(--c-heading-font); font-style: italic;
+    font-size: 17px; line-height: 1.6; color: var(--c-ink);
+  }
+  #cr-{{ section.id }} .cr-mobile {
+    display: flex; align-items: stretch; gap: 8px; margin-top: 40px;
+  }
+  #cr-{{ section.id }} .cr-viewport { overflow: hidden; flex: 1; min-width: 0; }
+  #cr-{{ section.id }} .cr-track {
+    display: flex; transition: transform .35s ease;
+  }
+  #cr-{{ section.id }} .cr-track .cr-card {
+    min-width: 100%; box-sizing: border-box; margin: 0;
+  }
+  #cr-{{ section.id }} .cr-nav {
+    flex-shrink: 0; width: 36px; height: 36px; align-self: center;
+    border: 1px solid var(--c-border); border-radius: 50%;
+    background: var(--c-surface); color: var(--c-ink);
+    display: flex; align-items: center; justify-content: center;
+    padding: 0; cursor: pointer;
+  }
+  #cr-{{ section.id }} .cr-nav svg { width: 16px; height: 16px; }
+  #cr-{{ section.id }} .cr-nav:disabled { opacity: 0.35; cursor: default; }
+  @media (min-width: 768px) {
+    #cr-{{ section.id }} .cr-inner { padding: 96px 32px; }
+    #cr-{{ section.id }} h2 { font-size: 3rem; }
+    #cr-{{ section.id }} .cr-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+    #cr-{{ section.id }} .cr-mobile { display: none; }
+  }
+</style>
+<section id="cr-{{ section.id }}" class="color-{{ section_scheme }}">
+  <div class="cr-inner">
+    <div class="cr-head">
+      <p class="cr-eyebrow">{{ review_eyebrow }}</p>
+      <h2>{{ review_heading }}</h2>
+    </div>
+
+    {% capture cards %}
+      {% for i in (1..3) %}
+        {% case i %}
+          {% when 1 %}{% assign rn = customer_name_1 %}{% assign rq = customer_review_1 %}
+          {% when 2 %}{% assign rn = customer_name_2 %}{% assign rq = customer_review_2 %}
+          {% when 3 %}{% assign rn = customer_name_3 %}{% assign rq = customer_review_3 %}
+        {% endcase %}
+        <article class="cr-card">
+          <div class="cr-meta">
+            <div class="cr-avatar">{{ rn | slice: 0 }}</div>
+            <p class="cr-name">{{ rn }}</p>
+          </div>
+          <div class="cr-stars" aria-hidden="true">★★★★★</div>
+          <p class="cr-quote">{{ rq }}</p>
+        </article>
+      {% endfor %}
+    {% endcapture %}
+
+    <div class="cr-grid">{{ cards }}</div>
+    <div class="cr-mobile">
+      <button type="button" class="cr-nav cr-prev" aria-label="Previous review">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="cr-viewport">
+        <div class="cr-track">{{ cards }}</div>
+      </div>
+      <button type="button" class="cr-nav cr-next" aria-label="Next review">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+<script>
+(function () {
+  var root = document.getElementById("cr-{{ section.id }}");
+  if (!root) return;
+  var track = root.querySelector(".cr-track");
+  var prev = root.querySelector(".cr-prev");
+  var next = root.querySelector(".cr-next");
+  if (!track || !prev || !next) return;
+  var slides = track.children.length;
+  var i = 0;
+  function go(n) {
+    i = (n + slides) % slides;
+    track.style.transform = "translateX(" + (-i * 100) + "%)";
+  }
+  prev.addEventListener("click", function () { go(i - 1); });
+  next.addEventListener("click", function () { go(i + 1); });
+})();
+</script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Kluck AI - Cin Reviews",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_kluck_ai_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "review_eyebrow",
+      "label": "Eyebrow",
+      "default": "Reviews"
+    },
+    {
+      "type": "text",
+      "id": "review_heading",
+      "label": "Heading",
+      "default": "What customers say"
+    },
+    {
+      "type": "text",
+      "id": "customer_name_1",
+      "label": "Reviewer 1 name",
+      "default": "Reviewer Name"
+    },
+    {
+      "type": "textarea",
+      "id": "customer_review_1",
+      "label": "Review 1",
+      "default": "Enter customer review over here"
+    },
+    {
+      "type": "text",
+      "id": "customer_name_2",
+      "label": "Reviewer 2 name",
+      "default": "Reviewer Name"
+    },
+    {
+      "type": "textarea",
+      "id": "customer_review_2",
+      "label": "Review 2",
+      "default": "Enter customer review over here"
+    },
+    {
+      "type": "text",
+      "id": "customer_name_3",
+      "label": "Reviewer 3 name",
+      "default": "Reviewer Name"
+    },
+    {
+      "type": "textarea",
+      "id": "customer_review_3",
+      "label": "Review 3",
+      "default": "Enter customer review over here"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kluck AI - Cin Reviews"
+    }
+  ]
+}
+{% endschema %}

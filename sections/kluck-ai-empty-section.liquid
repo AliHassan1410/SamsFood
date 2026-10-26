@@ -1,0 +1,570 @@
+{% comment %}
+  Section: Kluck AI - Empty Section
+  - Purpose: Container for App Blocks.
+  - Fix: Fonts load immediately, consistent structure with Hero section.
+  - Update: Added adjustable Vertical and Horizontal Padding.
+{% endcomment %}
+
+{%- assign heading_font = section.settings.heading_font_family -%}
+{%- assign body_font = section.settings.body_font_family -%}
+
+{% comment %} 
+  1. LOAD FONTS (Immediate loading for Editor)
+{% endcomment %}
+<style>
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ body_font | font_face: font_display: 'swap' }}
+</style>
+
+{% comment %} 
+  2. MAIN CONTENT WRAPPER 
+{% endcomment %}
+{% if shop.metafields.app.block_control.value %}
+
+  {% assign use_metafields = section.settings.use_metafields %}
+  {% assign opacity = section.settings.background_opacity | divided_by: 100.0 %}
+  {% assign bg_color = section.settings.background_color %}
+
+  {% if use_metafields
+    and product != blank
+    and product.metafields.kluck_ai.color_schema != blank
+  %}
+    {% assign bg_color = product.metafields.kluck_ai.color_schema %}
+  {% endif %}
+
+  <div class="empty-app-blocks-section empty-app-blocks-section-{{ section.id }}">
+    <div class="inner-container-{{ section.id }}">
+      {% for block in section.blocks %}
+        {% render block %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      function fillPlaceholders() {
+        var root = document.querySelector('.empty-app-blocks-section-{{ section.id }}');
+        if (!root) return;
+
+        {%- liquid
+          # Default Falafel mapping (Every section has a DIFFERENT image)
+          assign bento1_img = 'sams-falafel-box-open-frozen.jpg'
+          assign bento4_img = 'sams-falafel-herb-interior.jpg'
+          assign bento5_img = 'sams-falafel-lifestyle-family.jpg'
+          assign p_iwt = 'sams-falafel-lifestyle-steaming.jpg'
+          assign p_circle_1 = 'sams-falafel-dark-slate.jpg'
+          assign p_circle_2 = 'sams-falafel-box-freezer.jpg'
+          assign p_circle_3 = 'sams-falafel-herb-interior.jpg'
+          assign p_circle_4 = 'sams-falafel-platter-topdown.jpg'
+          assign p_slow = 'sams-falafel-lifestyle-chef.jpg'
+
+          if product.handle contains 'tahina' or product.title contains 'Tahina'
+            assign bento1_img = 'sams-tahina-bucket-dishes-montage.jpg'
+            assign bento4_img = 'sams-tahina-spoon-scoop.jpg'
+            assign bento5_img = 'sams-tahina-bucket-family-dining.jpg'
+            assign p_iwt = 'sams-tahina-drizzle-falafel.jpg'
+            assign p_circle_1 = 'sams-tahina-jar-sesame-scoop.jpg'
+            assign p_circle_2 = 'sams-tahina-bucket-front.jpg'
+            assign p_circle_3 = 'sams-tahina-spoon-scoop.jpg'
+            assign p_circle_4 = 'sams-tahina-bucket-ladle-pour.jpg'
+            assign p_slow = 'sams-tahina-poster-authenticity.jpg'
+          elsif product.handle contains 'hummus' or product.title contains 'Hummus'
+            assign bento1_img = 'sams-hummus-courtyard-spread.jpg'
+            assign bento4_img = 'sams-hummus-tub-open-front.jpg'
+            assign bento5_img = 'sams-hummus-woman-eating.jpg'
+            assign p_iwt = 'sams-hummus-pita-dip.jpg'
+            assign p_circle_1 = 'sams-hummus-tub-topdown.jpg'
+            assign p_circle_2 = 'sams-hummus-kitchen-counter.jpg'
+            assign p_circle_3 = 'sams-hummus-tub-open-front.jpg'
+            assign p_circle_4 = 'sams-hummus-courtyard-spread.jpg'
+            assign p_slow = 'sams-hummus-family-dinner.jpg'
+          elsif product.handle contains 'flour' or product.title contains 'Flour'
+            assign bento1_img = 'sams-flour-5kg-field.jpg'
+            assign bento4_img = 'sams-recipe-paratha.jpg'
+            assign bento5_img = 'sams-flour-infographic-stone-ground.jpg'
+            assign p_iwt = 'sams-recipe-paratha.jpg'
+            assign p_circle_1 = 'sams-flour-infographic-stone-ground.jpg'
+            assign p_circle_2 = 'sams-flour-5kg-field.jpg'
+            assign p_circle_3 = 'sams-recipe-paratha.jpg'
+            assign p_circle_4 = 'sams-story-kitchen.jpg'
+            assign p_slow = 'sams-flour-infographic-stone-ground.jpg'
+          elsif product.handle contains 'molasses' or product.handle contains 'pomegranate'
+            assign bento1_img = 'sams-recipe-fattoush.jpg'
+            assign bento4_img = 'sams-story-kitchen.jpg'
+            assign bento5_img = 'sams-hero-pantry.jpg'
+            assign p_iwt = 'sams-recipe-fattoush.jpg'
+            assign p_circle_1 = 'sams-recipe-fattoush.jpg'
+            assign p_circle_2 = 'sams-story-kitchen.jpg'
+            assign p_circle_3 = 'sams-hero-pantry.jpg'
+            assign p_circle_4 = 'sams-recipe-fattoush.jpg'
+            assign p_slow = 'sams-story-kitchen.jpg'
+          endif
+        -%}
+
+        var b1Img = "{{ bento1_img | asset_url }}";
+        var b4Img = "{{ bento4_img | asset_url }}";
+        var b5Img = "{{ bento5_img | asset_url }}";
+        var iwtImg = "{{ p_iwt | asset_url }}";
+        var slowImg = "{{ p_slow | asset_url }}";
+        var circles = [
+          "{{ p_circle_1 | asset_url }}",
+          "{{ p_circle_2 | asset_url }}",
+          "{{ p_circle_3 | asset_url }}",
+          "{{ p_circle_4 | asset_url }}"
+        ];
+
+        // 0. Bento Grid Panels (Panel 1: Wide, Panel 4: Small, Panel 5: Tall)
+        function injectBentoImage(selector, src) {
+          var panel = root.querySelector(selector);
+          if (!panel) return;
+          var svg = panel.querySelector('svg');
+          var existingImg = panel.querySelector('img');
+          if (existingImg && existingImg.src && existingImg.src.indexOf('image-svg') === -1 && existingImg.src.indexOf('placeholder') === -1) {
+            return;
+          }
+          if (svg) svg.style.display = 'none';
+          if (!existingImg) {
+            var imgEl = document.createElement('img');
+            imgEl.className = 'sams-auto-injected';
+            imgEl.src = src;
+            imgEl.alt = "{{ product.title | escape }}";
+            imgEl.style.setProperty('width', '100%', 'important');
+            imgEl.style.setProperty('height', '100%', 'important');
+            imgEl.style.setProperty('object-fit', 'cover', 'important');
+            imgEl.style.setProperty('display', 'block', 'important');
+            panel.appendChild(imgEl);
+          } else {
+            existingImg.src = src;
+            existingImg.style.setProperty('display', 'block', 'important');
+            existingImg.style.setProperty('width', '100%', 'important');
+            existingImg.style.setProperty('height', '100%', 'important');
+            existingImg.style.setProperty('object-fit', 'cover', 'important');
+          }
+        }
+
+        injectBentoImage('.bento-panel.panel-1', b1Img);
+        injectBentoImage('.bento-panel.panel-4', b4Img);
+        injectBentoImage('.bento-panel.panel-5', b5Img);
+
+        // 1. Two Panel / Image With Text ("Slow-ground in our Lahore kitchen")
+        var twoPanelImgs = root.querySelectorAll('.tae-two-panel-left img, .tae-two-panel-image img, .tae-two-panel img');
+        twoPanelImgs.forEach(function(img) {
+          if (img.src.indexOf('image-svg.svg') !== -1 || img.src.indexOf('placeholder') !== -1 || img.clientWidth <= 60) {
+            img.src = iwtImg;
+            img.removeAttribute('width');
+            img.removeAttribute('height');
+            img.style.setProperty('width', '100%', 'important');
+            img.style.setProperty('height', '100%', 'important');
+            img.style.setProperty('object-fit', 'cover', 'important');
+            img.style.setProperty('display', 'block', 'important');
+            img.style.setProperty('border-radius', '16px', 'important');
+            if (img.parentElement) {
+              img.parentElement.style.height = '100%';
+              img.parentElement.style.minHeight = '320px';
+            }
+          }
+        });
+
+        // 2. Four Blocks ("Our Pantry" - unique circles)
+        var fourBlockImgs = root.querySelectorAll('.tae-four-blocks-image-wrapper img, .tae-four-blocks-item img');
+        fourBlockImgs.forEach(function(img, idx) {
+          if (img.src.indexOf('image-svg.svg') !== -1 || img.src.indexOf('placeholder') !== -1 || img.clientWidth <= 60) {
+            img.src = circles[idx % circles.length];
+            img.removeAttribute('width');
+            img.removeAttribute('height');
+            img.style.setProperty('width', '100%', 'important');
+            img.style.setProperty('height', '100%', 'important');
+            img.style.setProperty('object-fit', 'cover', 'important');
+            img.style.setProperty('border-radius', '50%', 'important');
+            img.style.setProperty('display', 'block', 'important');
+            if (img.parentElement) {
+              img.parentElement.style.setProperty('border-radius', '50%', 'important');
+              img.parentElement.style.setProperty('overflow', 'hidden', 'important');
+            }
+          }
+        });
+
+        // 2b. Make Card 3 Text Generic for all products
+        var fourBlockItems = root.querySelectorAll('.tae-four-blocks-item');
+        if (fourBlockItems.length >= 3) {
+          var c3Heading = fourBlockItems[2].querySelector('.tae-four-blocks-item-heading');
+          var c3Sub = fourBlockItems[2].querySelector('.tae-four-blocks-item-subheading');
+          if (c3Heading && (c3Heading.textContent.trim() === 'Stone-ground' || c3Heading.textContent.indexOf('Stone') !== -1 || c3Heading.textContent.indexOf('Heading') !== -1)) {
+            c3Heading.textContent = 'Small-Batch Craft';
+          }
+          if (c3Sub && (c3Sub.textContent.indexOf('flour') !== -1 || c3Sub.textContent.indexOf('Subheading') !== -1 || c3Sub.textContent.indexOf('texture') !== -1 || c3Sub.textContent.indexOf('Multigrain') !== -1)) {
+            c3Sub.textContent = 'Prepared in small batches with authentic recipes and pure ingredients.';
+          }
+        }
+
+        // 3. Circular Feature Ring ("Made the Slow Way")
+        var cfrWrap = root.querySelector('.cfr-main-image-wrap');
+        if (cfrWrap) {
+          var oldSvg = cfrWrap.querySelector('svg');
+          if (oldSvg) oldSvg.style.display = 'none';
+          if (!cfrWrap.querySelector('img.sams-auto-injected')) {
+            var slowImageEl = document.createElement('img');
+            slowImageEl.className = 'sams-auto-injected';
+            slowImageEl.src = slowImg;
+            slowImageEl.alt = "{{ product.title | escape }}";
+            slowImageEl.style.setProperty('width', '100%', 'important');
+            slowImageEl.style.setProperty('height', '100%', 'important');
+            slowImageEl.style.setProperty('min-height', '340px', 'important');
+            slowImageEl.style.setProperty('object-fit', 'cover', 'important');
+            slowImageEl.style.setProperty('border-radius', '16px', 'important');
+            slowImageEl.style.setProperty('display', 'block', 'important');
+            cfrWrap.appendChild(slowImageEl);
+          }
+        }
+
+        // Generic catch-all for any other placeholder svg / img
+        var allPlaceholderImgs = root.querySelectorAll('img[src*="image-svg.svg"]');
+        allPlaceholderImgs.forEach(function(pImg, pIdx) {
+          pImg.src = circles[pIdx % circles.length];
+          pImg.style.setProperty('width', '100%', 'important');
+          pImg.style.setProperty('height', '100%', 'important');
+          pImg.style.setProperty('object-fit', 'cover', 'important');
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fillPlaceholders);
+      } else {
+        fillPlaceholders();
+      }
+      setTimeout(fillPlaceholders, 600);
+      setTimeout(fillPlaceholders, 1500);
+      setTimeout(fillPlaceholders, 3000);
+
+      try {
+        var rootEl = document.querySelector('.empty-app-blocks-section-{{ section.id }}');
+        if (rootEl && window.MutationObserver) {
+          var obs = new MutationObserver(function() {
+            fillPlaceholders();
+          });
+          obs.observe(rootEl, { childList: true, subtree: true });
+        }
+      } catch(e) {}
+    })();
+  </script>
+{% endif %}
+{% comment %} END IF METAFIELDS {% endcomment %}
+
+
+<!-- 3. CSS STYLES & VARIABLES -->
+<style>
+  .empty-app-blocks-section-{{ section.id }} {
+    /* --- Layout & Background Variables --- */
+    --bg-color: {{ bg_color }};
+    --bg-opacity: {{ opacity }};
+    --container-width: {{ section.settings.container_max_width }}px;
+
+    /* --- Padding Variables --- */
+    --pad-v-desktop: {{ section.settings.padding_vertical_desktop }}px;
+    --pad-h-desktop: {{ section.settings.padding_horizontal_desktop }}px;
+    --pad-v-mobile: {{ section.settings.padding_vertical_mobile }}px;
+    --pad-h-mobile: {{ section.settings.padding_horizontal_mobile }}px;
+
+    /* --- FONT FAMILIES --- */
+    --font-heading-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --font-body-family: {{ body_font.family }}, {{ body_font.fallback_families }};
+
+    /* --- TYPOGRAPHY: HEADINGS (H1-H6) --- */
+    --h1-size: {{ section.settings.h1_size }}px; --h1-weight: {{ section.settings.h1_weight }};
+    --h2-size: {{ section.settings.h2_size }}px; --h2-weight: {{ section.settings.h2_weight }};
+    --h3-size: {{ section.settings.h3_size }}px; --h3-weight: {{ section.settings.h3_weight }};
+    --h4-size: {{ section.settings.h4_size }}px; --h4-weight: {{ section.settings.h4_weight }};
+    --h5-size: {{ section.settings.h5_size }}px; --h5-weight: {{ section.settings.h5_weight }};
+    --h6-size: {{ section.settings.h6_size }}px; --h6-weight: {{ section.settings.h6_weight }};
+
+    /* --- TYPOGRAPHY: BODY --- */
+    --body-size: {{ section.settings.body_size }}px;
+    --body-weight: {{ section.settings.body_weight }};
+  }
+
+  /* --- Section Styling --- */
+  
+  /* Outer full-width section with background */
+  .empty-app-blocks-section-{{ section.id }} {
+    position: relative;
+    width: 100%;
+    min-height: 20px;
+    
+    /* Ensure typography variables cascade down to children */
+    font-family: var(--font-body-family); 
+    color: inherit;
+  }
+
+  /* Overlay for opacity */
+  .empty-app-blocks-section-{{ section.id }}::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--bg-color);
+    opacity: var(--bg-opacity);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Inner container with max width, content above overlay */
+  .inner-container-{{ section.id }} {
+    position: relative;
+    z-index: 1;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    /* Apply Desktop Padding Variables */
+    padding: var(--pad-v-desktop) var(--pad-h-desktop);
+  }
+
+  @media (max-width: 768px) {
+    .inner-container-{{ section.id }} {
+      /* Apply Mobile Padding Variables */
+      padding: var(--pad-v-mobile) var(--pad-h-mobile);
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Kluck AI - Empty Section",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background & Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true,
+      "info": "When enabled, background color is pulled from the product metafield kluck_ai.color_schema."
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Manual background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "background_opacity",
+      "label": "Background opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "container_max_width",
+      "min": 800,
+      "max": 1800,
+      "step": 50,
+      "unit": "px",
+      "label": "Container Max Width",
+      "default": 1250
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical_desktop",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Desktop Vertical Padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal_desktop",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Desktop Horizontal Padding",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical_mobile",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Mobile Vertical Padding",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal_mobile",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Mobile Horizontal Padding",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Fonts"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font_family",
+      "label": "Heading Font Family",
+      "default": "abel_n4"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font_family",
+      "label": "Body Font Family",
+      "default": "abel_n4"
+    },
+    {
+      "type": "header",
+      "content": "Body"
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "min": 10, "max": 60, "step": 1, "unit": "px",
+      "label": "Font Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "body_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "Font Weight",
+      "default": 400
+    },
+    {
+      "type": "header",
+      "content": "Heading 1 (H1)"
+    },
+    {
+      "type": "range",
+      "id": "h1_size",
+      "min": 10, "max": 100, "step": 1, "unit": "px",
+      "label": "H1 Font Size",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "h1_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "H1 Font Weight",
+      "default": 700
+    },
+    {
+      "type": "header",
+      "content": "Heading 2 (H2)"
+    },
+    {
+      "type": "range",
+      "id": "h2_size",
+      "min": 10, "max": 100, "step": 1, "unit": "px",
+      "label": "H2 Font Size",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "h2_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "H2 Font Weight",
+      "default": 700
+    },
+    {
+      "type": "header",
+      "content": "Heading 3 (H3)"
+    },
+    {
+      "type": "range",
+      "id": "h3_size",
+      "min": 10, "max": 100, "step": 1, "unit": "px",
+      "label": "H3 Font Size",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "h3_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "H3 Font Weight",
+      "default": 600
+    },
+    {
+      "type": "header",
+      "content": "Heading 4 (H4)"
+    },
+    {
+      "type": "range",
+      "id": "h4_size",
+      "min": 10, "max": 100, "step": 1, "unit": "px",
+      "label": "H4 Font Size",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "h4_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "H4 Font Weight",
+      "default": 600
+    },
+    {
+      "type": "header",
+      "content": "Heading 5 (H5)"
+    },
+    {
+      "type": "range",
+      "id": "h5_size",
+      "min": 10, "max": 100, "step": 1, "unit": "px",
+      "label": "H5 Font Size",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "h5_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "H5 Font Weight",
+      "default": 500
+    },
+    {
+      "type": "header",
+      "content": "Heading 6 (H6)"
+    },
+    {
+      "type": "range",
+      "id": "h6_size",
+      "min": 10, "max": 100, "step": 1, "unit": "px",
+      "label": "H6 Font Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "h6_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "H6 Font Weight",
+      "default": 500
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "@theme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kluck AI - Empty Section"
+    }
+  ]
+}
+{% endschema %}

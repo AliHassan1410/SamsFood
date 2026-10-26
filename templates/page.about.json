@@ -1,0 +1,68 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "about_hero": {
+      "type": "sams-hero",
+      "settings": {
+        "eyebrow": "OUR STORY",
+        "heading": "Slow-ground in <em>Lahore</em>, one batch at a time.",
+        "subheading": "Sam's Food is a small kitchen in Lahore, making Middle Eastern pantry staples the slow way: roasted, ground and checked by hand. Made under PFA licence LHR/R-C/48356291.",
+        "button_1_label": "Shop the Pantry",
+        "button_1_link": "/collections/all",
+        "button_2_label": "Wholesale Inquiry",
+        "button_2_link": "/pages/wholesale",
+        "floating_note_1": "100% Halal",
+        "floating_note_2": "PFA Licensed Kitchen",
+        "pad_top": 80,
+        "pad_bottom": 80
+      }
+    },
+    "story_split": {
+      "type": "sams-story",
+      "settings": {
+        "eyebrow": "FROM OUR KITCHEN",
+        "heading": "Simple ingredients, made with care.",
+        "content": "<p>Sam's Food was born in Lahore from a passion for authentic Levantine and Middle Eastern cooking staples.</p><p>We believe that real tahina should only contain 100% roasted sesame seeds, stone-ground slowly so the natural oils stay intact. Our flours are milled from nine diverse grains and seeds to bring authentic nourishment to every roti and paratha.</p><p>Every jar, pack, and bucket is prepared in our specialized kitchen in Lahore under strict food hygiene standards.</p>",
+        "button_label": "Explore Products",
+        "button_link": "/collections/all",
+        "bg_color": "#F4E9DA",
+        "pad_top": 80,
+        "pad_bottom": 80
+      }
+    },
+    "trust_strip": {
+      "type": "sams-trust-strip",
+      "settings": {
+        "bg_color": "#FBF6EE"
+      }
+    },
+    "wholesale_cta": {
+      "type": "sams-banner",
+      "settings": {
+        "eyebrow": "CAFÉS, RESTAURANTS & CATERERS",
+        "heading": "Bulk tahina and flour for your kitchen",
+        "subheading": "Trade rates for regular orders. Message us on WhatsApp to talk about quantities and delivery.",
+        "button_label": "Contact Trade Team on WhatsApp",
+        "bg_color": "#FBF6EE",
+        "card_color": "#EEDFCA",
+        "text_color": "#2B160E",
+        "pad_top": 56,
+        "pad_bottom": 72
+      }
+    }
+  },
+  "order": [
+    "about_hero",
+    "story_split",
+    "trust_strip",
+    "wholesale_cta"
+  ]
+}

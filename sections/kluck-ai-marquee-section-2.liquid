@@ -1,0 +1,309 @@
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+
+{% if shop.metafields.app.block_control.value %}
+{% comment %}
+  Infinite Marquee Banner
+  - Layout: Horizontal scrolling strip.
+  - Logic: Smart boundaries via Scheme adaptation.
+{% endcomment %}
+
+{% style %}
+
+  #mq-{{ section.id }} {
+    
+    /* --- DESKTOP VARIABLES --- */
+    --font-size-d: {{ section.settings.font_size_d }}px;
+    --img-height-d: {{ section.settings.img_height_d }}px;
+    --gap-d: {{ section.settings.gap_d }}px;
+    --speed-d: {{ section.settings.speed_d }}s;
+    --padding-d: {{ section.settings.padding_d }}px;
+    
+    /* --- MOBILE VARIABLES --- */
+    --font-size-m: {{ section.settings.font_size_m }}px;
+    --img-height-m: {{ section.settings.img_height_m }}px;
+    --gap-m: {{ section.settings.gap_m }}px;
+    --speed-m: {{ section.settings.speed_m }}s;
+    --padding-m: {{ section.settings.padding_m }}px;
+    
+    /* --- BORDERS --- */
+    --border-width: 1px;
+    --border-top-display: {% if section.settings.show_border_top %}block{% else %}none{% endif %};
+    --border-bottom-display: {% if section.settings.show_border_bottom %}block{% else %}none{% endif %};
+  }
+{% endstyle %}
+
+<style>
+  /* --- SECTION (SCHEME DRIVEN) --- */
+  #mq-{{ section.id }} .mq-section {
+    background-color: var(--color-background);
+    color: #484B4F;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: var(--padding-d) 0;
+  }
+
+  /* --- SMART BORDERS (Adapts to text color at 15% opacity) --- */
+  #mq-{{ section.id }} .mq-section::before,
+  #mq-{{ section.id }} .mq-section::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: var(--border-width);
+    background-color: currentColor;
+    opacity: 0.15; /* Perfectly subtle border for dark or light modes */
+    pointer-events: none;
+    z-index: 10;
+  }
+  #mq-{{ section.id }} .mq-section::before { top: 0; display: var(--border-top-display); }
+  #mq-{{ section.id }} .mq-section::after { bottom: 0; display: var(--border-bottom-display); }
+
+  /* TRACK WRAPPER */
+  #mq-{{ section.id }} .mq-track {
+    display: flex;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  /* ANIMATION GROUP */
+  #mq-{{ section.id }} .mq-group {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-d); /* Sets exact spacing between items inside the group */
+    flex-shrink: 0; 
+    min-width: max-content; /* FIXED: Forces width to match content exactly, eliminating empty space when blocks are removed */
+    will-change: transform; 
+    
+    animation: mq-scroll var(--speed-d) linear infinite;
+    {% if section.settings.direction == 'right' %}
+      animation-direction: reverse;
+    {% endif %}
+    padding-right: var(--gap-d); /* Makes the spacing perfectly equal when the next group starts */
+  }
+
+  /* PAUSE ON HOVER */
+  {% if section.settings.pause_hover %}
+  #mq-{{ section.id }} .mq-section:hover .mq-group {
+    animation-play-state: paused;
+  }
+  {% endif %}
+
+  /* ITEMS */
+  #mq-{{ section.id }} .mq-item {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  /* TEXT STYLE */
+  #mq-{{ section.id }} .mq-text {
+    font-size: var(--font-size-d);
+    line-height: 1;
+    margin: 0;
+  }
+
+  /* IMAGE STYLE */
+  #mq-{{ section.id }} .mq-img-wrap {
+    height: var(--img-height-d);
+    display: block;
+    flex-shrink: 0;
+  }
+  #mq-{{ section.id }} .mq-img {
+    height: 100%;
+    width: auto;
+    object-fit: cover;
+    display: block;
+    border-radius: {{ section.settings.img_radius }}px;
+  }
+
+  /* KEYFRAMES */
+  @keyframes mq-scroll {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-100%, 0, 0); }
+  }
+
+  /* --- MOBILE RESPONSIVE --- */
+  @media (max-width: 768px) {
+    #mq-{{ section.id }} .mq-section {
+      padding: var(--padding-m) 0;
+    }
+    #mq-{{ section.id }} .mq-group {
+      animation-duration: var(--speed-m);
+      gap: var(--gap-m);
+      padding-right: var(--gap-m);
+    }
+    #mq-{{ section.id }} .mq-text {
+      font-size: var(--font-size-m);
+    }
+    #mq-{{ section.id }} .mq-img-wrap {
+      height: var(--img-height-m);
+    }
+  }
+</style>
+
+<div id="mq-{{ section.id }}" class="color-{{ section.settings.color_scheme }}">
+  <div class="mq-section">
+    <div class="mq-track">
+      
+      {% comment %} Generated 10 times to ensure we always fill the screen seamlessly even if only 1 block is added {% endcomment %}
+      {% for i in (1..10) %}
+        <div class="mq-group">
+          {% assign text_index = 0 %}
+          {% assign img_index = 0 %}
+          
+          {%- for block in section.blocks -%}
+            
+            {% assign final_text = blank %}
+            {% assign final_image = blank %}
+            {% assign render_item = false %}
+            
+            {% case block.type %}
+              {% when 'text' %}
+                {% assign text_index = text_index | plus: 1 %}
+                {% assign final_text = block.settings.text %}
+                
+                {% if section.settings.use_kluck_ai_metafields %}
+                  {% if text_index == 1 and store_gen.home_page.text.marquee_text_1 != blank %}
+                    {% assign final_text = store_gen.home_page.text.marquee_text_1 %}
+                  {% elsif text_index == 2 and store_gen.home_page.text.marquee_text_2 != blank %}
+                    {% assign final_text = store_gen.home_page.text.marquee_text_2 %}
+                  {% elsif text_index == 3 and store_gen.home_page.text.marquee_text_3 != blank %}
+                    {% assign final_text = store_gen.home_page.text.marquee_text_3 %}
+                  {% endif %}
+                {% endif %}
+                
+                {% comment %} Only render item container if text exists to prevent empty spaces/gaps {% endcomment %}
+                {% if final_text != blank %}
+                  {% assign render_item = true %}
+                {% endif %}
+                
+              {% when 'image' %}
+                {% assign img_index = img_index | plus: 1 %}
+                
+                {% assign kluck_img = blank %}
+                {% if section.settings.use_kluck_ai_metafields %}
+                  {% if img_index == 1 %}
+                    {% assign kluck_img = shop.metafields.kluck_ai.product_image_1.value %}
+                  {% elsif img_index == 2 %}
+                    {% assign kluck_img = shop.metafields.kluck_ai.product_image_2.value %}
+                  {% elsif img_index == 3 %}
+                    {% assign kluck_img = shop.metafields.kluck_ai.product_image_3.value %}
+                  {% endif %}
+                {% endif %}
+
+                {% if block.settings.image != blank %}
+                  {% assign final_image = block.settings.image %}
+                {% elsif kluck_img != blank %}
+                  {% assign final_image = kluck_img %}
+                {% endif %}
+                
+                {% assign render_item = true %}
+                
+            {% endcase %}
+            
+            {% if render_item %}
+              <div class="mq-item" {{ block.shopify_attributes }}>
+                {% if block.type == 'text' %}
+                  <span class="mq-text">{{ final_text }}</span>
+                {% elsif block.type == 'image' %}
+                  <div class="mq-img-wrap">
+                    {% if final_image != blank %}
+                      <img src="{{ final_image | image_url: width: 400 }}" class="mq-img" alt="Marquee image">
+                    {% else %}
+                      {{ 'image' | placeholder_svg_tag: 'mq-img' }}
+                    {% endif %}
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+
+          {%- endfor -%}
+        </div>
+      {% endfor %}
+
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Marquee Banner",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "use_kluck_ai_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true
+    },
+    { "type": "header", "content": "Layout & Animation" },
+    { "type": "select", "id": "direction", "label": "Scroll Direction", "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "right", "label": "Right"}
+      ], "default": "left"
+    },
+    { "type": "checkbox", "id": "pause_hover", "label": "Pause on Hover", "default": false },
+    { "type": "checkbox", "id": "show_border_top", "label": "Show Top Border", "default": true },
+    { "type": "checkbox", "id": "show_border_bottom", "label": "Show Bottom Border", "default": true },
+
+    { "type": "header", "content": "Color Scheme" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Section Color Scheme",
+      "default": "scheme-1",
+      "info": "Borders automatically adapt to text color."
+    },
+
+    { "type": "header", "content": "Desktop Settings" },
+    { "type": "range", "id": "speed_d", "label": "Scroll Speed", "min": 5, "max": 60, "step": 1, "default": 20, "unit": "s" },
+    { "type": "range", "id": "font_size_d", "label": "Font Size", "min": 12, "max": 80, "step": 1, "default": 32, "unit": "px" },
+    { "type": "range", "id": "img_height_d", "label": "Image Height", "min": 20, "max": 150, "step": 5, "default": 60, "unit": "px" },
+    { "type": "range", "id": "gap_d", "label": "Gap between Items", "min": 0, "max": 100, "step": 5, "default": 50, "unit": "px" },
+    { "type": "range", "id": "padding_d", "label": "Vertical Padding", "min": 10, "max": 100, "step": 5, "default": 30, "unit": "px" },
+
+    { "type": "header", "content": "Mobile Settings" },
+    { "type": "range", "id": "speed_m", "label": "Scroll Speed", "min": 5, "max": 60, "step": 1, "default": 15, "unit": "s" },
+    { "type": "range", "id": "font_size_m", "label": "Font Size", "min": 12, "max": 60, "step": 1, "default": 24, "unit": "px" },
+    { "type": "range", "id": "img_height_m", "label": "Image Height", "min": 20, "max": 100, "step": 5, "default": 40, "unit": "px" },
+    { "type": "range", "id": "gap_m", "label": "Gap between Items", "min": 0, "max": 100, "step": 5, "default": 30, "unit": "px" },
+    { "type": "range", "id": "padding_m", "label": "Vertical Padding", "min": 10, "max": 80, "step": 5, "default": 20, "unit": "px" },
+
+    { "type": "header", "content": "Image Style" },
+    { "type": "range", "id": "img_radius", "label": "Image Radius", "min": 0, "max": 100, "default": 100, "unit": "px", "info": "100px = Circle" }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Content", "default": "Made with love" }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marquee Banner",
+      "blocks": [
+        { "type": "text", "settings": { "text": "Made with love" } },
+        { "type": "image" },
+        { "type": "text", "settings": { "text": "New Season Essential" } },
+        { "type": "image" },
+        { "type": "text", "settings": { "text": "New Season Essential" } },
+        { "type": "image" },
+        { "type": "text", "settings": { "text": "Pure & Natural" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

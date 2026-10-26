@@ -1,0 +1,129 @@
+{%- comment -%}
+  Sam's Food - Trust Strip (4 Highlights)
+  Halal certified · PFA licensed · Cash on delivery · Nationwide delivery
+{%- endcomment -%}
+
+<section
+  class="sams-trust-section"
+  style="background-color: {{ section.settings.bg_color }}; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 28px 16px;"
+>
+  <div class="page-width" style="max-width: 1200px; margin: 0 auto;">
+    <div class="sams-trust-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; align-items: center;">
+      {%- for block in section.blocks -%}
+        <div
+          class="sams-trust-item sams-fade-up"
+          style="display: flex; align-items: center; gap: 14px;"
+          {{ block.shopify_attributes }}
+        >
+          <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--sesame); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; color: var(--gold); flex-shrink: 0;">
+            {%- case block.settings.icon -%}
+              {%- when 'halal' -%}
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              {%- when 'license' -%}
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              {%- when 'cod' -%}
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+              {%- when 'delivery' -%}
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+              {%- else -%}
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+            {%- endcase -%}
+          </div>
+          <div>
+            <h4 style="font-family: var(--font-clean); font-size: 14px; font-weight: 600; margin: 0 0 2px; color: var(--espresso);">
+              {{ block.settings.title }}
+            </h4>
+            <p style="font-family: var(--font-clean); font-size: 12px; color: var(--muted); margin: 0;">
+              {{ block.settings.subtitle }}
+            </p>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Sams Trust Strip",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#FBF6EE"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "trust_item",
+      "name": "Trust Point",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "halal", "label": "Halal Shield" },
+            { "value": "license", "label": "PFA License" },
+            { "value": "cod", "label": "Cash on Delivery" },
+            { "value": "delivery", "label": "Nationwide Delivery" }
+          ],
+          "default": "halal"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Halal Certified"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "100% Pure & Handcrafted"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sams Trust Strip",
+      "blocks": [
+        {
+          "type": "trust_item",
+          "settings": {
+            "icon": "halal",
+            "title": "Halal Certified",
+            "subtitle": "100% Natural & Pure"
+          }
+        },
+        {
+          "type": "trust_item",
+          "settings": {
+            "icon": "license",
+            "title": "PFA Licensed",
+            "subtitle": "Lahore Kitchen: LHR/R-C/48356291"
+          }
+        },
+        {
+          "type": "trust_item",
+          "settings": {
+            "icon": "cod",
+            "title": "Cash On Delivery",
+            "subtitle": "Pay conveniently at your door"
+          }
+        },
+        {
+          "type": "trust_item",
+          "settings": {
+            "icon": "delivery",
+            "title": "Nationwide Delivery",
+            "subtitle": "Express safe delivery across Pakistan"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,61 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "footer",
+  "name": "t:names.footer",
+  "sections": {
+    "sams_footer": {
+      "type": "sams-footer",
+      "blocks": {
+        "shop_spreads": { "type": "link", "settings": { "column": "1", "label": "Spreads & Sauces", "url": "/collections/tahina-spreads" } },
+        "shop_flour": { "type": "link", "settings": { "column": "1", "label": "Wholesome Flour", "url": "/collections/wholesome-flours" } },
+        "shop_mezze": { "type": "link", "settings": { "column": "1", "label": "Mezze Ready", "url": "/collections/mezze-ready" } },
+        "shop_bundles": { "type": "link", "settings": { "column": "1", "label": "Bundles", "url": "/pages/bundles" } },
+        "shop_bulk": { "type": "link", "settings": { "column": "1", "label": "Commercial & Bulk", "url": "/collections/bulk-wholesale" } },
+        "help_contact": { "type": "link", "settings": { "column": "2", "label": "Contact Us", "url": "/pages/contact" } },
+        "help_whatsapp": { "type": "link", "settings": { "column": "2", "label": "Order on WhatsApp", "url": "https://wa.me/923454788888" } },
+        "help_wholesale": { "type": "link", "settings": { "column": "2", "label": "Wholesale Inquiries", "url": "https://wa.me/923454788888?text=Hi%20Sam%27s%20Food!%20I%20have%20a%20wholesale%20inquiry." } },
+        "brand_about": { "type": "link", "settings": { "column": "3", "label": "About Us", "url": "/pages/about" } },
+        "brand_recipes": { "type": "link", "settings": { "column": "3", "label": "Recipes", "url": "/pages/recipes" } },
+        "brand_all": { "type": "link", "settings": { "column": "3", "label": "All Products", "url": "/collections/all" } }
+      },
+      "block_order": [
+        "shop_spreads",
+        "shop_flour",
+        "shop_mezze",
+        "shop_bundles",
+        "shop_bulk",
+        "help_contact",
+        "help_whatsapp",
+        "help_wholesale",
+        "brand_about",
+        "brand_recipes",
+        "brand_all"
+      ],
+      "settings": {
+        "wordmark": "Sam's",
+        "brand_name": "Sam's Food",
+        "tagline": "Middle Eastern pantry staples, made in our Lahore kitchen and delivered across Pakistan.",
+        "whatsapp_number": "0345-4788888",
+        "email": "",
+        "column_1_heading": "Shop",
+        "column_2_heading": "Help",
+        "column_3_heading": "Sam's Food",
+        "bottom_note": "Cash on delivery nationwide",
+        "instagram_url": "https://www.instagram.com/samsfoodsofficial/",
+        "facebook_url": "https://www.facebook.com/samsfoodspk/about_contact_and_basic_info",
+        "bg_color": "#1A0D08"
+      }
+    }
+  },
+  "order": [
+    "sams_footer"
+  ]
+}

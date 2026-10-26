@@ -1,0 +1,316 @@
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+
+{% if shop.metafields.app.block_control.value %}
+
+{% style %}
+
+  #fp-{{ section.id }} {
+    --pt-d: {{ section.settings.pt_d }}px;
+    --pb-d: {{ section.settings.pb_d }}px;
+    --h-size-d: {{ section.settings.h_size_d }}px;
+    --card-h-size-d: {{ section.settings.card_h_size_d }}px;
+    --card-p-size-d: {{ section.settings.card_p_size_d }}px;
+    --card-width-d: {{ section.settings.card_width_d }}px;
+    --img-height-d: {{ section.settings.img_height_d }}px;
+    --gap-d: {{ section.settings.gap_d }}px;
+    --container-pl: {{ section.settings.container_pl }}px;
+    --track-offset: {{ section.settings.track_offset }}px;
+    --btn-size-d: {{ section.settings.btn_size_d }}px;
+    --pt-m: {{ section.settings.pt_m }}px;
+    --pb-m: {{ section.settings.pb_m }}px;
+    --h-size-m: {{ section.settings.h_size_m }}px;
+    --card-h-size-m: {{ section.settings.card_h_size_m }}px;
+    --card-p-size-m: {{ section.settings.card_p_size_m }}px;
+    --card-width-m: {{ section.settings.card_width_m }}%;
+    --img-height-m: {{ section.settings.img_height_m }}px;
+    --gap-m: {{ section.settings.gap_m }}px;
+    --btn-size-m: {{ section.settings.btn_size_m }}px;
+    --radius: {{ section.settings.card_radius }}px;
+    --btn-radius: {{ section.settings.btn_radius }}px;
+  }
+{% endstyle %}
+
+<style>
+  #fp-{{ section.id }} {
+    background-color: var(--color-background);
+    padding-top: var(--pt-d);
+    padding-bottom: var(--pb-d);
+    overflow: hidden;
+  }
+
+  #fp-{{ section.id }} .fp-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    padding-left: var(--container-pl); 
+    padding-right: 20px;
+  }
+
+  /* --- HEADER --- */
+  #fp-{{ section.id }} .fp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  #fp-{{ section.id }} .fp-heading {
+    font-size: var(--h-size-d);
+    margin: 0;
+    line-height: 1.1;
+  }
+  
+  #fp-{{ section.id }} .fp-nav { display: flex; gap: 12px; }
+  #fp-{{ section.id }} .fp-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid {{settings.color_scheme}};
+    background-color: white;
+    color: {{settings.color_scheme}};
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  #fp-{{ section.id }} .fp-btn:hover { background: {{settings.color_scheme}}; color: white; }
+  #fp-{{ section.id }} .fp-btn svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+
+  /* --- TRACK --- */
+  #fp-{{ section.id }} .fp-track {
+    display: flex;
+    gap: var(--gap-d);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-left: var(--track-offset);
+    padding-right: 50px;
+    padding-bottom: 20px;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+  }
+  #fp-{{ section.id }} .fp-track::-webkit-scrollbar { display: none; }
+
+  /* --- CARD --- */
+  #fp-{{ section.id }} .fp-card {
+    flex: 0 0 var(--card-width-d);
+    background-color: var(--color-background);
+    border-radius: var(--radius);
+    overflow: hidden;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    {% if section.settings.show_shadow %}
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    {% endif %}
+  }
+
+  #fp-{{ section.id }} .fp-card-img-wrap { width: 100%; height: var(--img-height-d); overflow: hidden; position: relative; }
+  #fp-{{ section.id }} .fp-card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+  #fp-{{ section.id }} .fp-card:hover .fp-card-img { transform: scale(1.05); }
+
+  #fp-{{ section.id }} .fp-card-body { padding: 30px; display: flex; flex-direction: column; flex: 1; }
+  #fp-{{ section.id }} .fp-card-title { font-size: var(--card-h-size-d); margin: 0 0 15px 0; font-weight: 600; }
+  #fp-{{ section.id }} .fp-card-text { font-size: var(--card-p-size-d); opacity: 0.85; line-height: 1.5; margin: 0 0 10px 0; }
+  #fp-{{ section.id }} .fp-divider { height: 1px; background-color: currentColor; width: 100%; margin-top: auto; margin-bottom: 10px; opacity: 0.15; }
+
+  #fp-{{ section.id }} .fp-product-link { display: flex; margin-top:10px; flex-direction: row; align-items: center; justify-content: space-between; gap: 15px; text-decoration: none; color: inherit; }
+  #fp-{{ section.id }} .fp-prod-header { display: flex; align-items: center; gap: 15px; flex: 1; min-width: 0; }
+  #fp-{{ section.id }} .fp-thumb { width: 50px; height: 50px; background: #f4f4f4; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+  #fp-{{ section.id }} .fp-prod-name { font-weight: 600; font-size: 15px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: inherit; }
+
+  #fp-{{ section.id }} .kluck-button { 
+      display: inline-block;
+    text-decoration: none;
+    border-radius: 50px;
+    padding: 15px 30px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  #fp-{{ section.id }} .kluck-button:hover { 
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+
+  /* --- INTELLIGENCE COLOR OVERRIDES --- */
+  .fp-smart-light, 
+  .fp-smart-light .fp-heading, 
+  .fp-smart-light .fp-card-title, 
+  .fp-smart-light .fp-card-text, 
+  .fp-smart-light .fp-prod-name,
+  .fp-smart-light .kluck-button { 
+    color: #484B4F !important; 
+  }
+
+  /* If background is DARK: All text (including button label) becomes LIGHT */
+  .fp-smart-dark, 
+  .fp-smart-dark .fp-heading, 
+  .fp-smart-dark .fp-card-title, 
+  .fp-smart-dark .fp-card-text, 
+  .fp-smart-dark .fp-prod-name,
+  .fp-smart-dark .kluck-button { 
+    color: #FFFFFF !important; 
+  }
+  @media (max-width: 768px) {
+    #fp-{{ section.id }} { padding-top: var(--pt-m); padding-bottom: var(--pb-m); }
+    #fp-{{ section.id }} .fp-container { padding-left: 20px; padding-right: 20px; }
+    #fp-{{ section.id }} .fp-heading { font-size: var(--h-size-m); }
+    #fp-{{ section.id }} .fp-track { padding-left: 0; padding-right: 20px; gap: var(--gap-m); }
+    #fp-{{ section.id }} .fp-card { flex: 0 0 var(--card-width-m); }
+    #fp-{{ section.id }} .fp-card-img-wrap { height: var(--img-height-m); }
+    #fp-{{ section.id }} .fp-product-link { flex-direction: column; align-items: stretch; gap: 15px; }
+    #fp-{{ section.id }} .fp-prod-header { width: 100%; justify-content: flex-start; }
+    #fp-{{ section.id }} .fp-prod-name { font-size: 16px; -webkit-line-clamp: unset; text-align: left; }
+    #fp-{{ section.id }} .fp-shop-btn { align-self: center; font-size: var(--btn-size-m); padding: 10px 30px; width: auto; min-width: 140px; text-align: center; }
+    #fp-{{ section.id }} .fp-nav { display: none; }
+  }
+</style>
+
+<div id="fp-{{ section.id }}" class="color-{{ section.settings.color_scheme }}">
+  <div class="fp-container">
+    
+    <div class="fp-header">
+      <h2 class="fp-heading">{{ section.settings.title }}</h2>
+      <div class="fp-nav">
+        <button class="fp-btn prev"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button class="fp-btn next"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+      </div>
+    </div>
+
+    <div class="fp-track" id="track-{{ section.id }}">
+      {% for block in section.blocks %}
+        {% assign product = all_products[block.settings.product] %}
+        {% assign kluck_h = blank %}{% assign kluck_p = blank %}{% assign kluck_img = blank %}{% assign kluck_prod = blank %}
+
+        {% case forloop.index %}
+          {% when 1 %}{% assign kluck_h = store_gen.home_page.text.featured_product_headline_1 %}{% assign kluck_p = store_gen.home_page.text.featured_product_subheadline_1 %}{% assign kluck_img = shop.metafields.kluck_ai.feature_image_1.value %}{% assign kluck_prod = store_gen.home_page.text.selected_product_1 %}
+          {% when 2 %}{% assign kluck_h = store_gen.home_page.text.featured_product_headline_2 %}{% assign kluck_p = store_gen.home_page.text.featured_product_subheadline_2 %}{% assign kluck_img = shop.metafields.kluck_ai.feature_image_2.value %}{% assign kluck_prod = store_gen.home_page.text.selected_product_2 %}
+          {% when 3 %}{% assign kluck_h = store_gen.home_page.text.featured_product_headline_3 %}{% assign kluck_p = store_gen.home_page.text.featured_product_subheadline_3 %}{% assign kluck_img = shop.metafields.kluck_ai.feature_image_3.value %}{% assign kluck_prod = store_gen.home_page.text.selected_product_3 %}
+        {% endcase %}
+
+        {% if section.settings.use_kluck_ai_metafields and kluck_prod != blank %}{% assign product = all_products[kluck_prod] %}{% endif %}
+        
+        <div class="fp-card color-{{ section.settings.card_color_scheme }}" {{ block.shopify_attributes }}>
+          <div class="fp-card-img-wrap">
+            {% if block.settings.image != blank %}
+              <img src="{{ block.settings.image | img_url: '800x' }}" class="fp-card-img" alt="{{ block.settings.heading }}">
+            {% elsif section.settings.use_kluck_ai_metafields and kluck_img != blank %}
+              <img src="{{ kluck_img | image_url: width: 800 }}" class="fp-card-img" alt="Product Image">
+            {% else %}{{ 'image' | placeholder_svg_tag: 'fp-card-img' }}{% endif %}
+          </div>
+
+          <div class="fp-card-body">
+            <h3 class="fp-card-title">{% if section.settings.use_kluck_ai_metafields and kluck_h != blank %}{{ kluck_h }}{% else %}{{ block.settings.heading }}{% endif %}</h3>
+            <div class="fp-card-text">{% if section.settings.use_kluck_ai_metafields and kluck_p != blank %}{{ kluck_p }}{% else %}{{ block.settings.text }}{% endif %}</div>
+
+            <div class="fp-divider"></div>
+            
+            {% if product != blank %}
+              <a href="{{ product.url }}" class="fp-product-link">
+                <div class="fp-prod-header">
+                  <img src="{{ product.featured_image | img_url: '100x' }}" class="fp-thumb" alt="{{ product.title }}">
+                  <span class="fp-prod-name">{{ product.title }}</span>
+                </div>
+                <span class="kluck-button">{{ section.settings.shop_btn_label }}</span>
+              </a>
+            {% else %}
+              <div class="fp-product-link">
+                 <div class="fp-prod-header">{{ 'product-1' | placeholder_svg_tag: 'fp-thumb' }}<span class="fp-prod-name">Product Title</span></div>
+                 <span class="kluck-button">{{ section.settings.shop_btn_label }}</span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    const track = document.getElementById("track-{{ section.id }}");
+    const prevBtn = document.querySelector("#fp-{{ section.id }} .prev");
+    const nextBtn = document.querySelector("#fp-{{ section.id }} .next");
+
+    // Slider Logic
+    if(track && nextBtn){
+      const getScroll = () => (track.querySelector('.fp-card').offsetWidth + parseFloat(getComputedStyle(track).gap));
+      nextBtn.addEventListener('click', () => track.scrollBy({ left: getScroll(), behavior: 'smooth' }));
+      prevBtn.addEventListener('click', () => track.scrollBy({ left: -getScroll(), behavior: 'smooth' }));
+    }
+
+    // Intelligence System
+    const getBgColor = (el) => {
+      let color = window.getComputedStyle(el).backgroundColor;
+      if ((color === 'rgba(0,0,0,0)' || color === 'transparent') && el.parentElement) return getBgColor(el.parentElement);
+      return color;
+    };
+
+    const applyIntelligence = () => {
+      const targets = document.querySelectorAll('#fp-{{ section.id }}, #fp-{{ section.id }} .fp-card');
+      targets.forEach(el => {
+        const rgb = getBgColor(el).match(/\d+/g);
+        if (rgb && rgb.length >= 3) {
+          const yiq = ((rgb[0] * 299) + (rgb[1] * 587) + (rgb[2] * 114)) / 1000;
+          if (yiq > 128) { el.classList.add('fp-smart-light'); el.classList.remove('fp-smart-dark'); }
+          else { el.classList.add('fp-smart-dark'); el.classList.remove('fp-smart-light'); }
+        }
+      });
+    };
+
+    window.addEventListener('load', applyIntelligence);
+    if (Shopify.designMode) document.addEventListener('shopify:section:load', applyIntelligence);
+  })();
+</script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Featured Products",
+  "settings": [
+    { "type": "checkbox", "id": "use_kluck_ai_metafields", "label": "Use Kluck AI metafields", "default": true },
+    { "type": "text", "id": "title", "label": "Section Heading", "default": "Our Featured Products" },
+    { "type": "header", "content": "Desktop Layout" },
+    { "type": "range", "id": "container_pl", "label": "Container Left Padding", "min": 0, "max": 200, "step": 5, "default": 20 },
+    { "type": "range", "id": "track_offset", "label": "Slider Track Offset", "min": 0, "max": 100, "default": 0 },
+    { "type": "range", "id": "card_width_d", "label": "Card Width (px)", "min": 250, "max": 600, "step": 10, "default": 400 },
+    { "type": "range", "id": "gap_d", "label": "Gap Between Cards", "min": 10, "max": 60, "default": 30 },
+    { "type": "range", "id": "img_height_d", "label": "Image Height", "min": 200, "max": 500, "step": 5, "default": 300 },
+    { "type": "header", "content": "Mobile Layout" },
+    { "type": "range", "id": "card_width_m", "label": "Card Width (%)", "min": 60, "max": 100, "step": 5, "default": 85 },
+    { "type": "range", "id": "gap_m", "label": "Gap Between Cards", "min": 10, "max": 30, "default": 16 },
+    { "type": "range", "id": "img_height_m", "label": "Image Height", "min": 150, "max": 400, "step": 5, "default": 250 },
+    { "type": "header", "content": "Appearance" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Section Color Scheme", "default": "scheme-1" },
+    { "type": "color_scheme", "id": "card_color_scheme", "label": "Card Color Scheme", "default": "scheme-2" },
+    { "type": "range", "id": "card_radius", "label": "Card Radius", "min": 0, "max": 40, "default": 20 },
+    { "type": "checkbox", "id": "show_shadow", "label": "Show Card Shadow", "default": false },
+    { "type": "header", "content": "Button Style" },
+    { "type": "text", "id": "shop_btn_label", "label": "Button Label", "default": "Shop Now" },
+    { "type": "range", "id": "btn_size_d", "label": "Button Font Size (Desktop)", "min": 10, "max": 20, "default": 12 },
+    { "type": "range", "id": "btn_size_m", "label": "Button Font Size (Mobile)", "min": 10, "max": 20, "default": 11 },
+    { "type": "range", "id": "btn_radius", "label": "Button Radius", "min": 0, "max": 40, "default": 4 },
+    { "type": "header", "content": "Typography" },
+    { "type": "range", "id": "h_size_d", "label": "Section Heading Size (D)", "min": 20, "max": 80, "default": 42 },
+    { "type": "range", "id": "h_size_m", "label": "Section Heading Size (M)", "min": 18, "max": 50, "default": 32 },
+    { "type": "range", "id": "card_h_size_d", "label": "Card Title Size (D)", "min": 14, "max": 30, "default": 20 },
+    { "type": "range", "id": "card_h_size_m", "label": "Card Title Size (M)", "min": 14, "max": 24, "default": 18 },
+    { "type": "range", "id": "card_p_size_d", "label": "Card Text Size (D)", "min": 12, "max": 20, "default": 16 },
+    { "type": "range", "id": "card_p_size_m", "label": "Card Text Size (M)", "min": 12, "max": 18, "default": 14 },
+    { "type": "header", "content": "Spacing" },
+    { "type": "range", "id": "pt_d", "min": 0, "max": 100, "default": 60, "label": "Top Padding (D)" },
+    { "type": "range", "id": "pb_d", "min": 0, "max": 100, "default": 60, "label": "Bottom Padding (D)" },
+    { "type": "range", "id": "pt_m", "min": 0, "max": 80, "default": 40, "label": "Top Padding (M)" },
+    { "type": "range", "id": "pb_m", "min": 0, "max": 80, "default": 40, "label": "Bottom Padding (M)" }
+  ],
+  "blocks": [
+    {
+      "type": "product_card",
+      "name": "Product Card",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Top Lifestyle Image" },
+        { "type": "text", "id": "heading", "label": "Card Heading", "default": "Glowy Warmth Bronzer" },
+        { "type": "textarea", "id": "text", "label": "Description", "default": "Description here." },
+        { "type": "product", "id": "product", "label": "Select Product" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Featured Products" }]
+}
+{% endschema %}

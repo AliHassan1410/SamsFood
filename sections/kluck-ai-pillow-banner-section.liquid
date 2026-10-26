@@ -1,0 +1,404 @@
+{% comment %}
+  Section: Kluck AI - Pillow Banner
+  - Purpose: Sculpted banner with a static "scooped" cutout effect.
+  - Updates: 
+    1. Shows Setting Image first, falls back to Product Image.
+    2. Button acts as "Buy Now" (Direct Checkout).
+    3. Button Background & Arrow color pull from Kluck AI Metafields.
+    4. Cutout background remains neutral (manual setting).
+{% endcomment %}
+
+{%- assign heading_font = section.settings.heading_font_family -%}
+{%- assign body_font = section.settings.body_font_family -%}
+
+{% comment %} 
+  1. LOAD FONTS 
+{% endcomment %}
+<style>
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ body_font | font_face: font_display: 'swap' }}
+</style>
+
+{% comment %} 
+  2. MAIN CONTENT WRAPPER 
+{% endcomment %}
+{% if shop.metafields.app.block_control.value %}
+
+  {% assign use_metafields = section.settings.use_metafields %}
+  {% assign opacity = section.settings.background_opacity | divided_by: 100.0 %}
+  
+  {% comment %} --- DATA SOURCE LOGIC START --- {% endcomment %}
+  
+  {% assign bg_color = section.settings.background_color %}
+  {% assign heading_text = section.settings.heading %}
+  {% assign subtext_text = section.settings.subtext %}
+  
+  {% comment %} Default Button Colors from Settings {% endcomment %}
+  {% assign btn_bg_color = section.settings.btn_bg %}
+  {% assign btn_arrow_color = section.settings.btn_arrow_color %}
+
+  {% if use_metafields and product != blank %}
+    
+    {% comment %} 
+      Apply Metafield Color to Button & Arrow only.
+    {% endcomment %}
+    {% if product.metafields.kluck_ai.color_schema != blank %}
+      {% assign btn_bg_color = product.metafields.kluck_ai.color_schema %}
+      {% assign btn_arrow_color = product.metafields.kluck_ai.color_schema %}
+    {% endif %}
+
+    {% comment %} Heading Metafield {% endcomment %}
+    {% if product.metafields.kluck_ai.pillow_banner_heading != blank %}
+      {% assign heading_text = product.metafields.kluck_ai.pillow_banner_heading %}
+    {% endif %}
+
+    {% comment %} Subtext Metafield {% endcomment %}
+    {% if product.metafields.kluck_ai.pillow_banner_subheading != blank %}
+      {% assign subtext_text = product.metafields.kluck_ai.pillow_banner_subheading %}
+    {% endif %}
+
+  {% endif %}
+  {% comment %} --- DATA SOURCE LOGIC END --- {% endcomment %}
+
+  <div id="PillowBanner-{{ section.id }}" class="kluck-pillow-banner-{{ section.id }}">
+    <div class="inner-container-{{ section.id }}">
+      
+      <div class="sculpted-container">
+        
+        {% comment %} Cutout Button Area with Dynamic Scoop fillets {% endcomment %}
+        <div class="sculpted-cutout position-{{ section.settings.button_position }}">
+          
+          {% if section.settings.btn_text != blank %}
+            
+            {% comment %} --- BUTTON LOGIC START --- {% endcomment %}
+            {% assign btn_target_link = '#' %}
+            
+            {% comment %} 
+               If we have a valid product variant, generate the direct checkout link.
+               Otherwise (e.g. editor preview on homepage), keep it '#' so button stays visible.
+            {% endcomment %}
+            {% if product != blank and product.selected_or_first_available_variant != blank %}
+              {% assign variant_id = product.selected_or_first_available_variant.id %}
+              {% assign btn_target_link = '/cart/' | append: variant_id | append: ':1' %}
+            {% endif %}
+            {% comment %} --- BUTTON LOGIC END --- {% endcomment %}
+
+            <a href="{{ btn_target_link }}" class="sculpted-btn">
+              {{ section.settings.btn_text }}
+              <span class="btn-circle">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </span>
+            </a>
+          {% endif %}
+          
+          <div class="fillet-corner fillet-1"></div>
+          <div class="fillet-corner fillet-2"></div>
+        </div>
+
+        {% comment %} Banner Image Logic {% endcomment %}
+        <div class="sculpted-media">
+          {% comment %} 1. Check Section Setting Image First {% endcomment %}
+          {% assign banner_image = section.settings.image %}
+
+          {% comment %} 2. Fallback to Product Image only if Setting is Blank {% endcomment %}
+          {% if banner_image == blank and product != blank and product.featured_image != blank %}
+            {% assign banner_image = product.featured_image %}
+          {% endif %}
+
+          {% if banner_image != blank %}
+            {{ banner_image | image_url: width: 2000 | image_tag: class: 'sculpted-image', loading: 'lazy' }}
+          {% else %}
+            {% comment %} 3. Smart asset fallback based on product handle {% endcomment %}
+            {%- assign fallback_img = 'sams-falafel-lifestyle-kitchen.jpg' -%}
+            {%- if product.handle contains 'tahina' or product.handle contains 'tahini' -%}
+              {%- assign fallback_img = 'sams-tahina-shawarma-wrap.jpg' -%}
+            {%- elsif product.handle contains 'hummus' -%}
+              {%- assign fallback_img = 'sams-hummus-family-dinner.jpg' -%}
+            {%- elsif product.handle contains 'flour' -%}
+              {%- assign fallback_img = 'sams-flour-infographic-stone-ground.jpg' -%}
+            {%- elsif product.handle contains 'molasses' or product.handle contains 'pomegranate' -%}
+              {%- assign fallback_img = 'sams-recipe-fattoush.jpg' -%}
+            {%- endif -%}
+            <img
+              src="{{ fallback_img | asset_url }}"
+              alt="{{ product.title | default: "Sam's Food" }}"
+              class="sculpted-image"
+              loading="lazy"
+              width="1400"
+              height="700"
+            >
+          {% endif %}
+        </div>
+
+        {% comment %} Banner Content {% endcomment %}
+        <div class="sculpted-content">
+          <div class="sculpted-text-box">
+            {% if heading_text != blank %}
+              <h2 class="pillow-heading">{{ heading_text | newline_to_br }}</h2>
+            {% endif %}
+            {% if subtext_text != blank %}
+              <p class="pillow-subtext">{{ subtext_text | newline_to_br }}</p>
+            {% endif %}
+          </div>
+        </div>
+
+      </div>
+
+      {% for block in section.blocks %}
+        {% render block %}
+      {% endfor %}
+    </div>
+  </div>
+
+{% endif %}
+
+<!-- 3. CSS STYLES & VARIABLES -->
+<style>
+  .kluck-pillow-banner-{{ section.id }} {
+    /* --- Layout & Background Variables --- */
+    --bg-color: {{ bg_color }};
+    --bg-opacity: {{ opacity }};
+    --container-width: {{ section.settings.container_max_width }}px;
+
+    /* --- Dynamic Banner Design Variables --- */
+    --banner-radius: {{ section.settings.corner_radius }}px;
+    --cutout-radius: {{ section.settings.scoop_radius }}px;
+    
+    /* --- Button Colors (Metafield Aware) --- */
+    --btn-bg: {{ btn_bg_color }};
+    --btn-txt: {{ section.settings.btn_text_color }};
+    --btn-circle: {{ section.settings.btn_circle_bg }};
+    --btn-arrow: {{ btn_arrow_color }};
+
+    /* --- FONT FAMILIES --- */
+    --font-heading-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --font-body-family: {{ body_font.family }}, {{ body_font.fallback_families }};
+
+    /* --- TYPOGRAPHY --- */
+    --h1-size: {{ section.settings.h1_size }}px; --h1-weight: {{ section.settings.h1_weight }};
+    --h2-size: {{ section.settings.h2_size }}px; --h2-weight: {{ section.settings.h2_weight }};
+    --h3-size: {{ section.settings.h3_size }}px; --h3-weight: {{ section.settings.h3_weight }};
+    --h4-size: {{ section.settings.h4_size }}px; --h4-weight: {{ section.settings.h4_weight }};
+    --h5-size: {{ section.settings.h5_size }}px; --h5-weight: {{ section.settings.h5_weight }};
+    --h6-size: {{ section.settings.h6_size }}px; --h6-weight: {{ section.settings.h6_weight }};
+    --body-size: {{ section.settings.body_size }}px; --body-weight: {{ section.settings.body_weight }};
+
+    position: relative;
+    width: 100%;
+    font-family: var(--font-body-family);
+    overflow: hidden;
+  }
+
+  .kluck-pillow-banner-{{ section.id }}::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--bg-color);
+    opacity: var(--bg-opacity);
+    z-index: 0;
+  }
+
+  .inner-container-{{ section.id }} {
+    position: relative;
+    z-index: 1;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .sculpted-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 7;
+    min-height: 400px;
+    border-radius: var(--banner-radius);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* --- Cutout Styling --- */
+  .sculpted-cutout {
+    position: absolute;
+    /* Uses main background color (usually white) to mask the banner corner */
+    background-color: var(--bg-color);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .fillet-corner {
+    position: absolute;
+    width: var(--cutout-radius);
+    height: var(--cutout-radius);
+    background: transparent;
+    z-index: -1;
+  }
+
+  /* --- Inverse Curve Logic --- */
+  .position-top-right { top: 0; right: 0; border-bottom-left-radius: var(--cutout-radius); padding: 0; }
+  .position-top-right .fillet-1 { top: 0; left: calc(var(--cutout-radius) * -1); border-top-right-radius: var(--cutout-radius); box-shadow: 10px -10px 0 10px var(--bg-color); }
+  .position-top-right .fillet-2 { bottom: calc(var(--cutout-radius) * -1); right: 0; border-top-right-radius: var(--cutout-radius); box-shadow: 10px -10px 0 10px var(--bg-color); }
+
+  .position-top-left { top: 0; left: 0; border-bottom-right-radius: var(--cutout-radius); padding: 0 0; }
+  .position-top-left .fillet-1 { top: 0; right: calc(var(--cutout-radius) * -1); border-top-left-radius: var(--cutout-radius); box-shadow: -10px -10px 0 10px var(--bg-color); }
+  .position-top-left .fillet-2 { bottom: calc(var(--cutout-radius) * -1); left: 0; border-top-left-radius: var(--cutout-radius); box-shadow: -10px -10px 0 10px var(--bg-color); }
+
+  .position-bottom-right { bottom: 0; right: 0; border-top-left-radius: var(--cutout-radius); padding: 0; }
+  .position-bottom-right .fillet-1 { bottom: 0; left: calc(var(--cutout-radius) * -1); border-bottom-right-radius: var(--cutout-radius); box-shadow: 10px 10px 0 10px var(--bg-color); }
+  .position-bottom-right .fillet-2 { top: calc(var(--cutout-radius) * -1); right: 0; border-bottom-right-radius: var(--cutout-radius); box-shadow: 10px 10px 0 10px var(--bg-color); }
+
+  .position-bottom-left { bottom: 0; left: 0; border-top-right-radius: var(--cutout-radius); padding: 0; }
+  .position-bottom-left .fillet-1 { bottom: 0; right: calc(var(--cutout-radius) * -1); border-bottom-left-radius: var(--cutout-radius); box-shadow: -10px 10px 0 10px var(--bg-color); }
+  .position-bottom-left .fillet-2 { top: calc(var(--cutout-radius) * -1); left: 0; border-bottom-left-radius: var(--cutout-radius); box-shadow: -10px 10px 0 10px var(--bg-color); }
+
+  /* --- Button Styling --- */
+  .sculpted-btn {
+    display: inline-flex; align-items: center; gap: 12px;
+    background-color: var(--btn-bg); color: var(--btn-txt);
+    text-decoration: none; 
+    padding: 10px 10px 10px 20px;
+    border-radius: var(--cutout-radius); 
+    margin:10px;
+    transition: transform 0.3s ease; white-space: nowrap;
+  }
+  .sculpted-btn:hover { transform: scale(1.03); }
+
+  .btn-circle { width: 34px; height: 34px; background-color: var(--btn-circle); border-radius: 50%; display: flex; align-items: center; justify-content: center; transform: rotate(-45deg); transition: transform 0.3s ease; }
+  .sculpted-btn:hover .btn-circle { transform: rotate(0deg); }
+  .btn-circle svg { width: 14px; height: 14px; stroke: var(--btn-arrow); stroke-width: 2; }
+
+  /* --- Content Styling --- */
+  
+  .sculpted-image { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .sculpted-media { position: absolute; inset: 0; z-index: 2; }
+  .sculpted-media:hover img{transform:scale(1.05)}
+
+  .sculpted-content {
+    position: relative; z-index: 2; height: 100%; padding: 60px;
+    display: flex; flex-direction: column; justify-content: center; color: #fff;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.25) 55%, rgba(0, 0, 0, 0) 80%);
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
+  }
+  .sculpted-text-box { max-width: 600px; }
+  .pillow-heading { font-family: var(--font-heading-family); font-size: var(--h2-size); font-weight: var(--h2-weight); line-height: 1.1; margin: 0 0 20px 0; }
+  .pillow-subtext { font-size: var(--body-size); font-weight: var(--body-weight); line-height: 1.6; margin: 0; opacity: 0.9; }
+
+  @media (max-width: 768px) {
+    .inner-container-{{ section.id }} { padding: 10px; }
+    .sculpted-container { aspect-ratio: 4 / 5; min-height: 350px; border-radius: 24px; }
+    .sculpted-content {
+      padding: 30px 24px;
+      justify-content: flex-end;
+      background: linear-gradient(0deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.35) 45%, rgba(0, 0, 0, 0) 70%);
+    }
+    .pillow-heading { font-size: calc(var(--h2-size) * 0.7); }
+    .sculpted-btn { font-size: 14px; padding: 8px 8px 8px 16px;}
+    .btn-circle { width: 28px; height: 28px; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Kluck AI - Pillow Banner",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background & Layout"
+    },
+    { "type": "checkbox", "id": "use_metafields", "label": "Use Kluck AI metafields", "default": true, "info": "Enables color_schema, pillow_banner_heading, and pillow_banner_subheading metafields." },
+    { "type": "color", "id": "background_color", "label": "Manual background color", "default": "#ffffff", "info": "This color appears under the cutout. Usually matches your page background." },
+    { "type": "range", "id": "background_opacity", "label": "Background opacity", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "container_max_width", "min": 800, "max": 1800, "step": 50, "unit": "px", "label": "Container Max Width", "default": 1250 },
+    {
+      "type": "header",
+      "content": "Banner Image"
+    },
+    { "type": "image_picker", "id": "image", "label": "Banner Image", "info": "Prioritized over Product Image." },
+    { "type": "range", "id": "corner_radius", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Banner Roundness", "default": 48 },
+    {
+      "type": "header",
+      "content": "Scoop Button"
+    },
+    {
+      "type": "select", "id": "button_position", "label": "Button Corner",
+      "options": [
+        { "value": "top-left", "label": "Top Left" },
+        { "value": "top-right", "label": "Top Right" },
+        { "value": "bottom-left", "label": "Bottom Left" },
+        { "value": "bottom-right", "label": "Bottom Right" }
+      ], "default": "top-right"
+    },
+    { "type": "range", "id": "scoop_radius", "min": 0, "max": 80, "step": 2, "unit": "px", "label": "Scoop Curvature", "default": 20 },
+    { "type": "text", "id": "btn_text", "label": "Button Label", "default": "Buy Now" },
+    { "type": "color", "id": "btn_bg", "label": "Button Background", "default": "#E6FF9E", "info": "Overridden by Metafield if present." },
+    { "type": "color", "id": "btn_text_color", "label": "Button Text Color", "default": "#000000" },
+    { "type": "color", "id": "btn_circle_bg", "label": "Arrow Circle Color", "default": "#000000" },
+    { "type": "color", "id": "btn_arrow_color", "label": "Arrow Icon Color", "default": "#FFFFFF", "info": "Overridden by Metafield if present." },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    { "type": "textarea", "id": "heading", "label": "Heading", "default": "Shop the look\nstraight from home" },
+    { "type": "textarea", "id": "subtext", "label": "Subtext", "default": "Experience comfort with our latest collection." },
+    {
+      "type": "header",
+      "content": "Fonts"
+    },
+    { "type": "font_picker", "id": "heading_font_family", "label": "Heading Font Family", "default": "abel_n4" },
+    { "type": "font_picker", "id": "body_font_family", "label": "Body Font Family", "default": "abel_n4" },
+    {
+      "type": "header",
+      "content": "Body"
+    },
+    { "type": "range", "id": "body_size", "min": 10, "max": 60, "step": 1, "unit": "px", "label": "Size", "default": 18 },
+    { "type": "range", "id": "body_weight", "min": 100, "max": 900, "step": 100, "label": "Weight", "default": 400 },
+    {
+      "type": "header",
+      "content": "Heading 1 (H1)"
+    },
+    { "type": "range", "id": "h1_size", "min": 10, "max": 100, "step": 1, "unit": "px", "label": "H1 Size", "default": 48 },
+    { "type": "range", "id": "h1_weight", "min": 100, "max": 900, "step": 100, "label": "H1 Weight", "default": 700 },
+    {
+      "type": "header",
+      "content": "Heading 2 (H2)"
+    },
+    { "type": "range", "id": "h2_size", "min": 10, "max": 100, "step": 1, "unit": "px", "label": "H2 Size", "default": 64 },
+    { "type": "range", "id": "h2_weight", "min": 100, "max": 900, "step": 100, "label": "H2 Weight", "default": 500 },
+    {
+      "type": "header",
+      "content": "Heading 3 (H3)"
+    },
+    { "type": "range", "id": "h3_size", "min": 10, "max": 100, "step": 1, "unit": "px", "label": "H3 Size", "default": 30 },
+    { "type": "range", "id": "h3_weight", "min": 100, "max": 900, "step": 100, "label": "H3 Weight", "default": 600 },
+    {
+      "type": "header",
+      "content": "Heading 4 (H4)"
+    },
+    { "type": "range", "id": "h4_size", "min": 10, "max": 100, "step": 1, "unit": "px", "label": "H4 Size", "default": 24 },
+    { "type": "range", "id": "h4_weight", "min": 100, "max": 900, "step": 100, "label": "H4 Weight", "default": 600 },
+    {
+      "type": "header",
+      "content": "Heading 5 (H5)"
+    },
+    { "type": "range", "id": "h5_size", "min": 10, "max": 100, "step": 1, "unit": "px", "label": "H5 Size", "default": 20 },
+    { "type": "range", "id": "h5_weight", "min": 100, "max": 900, "step": 100, "label": "H5 Weight", "default": 500 },
+    {
+      "type": "header",
+      "content": "Heading 6 (H6)"
+    },
+    { "type": "range", "id": "h6_size", "min": 10, "max": 100, "step": 1, "unit": "px", "label": "H6 Size", "default": 16 },
+    { "type": "range", "id": "h6_weight", "min": 100, "max": 900, "step": 100, "label": "H6 Weight", "default": 500 }
+  ],
+  "blocks": [
+    { "type": "@app" }
+  ],
+  "presets": [
+    { "name": "Kluck AI - Pillow Banner" }
+  ]
+}
+{% endschema %}

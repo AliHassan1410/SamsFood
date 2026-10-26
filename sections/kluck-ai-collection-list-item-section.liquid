@@ -1,0 +1,951 @@
+{%- comment -%}
+  Custom Collection Grid
+  Replicates specific design requirements with fully adjustable settings.
+{%- endcomment -%}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+      padding-left: 40px;
+      padding-right: 40px;
+    }
+  }
+
+  /* --- Variables mapped from schema --- */
+  :root {
+    --grid-gap: {{ section.settings.grid_gap }}px;
+    --card-bg: {{ section.settings.card_bg_color }};
+    --card-radius: {{ section.settings.card_border_radius }}px;
+    --title-size: {{ section.settings.title_size }}px;
+    --price-size: {{ section.settings.price_size }}px;
+    --type-size: {{ section.settings.type_size }}px;
+    --text-color: {{ section.settings.text_color }};
+    --type-color: {{ section.settings.type_color }};
+  }
+
+  .custom-collection-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    color: var(--text-color);
+    font-family: inherit;
+  }
+
+  /* --- Top Bar --- */
+  .collection-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+  }
+  
+  .filter-btn-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    border: 1px solid #d1d1d1;
+    border-radius: 30px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .filter-btn-pill:hover { background: #f9f9f9; }
+
+  /* Tweaked top right spacing and sort style */
+  .top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 32px; /* Increased gap */
+  }
+  
+  .collection-count { font-size: 15px; color: #000; }
+  
+  .collection-sort-desktop { display: flex; align-items: center; gap: 12px; font-size: 15px; }
+  .collection-sort-desktop select {
+    border: 1px solid #d1d1d1; /* Border added */
+    border-radius: 20px;
+    padding: 8px 36px 8px 16px;
+    background-color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+    font-weight: 500;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L5 5L9 1" stroke="%23333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    transition: border-color 0.2s ease;
+  }
+  .collection-sort-desktop select:hover {
+    border-color: #000;
+  }
+
+  /* --- Filter Drawer --- */
+  .filter-drawer {
+    position: fixed;
+    top: 0; 
+    left: -100%;
+    width: 100%; 
+    max-width: 400px; 
+    height: 100vh;
+    background: #fff; 
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    transition: left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+  }
+  .filter-drawer.is-open { left: 0; }
+
+  .drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+  }
+  .drawer-header h2 { margin: 0; font-size: 22px; font-weight: 500; }
+  .close-drawer {
+    background: none; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; padding: 0;
+  }
+
+  .drawer-body {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 0 24px 100px 24px; /* Space for sticky footer */
+  }
+
+  /* Filter Groups inside drawer */
+  .filter-group {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 24px 0;
+  }
+  .filter-group:first-child { border-top: 1px solid #f0f0f0; }
+  .filter-group summary {
+    display: flex; justify-content: space-between; align-items: center;
+    font-weight: 500; cursor: pointer; list-style: none; font-size: 16px;
+  }
+  .filter-group summary::-webkit-details-marker { display: none; }
+  
+  .filter-content { margin-top: 20px; }
+  .filter-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px;}
+  .filter-list li label {
+    display: flex; align-items: center; gap: 12px; font-size: 15px; cursor: pointer; color: #333;
+  }
+  .filter-list input[type="checkbox"] {
+    width: 20px; height: 20px; border-radius: 4px; border: 1px solid #ccc; cursor: pointer;
+    accent-color: #000;
+  }
+
+  /* Inside Drawer Sort */
+  .drawer-sort-wrapper {
+    display: flex; align-items: center; gap: 10px; padding: 20px 0 30px 0;
+  }
+  .drawer-sort-wrapper select {
+    flex-grow: 1; padding: 12px 15px; border-radius: 30px; border: 1px solid #ccc;
+    background: #fff; font-size: 15px; outline: none; appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L5 5L9 1" stroke="%23333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+    background-repeat: no-repeat; background-position: right 14px center;
+  }
+
+  /* Interactive Price Slider Styling */
+  .price-range-wrapper { display: block; width: 100%; }
+  .range-slider-container {
+    position: relative;
+    width: 100%;
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    margin: 15px 0 30px 0;
+  }
+  .range-slider-track {
+    position: absolute;
+    height: 100%;
+    background: #000;
+    border-radius: 2px;
+    z-index: 1;
+  }
+  .range-slider-container input[type="range"] {
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    top: 0;
+    left: 0;
+    background: none;
+    pointer-events: none;
+    -webkit-appearance: none;
+    margin: 0;
+    z-index: 2;
+  }
+  .range-slider-container input[type="range"]::-webkit-slider-thumb {
+    pointer-events: auto;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #000;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .range-slider-container input[type="range"]::-moz-range-thumb {
+    pointer-events: auto;
+    width: 18px;
+    height: 18px;
+    background: #000;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+
+  .price-inputs-grid { display: flex; gap: 15px; align-items: center; justify-content: space-between;}
+  .price-input {
+    display: flex; align-items: center; background: #f7f7f7; border-radius: 30px;
+    padding: 12px 20px; flex: 1; border: 1px solid transparent; transition: 0.2s;
+  }
+  .price-input:focus-within { border-color: #000; }
+  .price-input span { margin-right: 8px; font-size: 15px; color: #555; }
+  .price-input input { border: none; background: transparent; width: 100%; outline: none; font-size: 15px; }
+  .price-inputs-grid > span { font-size: 14px; color: #666; font-weight: 500;}
+
+  /* Sticky Apply Button */
+  .drawer-footer {
+    position: absolute; bottom: 0; left: 0; width: 100%;
+    padding: 20px 24px; background: linear-gradient(to top, #ffffff 80%, rgba(255,255,255,0));
+  }
+  .btn-apply {
+    width: 100%; background: #000; color: #fff; border: none; border-radius: 30px;
+    padding: 16px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.2s;
+  }
+  .btn-apply:hover { opacity: 0.8; }
+
+  /* Overlay */
+  .sidebar-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.4); z-index: 998; backdrop-filter: blur(2px);
+    opacity: 0; visibility: hidden; transition: 0.3s ease;
+  }
+  .sidebar-overlay.is-active { opacity: 1; visibility: visible; }
+
+  /* --- Product Grid --- */
+  .collection-grid {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.columns_desktop }}, 1fr);
+    gap: var(--grid-gap);
+  }
+
+  /* --- Product Card --- */
+  .custom-product-card {
+    background-color: var(--card-bg);
+    border-radius: var(--card-radius);
+    overflow: hidden; 
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    position: relative;
+    transition: transform 0.2s ease;
+  }
+
+  .card-image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: {{ section.settings.image_ratio }};
+    overflow: hidden; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* FIX: 100% width/height + cover for full-bleed lifestyle images */
+  .card-image-wrapper img {
+    width: 100%; 
+    height: 100%;
+    object-fit: cover; 
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .custom-product-card:hover .card-image-wrapper img { transform: scale(1.05); }
+
+  /* Badges top left */
+  .card-badges {
+    position: absolute;
+    top: 15px; left: 15px;
+    display: flex; gap: 8px; z-index: 2;
+  }
+  .badge {
+    padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+  }
+  .badge.sold-out { background: #9E9E9E; color: #fff; }
+  .badge.sale { background: #D9534F; color: #fff; }
+  .badge.new { background: #5CB85C; color: #fff; }
+
+  /* ATC Bag Icon (Bottom right of image) */
+  .bag-atc-btn {
+    position: absolute;
+    bottom: 15px; right: 15px;
+    background: #fff; border: none; border-radius: 50%;
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    z-index: 2; transition: transform 0.2s, background 0.2s;
+  }
+  .bag-atc-btn:hover { transform: scale(1.05); background: #f9f9f9; }
+  .bag-atc-btn svg { width: 18px; height: 18px; color: #000; }
+  .bag-atc-btn.loading svg { display: none; }
+  .bag-atc-btn.loading::after {
+    content: ''; width: 18px; height: 18px; border: 2px solid #ccc;
+    border-top-color: #000; border-radius: 50%; animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .card-info { padding: 15px 20px 24px 20px; display: flex; flex-direction: column; gap: 4px; }
+  .card-type { font-size: var(--type-size); color: var(--type-color); margin: 0; }
+  .card-title { font-size: var(--title-size); color: var(--text-color); font-weight: 500; margin: 5px 0 0 0; }
+  .card-price { font-size: var(--price-size); color: var(--text-color); font-weight: 700; margin: 4px 0 0 0; }
+
+  /* --- Infinite Scroll Loader --- */
+  .infinite-scroll-loader {
+    width: 100%; text-align: center; padding: 40px 0; display: none;
+  }
+  .infinite-scroll-loader.is-active { display: block; }
+  .spinner {
+    width: 30px; height: 30px; border: 3px solid rgba(0,0,0,0.1); border-radius: 50%;
+    border-top-color: #000; animation: spin 1s ease-in-out infinite; margin: 0 auto;
+  }
+
+  /* --- Responsive Styles --- */
+  @media screen and (max-width: 990px) {
+    .collection-grid { grid-template-columns: repeat(2, 1fr); }
+    .collection-sort-desktop { display: none; } /* Hide sort on top right on small screens */
+  }
+
+  @media screen and (max-width: 768px) {
+    .collection-grid { grid-template-columns: repeat({{ section.settings.columns_mobile }}, 1fr); gap: 15px; }
+    .custom-product-card { border-radius: 16px; }
+    .card-info { padding: 10px 15px 15px 15px; }
+    .bag-atc-btn { width: 38px; height: 38px; bottom: 10px; right: 10px;}
+    .bag-atc-btn svg { width: 16px; height: 16px; }
+    .card-badges { top: 10px; left: 10px; }
+    .badge { padding: 4px 8px; font-size: 10px; }
+  }
+{%- endstyle -%}
+
+<div class="section-{{ section.id }}-padding custom-collection-wrapper" id="CustomCollectionSection">
+  
+  {%- paginate collection.products by section.settings.products_per_page -%}
+
+  <div class="custom-collection-container">
+    
+    <!-- Top Bar -->
+    <div class="collection-top-bar">
+      <button class="filter-btn-pill" id="OpenFilterDrawer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 21v-7m0-4V3m8 18v-9m0-4V3m8 18v-5m0-4V3M1 14h6m2-6h6m2 8h6"></path></svg>
+        Filter
+      </button>
+
+      <div class="top-bar-right">
+        <span class="collection-count">{{ collection.products_count }} products</span>
+        
+        {%- if section.settings.enable_sorting -%}
+          <div class="collection-sort-desktop">
+            <label for="SortByDesktop">Sort by:</label>
+            <select name="sort_by" class="sort-select-desktop" id="SortByDesktop">
+              {%- for option in collection.sort_options -%}
+                <option value="{{ option.value | escape }}"{% if option.value == collection.sort_by %} selected="selected"{% endif %}>{{ option.name | escape }}</option>
+              {%- endfor -%}
+            </select>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <!-- Filter Drawer -->
+    <div class="sidebar-overlay" id="DrawerOverlay"></div>
+    <div class="filter-drawer" id="FilterDrawer">
+      <div class="drawer-header">
+        <h2>Filter</h2>
+        <button class="close-drawer" id="CloseFilterDrawer">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      
+      <form class="filter-form" id="CollectionFilterForm">
+        <div class="drawer-body">
+          
+          <!-- Mobile Sort inside Drawer -->
+          <div class="drawer-sort-wrapper">
+            <span style="font-size: 16px; font-weight: 500;">Sort by:</span>
+            <select name="sort_by" class="sort-select-mobile" id="SortByMobile">
+              {%- for option in collection.sort_options -%}
+                <option value="{{ option.value | escape }}"{% if option.value == collection.sort_by %} selected="selected"{% endif %}>{{ option.name | escape }}</option>
+              {%- endfor -%}
+            </select>
+          </div>
+
+          {%- if section.settings.enable_filtering -%}
+            {%- for filter in collection.filters -%}
+              <details class="filter-group" open>
+                <summary>
+                  {{ filter.label }}
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </summary>
+                
+                <div class="filter-content">
+                  {%- case filter.type -%}
+                    {%- when 'boolean' or 'list' -%}
+                      <ul class="filter-list">
+                        {%- for filter_value in filter.values -%}
+                          <li>
+                            <label for="Filter-{{ filter.param_name }}-{{ forloop.index }}">
+                              <input type="checkbox"
+                                name="{{ filter_value.param_name }}"
+                                value="{{ filter_value.value }}"
+                                id="Filter-{{ filter.param_name }}-{{ forloop.index }}"
+                                {% if filter_value.active -%}checked{%- endif %}
+                                {% if filter_value.count == 0 and filter_value.active == false -%}disabled{%- endif %}
+                              >
+                              {{ filter_value.label }} <span style="color:#888;">({{ filter_value.count }})</span>
+                            </label>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                      
+                    {%- when 'price_range' -%}
+                      {%- assign max_price_amount = filter.range_max | money_without_currency | replace: ',', '' | default: 1000 -%}
+                      {%- assign current_min = filter.min_value.value | money_without_currency | replace: ',', '' | default: 0 -%}
+                      {%- assign current_max = filter.max_value.value | money_without_currency | replace: ',', '' | default: max_price_amount -%}
+
+                      <div class="price-range-wrapper">
+                        <!-- Dual range sliders mapped over each other -->
+                        <div class="range-slider-container">
+                          <div class="range-slider-track"></div>
+                          <input type="range" class="slider-min" min="0" max="{{ max_price_amount }}" value="{{ current_min }}">
+                          <input type="range" class="slider-max" min="0" max="{{ max_price_amount }}" value="{{ current_max }}">
+                        </div>
+
+                        <!-- Number Input Boxes -->
+                        <div class="price-inputs-grid">
+                          <div class="price-input">
+                            <span>{{ cart.currency.symbol }}</span>
+                            <input name="{{ filter.min_value.param_name }}"
+                              class="price-input-min"
+                              type="number"
+                              value="{{ current_min }}"
+                              min="0"
+                              max="{{ max_price_amount }}">
+                          </div>
+                          <span>To</span>
+                          <div class="price-input">
+                            <span>{{ cart.currency.symbol }}</span>
+                            <input name="{{ filter.max_value.param_name }}"
+                              class="price-input-max"
+                              type="number"
+                              value="{{ current_max }}"
+                              min="0"
+                              max="{{ max_price_amount }}">
+                          </div>
+                        </div>
+                      </div>
+                  {%- endcase -%}
+                </div>
+              </details>
+            {%- endfor -%}
+          {%- endif -%}
+        </div>
+        <div class="drawer-footer">
+          <button type="submit" class="btn-apply">Apply</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="collection-grid" id="ProductGridContainer">
+      {%- for product in collection.products -%}
+        <div class="custom-product-card">
+          <div class="card-image-wrapper">
+            
+            <!-- Badges -->
+            <div class="card-badges">
+              {%- if product.available == false -%}
+                <span class="badge sold-out">Sold out</span>
+              {%- elsif product.compare_at_price > product.price -%}
+                {%- assign savings = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
+                <span class="badge sale">-{{ savings }}%</span>
+              {%- endif -%}
+              
+              {%- if product.tags contains 'New' or product.tags contains 'new' -%}
+                <span class="badge new">New</span>
+              {%- endif -%}
+            </div>
+
+            <!-- Image Link -->
+            <a href="{{ product.url }}" style="display:block; width:100%; height:100%;">
+              {%- if product.featured_image -%}
+                {{ product.featured_image | image_url: width: 600 | image_tag: loading: 'lazy' }}
+              {%- else -%}
+                {{ 'product-1' | placeholder_svg_tag }}
+              {%- endif -%}
+            </a>
+
+            <!-- Bag ATC Button overlapping image -->
+            {%- if product.variants.size > 1 or product.available == false -%}
+              <a href="{{ product.url }}" class="bag-atc-btn" aria-label="Choose options">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+              </a>
+            {%- else -%}
+              <button type="button" class="bag-atc-btn ajax-add-btn" aria-label="Add to cart" data-variant-id="{{ product.variants.first.id }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+              </button>
+            {%- endif -%}
+          </div>
+          
+          <a href="{{ product.url }}" style="text-decoration:none;">
+             <div class="card-info">
+              {%- if section.settings.show_vendor -%}
+                <p class="card-type">{{ product.type | default: product.vendor }}</p>
+              {%- endif -%}
+              <h3 class="card-title">{{ product.title }}</h3>
+              <p class="card-price">{{ product.price | money }}</p>
+            </div>
+          </a>
+        </div>
+      {%- else -%}
+        <p style="grid-column: 1/-1; text-align: center;">No products found.</p>
+      {%- endfor -%}
+    </div>
+
+    <!-- Infinite Scroll Trigger & Loader -->
+    {%- if paginate.next -%}
+      <div class="infinite-scroll-loader is-active" data-next-url="{{ paginate.next.url }}">
+        <div class="spinner"></div>
+      </div>
+    {%- endif -%}
+
+  </div>
+  {%- endpaginate -%}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    // --- Drawer Logic ---
+    const openBtn = document.getElementById('OpenFilterDrawer');
+    const closeBtn = document.getElementById('CloseFilterDrawer');
+    const drawer = document.getElementById('FilterDrawer');
+    const overlay = document.getElementById('DrawerOverlay');
+
+    const toggleDrawer = (force) => {
+      const isOpen = force !== undefined ? force : !drawer.classList.contains('is-open');
+      drawer.classList.toggle('is-open', isOpen);
+      overlay.classList.toggle('is-active', isOpen);
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    };
+
+    if(openBtn && drawer) {
+      openBtn.addEventListener('click', () => toggleDrawer(true));
+      closeBtn.addEventListener('click', () => toggleDrawer(false));
+      overlay.addEventListener('click', () => toggleDrawer(false));
+    }
+
+    // --- Interactive Dual Price Slider Logic ---
+    const priceWrappers = document.querySelectorAll('.price-range-wrapper');
+    priceWrappers.forEach(wrapper => {
+      const sliderMin = wrapper.querySelector('.slider-min');
+      const sliderMax = wrapper.querySelector('.slider-max');
+      const inputMin = wrapper.querySelector('.price-input-min');
+      const inputMax = wrapper.querySelector('.price-input-max');
+      const track = wrapper.querySelector('.range-slider-track');
+      
+      if(!sliderMin || !sliderMax || !inputMin || !inputMax || !track) return;
+
+      const maxAllowed = parseFloat(sliderMax.max) || 1000;
+
+      function updateTrack() {
+        const minVal = parseFloat(sliderMin.value);
+        const maxVal = parseFloat(sliderMax.value);
+        const percent1 = (minVal / maxAllowed) * 100;
+        const percent2 = (maxVal / maxAllowed) * 100;
+        track.style.left = percent1 + '%';
+        track.style.width = (percent2 - percent1) + '%';
+      }
+
+      // Range sliding updates Inputs
+      sliderMin.addEventListener('input', (e) => {
+        let val = parseFloat(e.target.value);
+        let maxV = parseFloat(sliderMax.value);
+        if (val > maxV - 1) { sliderMin.value = maxV - 1; val = maxV - 1; }
+        inputMin.value = val;
+        updateTrack();
+      });
+
+      sliderMax.addEventListener('input', (e) => {
+        let val = parseFloat(e.target.value);
+        let minV = parseFloat(sliderMin.value);
+        if (val < minV + 1) { sliderMax.value = minV + 1; val = minV + 1; }
+        inputMax.value = val;
+        updateTrack();
+      });
+
+      // Inputs typing updates Sliders
+      inputMin.addEventListener('change', (e) => {
+        let val = parseFloat(e.target.value);
+        if(val < 0) val = 0;
+        if(val > parseFloat(inputMax.value)) val = parseFloat(inputMax.value);
+        e.target.value = val;
+        sliderMin.value = val;
+        updateTrack();
+      });
+
+      inputMax.addEventListener('change', (e) => {
+        let val = parseFloat(e.target.value);
+        if(val > maxAllowed) val = maxAllowed;
+        if(val < parseFloat(inputMin.value)) val = parseFloat(inputMin.value);
+        e.target.value = val;
+        sliderMax.value = val;
+        updateTrack();
+      });
+
+      updateTrack(); // Init track on load
+    });
+
+    // --- Complete Filter / Sort Submission Logic ---
+    const filterForm = document.getElementById('CollectionFilterForm');
+    const desktopSort = document.getElementById('SortByDesktop');
+    const mobileSort = document.getElementById('SortByMobile');
+
+    function applyFiltersAndSort() {
+      if(!filterForm) return;
+      const formData = new FormData(filterForm);
+      const searchParams = new URLSearchParams();
+
+      // Collect form data (checkboxes, price, mobile sort)
+      for(const [key, value] of formData.entries()) {
+        if(value && value !== '') {
+           searchParams.append(key, value);
+        }
+      }
+      // Redirect to new filtered URL
+      window.location.href = window.location.pathname + '?' + searchParams.toString();
+    }
+
+    // 1. Desktop Sort Change (Instant reload)
+    if(desktopSort && mobileSort) {
+      desktopSort.addEventListener('change', function(e) {
+        // Sync to mobile hidden form then submit immediately
+        mobileSort.value = e.target.value; 
+        applyFiltersAndSort();
+      });
+    }
+
+    // 2. Filter Drawer 'Apply' Submit
+    if(filterForm) {
+      filterForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        applyFiltersAndSort();
+      });
+    }
+
+    // --- Infinite Scroll Logic ---
+    let isLoading = false;
+    const loaderWrapper = document.querySelector('.infinite-scroll-loader');
+    const gridContainer = document.getElementById('ProductGridContainer');
+
+    if(loaderWrapper && gridContainer) {
+      const observer = new IntersectionObserver((entries) => {
+        if(entries[0].isIntersecting && !isLoading) {
+          loadMoreProducts();
+        }
+      }, { rootMargin: '0px 0px 400px 0px' });
+
+      observer.observe(loaderWrapper);
+
+      function loadMoreProducts() {
+        const nextUrl = loaderWrapper.getAttribute('data-next-url');
+        if(!nextUrl) return;
+
+        isLoading = true;
+        
+        fetch(nextUrl)
+          .then(response => response.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            const newProducts = doc.querySelectorAll('.custom-product-card');
+            newProducts.forEach(product => gridContainer.appendChild(product));
+
+            const newLoader = doc.querySelector('.infinite-scroll-loader');
+            if(newLoader && newLoader.hasAttribute('data-next-url')) {
+              loaderWrapper.setAttribute('data-next-url', newLoader.getAttribute('data-next-url'));
+            } else {
+              loaderWrapper.classList.remove('is-active');
+              observer.disconnect();
+            }
+
+            window.history.replaceState({}, '', nextUrl);
+          })
+          .catch(e => console.error('Error fetching more products', e))
+          .finally(() => { isLoading = false; });
+      }
+    }
+
+    // --- AJAX Add To Cart (With event delegation) ---
+    document.body.addEventListener('click', function(e) {
+      const btn = e.target.closest('.ajax-add-btn');
+      if (!btn) return;
+
+      e.preventDefault();
+      const variantId = btn.getAttribute('data-variant-id');
+      btn.classList.add('loading');
+
+      fetch(window.Shopify.routes.root + 'cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: [{ id: variantId, quantity: 1 }] })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status) { alert("Error: " + data.description); return; }
+        return fetch(window.location.href);
+      })
+      .then(response => response ? response.text() : null)
+      .then(html => {
+        if(!html) return;
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+
+        const currentDrawer = document.querySelector('cart-drawer, cart-drawer-component');
+        const newDrawer = doc.querySelector('cart-drawer, cart-drawer-component');
+        if (currentDrawer && newDrawer) {
+          currentDrawer.innerHTML = newDrawer.innerHTML;
+          currentDrawer.classList.remove('cart-drawer--empty', 'is-empty');
+          setTimeout(() => {
+            if (typeof currentDrawer.open === 'function') currentDrawer.open();
+            else {
+               const dialog = currentDrawer.querySelector('dialog');
+               if(dialog) { dialog.setAttribute('open', ''); dialog.classList.add('active'); }
+               currentDrawer.classList.add('active', 'is-active');
+               document.body.classList.add('overflow-hidden');
+            }
+          }, 50);
+        }
+
+        const currentIcon = document.querySelector('cart-icon-bubble, cart-icon-component');
+        const newIcon = doc.querySelector('cart-icon-bubble, cart-icon-component');
+        if (currentIcon && newIcon) currentIcon.innerHTML = newIcon.innerHTML;
+      })
+      .catch(error => console.error('Error:', error))
+      .finally(() => { btn.classList.remove('loading'); });
+    });
+
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Custom Collection Grid",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 1000,
+      "max": 1800,
+      "step": 50,
+      "unit": "px",
+      "label": "Maximum Width",
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 6,
+      "max": 48,
+      "step": 1,
+      "label": "Products per page (For infinite scroll)",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Grid Settings"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "label": "Columns on Desktop",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on Mobile",
+      "options": [
+        { "value": "1", "label": "1 Column" },
+        { "value": "2", "label": "2 Columns" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "label": "Space between cards",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Product Card Styling"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Card Background Color",
+      "default": "#f4f5f5"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Card Border Radius",
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image Container Ratio",
+      "options": [
+        { "value": "1 / 1", "label": "Square (1:1)" },
+        { "value": "3 / 4", "label": "Portrait (3:4)" },
+        { "value": "auto", "label": "Adapt to image" }
+      ],
+      "default": "1 / 1"
+    },
+    {
+      "type": "header",
+      "content": "Typography & Details"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "type_color",
+      "label": "Product Type Color",
+      "default": "#757575"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show product type/vendor",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Title Font Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Price Font Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "type_size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Type/Vendor Font Size",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Filtering and Sorting"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "label": "Enable filtering",
+      "default": true,
+      "info": "Customize filters in the Search & Discovery app."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "label": "Enable sorting",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Collection Grid"
+    }
+  ]
+}
+{% endschema %}

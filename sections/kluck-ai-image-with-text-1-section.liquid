@@ -1,0 +1,524 @@
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+
+{% if shop.metafields.app.block_control.value %}
+{%- comment -%}
+  Custom Image with Text - Pro Version
+  - Features: Typography Inheritance, Color Schemes, Smart Opacity text hierarchy, Stat Features.
+{%- endcomment -%}
+
+{%- style -%}
+  .custom-iwt--{{ section.id }} {
+    padding-top: {{ section.settings.padding_top_mobile }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    overflow: hidden;
+  }
+
+  /* Typography Settings */
+  .custom-iwt--{{ section.id }} .iwt-heading {
+    font-size: {{ section.settings.heading_size_mobile }}px;
+    color: #484B4F;
+    margin-top: 0;
+    margin-bottom: 25px;
+    line-height: 1.1;
+    text-transform: {{ section.settings.heading_transform }};
+    letter-spacing: -0.02em;
+  }
+
+  .custom-iwt--{{ section.id }} .iwt-text {
+    font-size: {{ section.settings.text_size_mobile }}px;
+    color: var(--color-foreground);
+    opacity: 0.8;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  
+  .custom-iwt--{{ section.id }} .iwt-text:last-of-type {
+    margin-bottom: 30px;
+  }
+
+  /* Features Grid */
+  .custom-iwt--{{ section.id }} .iwt-features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  .custom-iwt--{{ section.id }} .iwt-feature-stat {
+    font-size: {{ section.settings.stat_size_mobile }}px;
+    color: {{ settings.color_scheme }};
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+
+  .custom-iwt--{{ section.id }} .iwt-feature-text {
+    font-size: {{ section.settings.feature_text_size_mobile }}px;
+    color: #484B4F;
+    opacity: 0.8;
+    line-height: 1.4;
+  }
+
+  /* Smart Button Settings */
+  .custom-iwt--{{ section.id }} .kluck-button {
+    display: inline-block;
+    text-decoration: none;
+    border-radius: {{ section.settings.btn_border_radius }}px;
+    padding: {{ section.settings.btn_padding_y }}px {{ section.settings.btn_padding_x }}px;
+    font-size: {{ section.settings.btn_font_size }}px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  .custom-iwt--{{ section.id }} .kluck-button:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+
+  /* Layout Container */
+  .custom-iwt-container--{{ section.id }} {
+    display: flex;
+    flex-direction: column-reverse; /* Forces images to the top on mobile */
+    gap: 40px;
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .iwt-text-column, .iwt-image-column {
+    width: 100%;
+  }
+
+  .custom-iwt--{{ section.id }} .iwt-image-grid {
+    display: grid;
+    gap: 0;
+    grid-template-columns: 1fr;
+  }
+
+  .custom-iwt--{{ section.id }} .iwt-image-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: {{ section.settings.image_border_radius }}px;
+    display: block;
+    aspect-ratio: {% if section.settings.image_ratio == 'auto' %}auto{% else %}{{ section.settings.image_ratio }}{% endif %};
+  }
+
+  /* Desktop Adjustments */
+  @media screen and (min-width: 768px) {
+    .custom-iwt--{{ section.id }} {
+      padding-top: {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+    }
+
+    .custom-iwt-container--{{ section.id }} {
+      flex-direction: {% if section.settings.layout == 'image_right' %}row{% else %}row-reverse{% endif %};
+      align-items: center;
+      gap: {{ section.settings.desktop_gap }}px;
+    }
+
+    .iwt-text-column, .iwt-image-column {
+      width: 50%;
+    }
+
+    .custom-iwt--{{ section.id }} .iwt-features {
+      gap: 30px;
+      justify-content:center;
+      text-align: left;
+    }
+
+    /* Desktop Typography Sizes */
+    .custom-iwt--{{ section.id }} .iwt-heading {
+      font-size: {{ section.settings.heading_size_desktop }}px;
+      margin-bottom: 35px;
+    }
+    .custom-iwt--{{ section.id }} .iwt-text {
+      font-size: {{ section.settings.text_size_desktop }}px;
+    }
+    .custom-iwt--{{ section.id }} .iwt-feature-stat {
+      font-size: {{ section.settings.stat_size_desktop }}px;
+    }
+    .custom-iwt--{{ section.id }} .iwt-feature-text {
+      font-size: {{ section.settings.feature_text_size_desktop }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="custom-iwt--{{ section.id }} color-{{ section.settings.color_scheme }}" style="background-color: var(--color-background);">
+  <div class="custom-iwt-container--{{ section.id }}">
+    
+    <!-- TEXT COLUMN -->
+    <div class="iwt-text-column">
+      {%- assign kluck_heading = store_gen.home_page.text.image_with_text_heading -%}
+      {%- assign kluck_desc_1 = store_gen.home_page.text.image_with_text_description_1 -%}
+      {%- assign kluck_desc_2 = store_gen.home_page.text.image_with_text_description_2 -%}
+      
+      {%- assign kluck_f1_stat = store_gen.home_page.text.image_with_text_description_feature_1_stat -%}
+      {%- assign kluck_f1_text = store_gen.home_page.text.image_with_text_description_feature_1 -%}
+      {%- assign kluck_f2_stat = store_gen.home_page.text.image_with_text_description_feature_2_stat -%}
+      {%- assign kluck_f2_text = store_gen.home_page.text.image_with_text_description_feature_2 -%}
+      {%- assign kluck_f3_stat = store_gen.home_page.text.image_with_text_description_feature_3_stat -%}
+      {%- assign kluck_f3_text = store_gen.home_page.text.image_with_text_description_feature_3 -%}
+
+      <!-- Heading -->
+      {% if section.settings.use_kluck_ai_metafields %}
+        {%- if kluck_heading != blank -%}
+          <h2 class="iwt-heading">{{ kluck_heading }}</h2>
+        {%- elsif section.settings.heading != blank -%}
+          <h2 class="iwt-heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+      {% else %}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="iwt-heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+      {% endif %}
+      
+      <!-- Descriptions -->
+      {% if section.settings.use_kluck_ai_metafields %}
+        {%- if kluck_desc_1 != blank -%}
+          <div class="iwt-text">{{ kluck_desc_1 }}</div>
+        {%- elsif section.settings.text_1 != blank -%}
+          <div class="iwt-text">{{ section.settings.text_1 }}</div>
+        {%- endif -%}
+        
+        {%- if kluck_desc_2 != blank -%}
+          <div class="iwt-text">{{ kluck_desc_2 }}</div>
+        {%- elsif section.settings.text_2 != blank -%}
+          <div class="iwt-text">{{ section.settings.text_2 }}</div>
+        {%- endif -%}
+      {% else %}
+        {%- if section.settings.text_1 != blank -%}
+          <div class="iwt-text">{{ section.settings.text_1 }}</div>
+        {%- endif -%}
+        {%- if section.settings.text_2 != blank -%}
+          <div class="iwt-text">{{ section.settings.text_2 }}</div>
+        {%- endif -%}
+      {% endif %}
+
+      <!-- Features Grid -->
+      <div class="iwt-features">
+        
+        <!-- Feature 1 -->
+        {% assign f1_s = section.settings.feature_1_stat %}
+        {% assign f1_t = section.settings.feature_1_text %}
+        {% if section.settings.use_kluck_ai_metafields %}
+          {% if kluck_f1_stat != blank %}{% assign f1_s = kluck_f1_stat %}{% endif %}
+          {% if kluck_f1_text != blank %}{% assign f1_t = kluck_f1_text %}{% endif %}
+        {% endif %}
+        {% if f1_s != blank or f1_t != blank %}
+          <div class="iwt-feature-item">
+            {% if f1_s != blank %}<div class="iwt-feature-stat">{{ f1_s }}</div>{% endif %}
+            {% if f1_t != blank %}<div class="iwt-feature-text">{{ f1_t }}</div>{% endif %}
+          </div>
+        {% endif %}
+
+        <!-- Feature 2 -->
+        {% assign f2_s = section.settings.feature_2_stat %}
+        {% assign f2_t = section.settings.feature_2_text %}
+        {% if section.settings.use_kluck_ai_metafields %}
+          {% if kluck_f2_stat != blank %}{% assign f2_s = kluck_f2_stat %}{% endif %}
+          {% if kluck_f2_text != blank %}{% assign f2_t = kluck_f2_text %}{% endif %}
+        {% endif %}
+        {% if f2_s != blank or f2_t != blank %}
+          <div class="iwt-feature-item">
+            {% if f2_s != blank %}<div class="iwt-feature-stat">{{ f2_s }}</div>{% endif %}
+            {% if f2_t != blank %}<div class="iwt-feature-text">{{ f2_t }}</div>{% endif %}
+          </div>
+        {% endif %}
+
+        <!-- Feature 3 -->
+        {% assign f3_s = section.settings.feature_3_stat %}
+        {% assign f3_t = section.settings.feature_3_text %}
+        {% if section.settings.use_kluck_ai_metafields %}
+          {% if kluck_f3_stat != blank %}{% assign f3_s = kluck_f3_stat %}{% endif %}
+          {% if kluck_f3_text != blank %}{% assign f3_t = kluck_f3_text %}{% endif %}
+        {% endif %}
+        {% if f3_s != blank or f3_t != blank %}
+          <div class="iwt-feature-item">
+            {% if f3_s != blank %}<div class="iwt-feature-stat">{{ f3_s }}</div>{% endif %}
+            {% if f3_t != blank %}<div class="iwt-feature-text">{{ f3_t }}</div>{% endif %}
+          </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+    <!-- IMAGE COLUMN -->
+    <div class="iwt-image-column">
+      <div class="iwt-image-grid">
+        {%- assign kluck_product_impact = shop.metafields.kluck_ai.product_impact_image.value -%}
+
+        {%- if section.settings.image_1 != blank -%}
+          {{ section.settings.image_1 | image_url: width: 800 | image_tag: loading: 'lazy', alt: section.settings.image_1.alt | escape }}
+        {%- elsif section.settings.use_kluck_ai_metafields and kluck_product_impact != blank -%}
+          {{ kluck_product_impact | image_url: width: 800 | image_tag: loading: 'lazy', alt: kluck_heading | escape }}
+        {%- else -%}
+          {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- endif -%}
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Custom Image with Text",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "use_kluck_ai_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Desktop Layout",
+      "options": [
+        { "value": "image_right", "label": "Text Left, Image Right" },
+        { "value": "image_left", "label": "Image Left, Text Right" }
+      ],
+      "default": "image_right"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "label": "Container Max Width",
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "desktop_gap",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "unit": "px",
+      "label": "Gap between columns (Desktop)",
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Color Scheme"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Section Color Scheme",
+      "default": "scheme-1",
+      "info": "Controls background, text colors, and maps the button to the scheme's Primary Button colors."
+    },
+    {
+      "type": "color",
+      "id": "stat_color",
+      "label": "Feature Stat Color",
+      "default": "#7B5944"
+    },
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image Aspect Ratio",
+      "options": [
+        { "value": "auto", "label": "Original (Auto)" },
+        { "value": "1 / 1", "label": "Square (1:1)" },
+        { "value": "3 / 4", "label": "Portrait (3:4)" }
+      ],
+      "default": "3 / 4"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Image Corner Radius",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Text Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "WHEN YOUR SKIN LOSES ITS SPARK, WE STEP IN."
+    },
+    {
+      "type": "richtext",
+      "id": "text_1",
+      "label": "Paragraph 1",
+      "default": "<p>We've all been there: you look in the mirror and your complexion just looks... tired. When dryness, localized inflammation, and a loss of firmness take over, your face loses its natural luminosity. It's not just about missing your glow; it's about skin that's stripped of its essential nutrients and struggling to hold onto moisture.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "text_2",
+      "label": "Paragraph 2",
+      "default": "<p>That's exactly why we formulated The Bright Side. Think of it as a nutrient-dense green juice for your face. Squalane dives deep to quench the dryness without clogging pores, while antioxidant-rich Celery Seed oil works to blur pores and nourish the barrier. It's a multitasking powerhouse that transforms a stressed-out, irritated complexion into smooth, resilient, and undeniably bright skin.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Feature 1"
+    },
+    {
+      "type": "text",
+      "id": "feature_1_stat",
+      "label": "Stat 1",
+      "default": "100%"
+    },
+    {
+      "type": "text",
+      "id": "feature_1_text",
+      "label": "Description 1",
+      "default": "Vegan & Cruelty-Free"
+    },
+    {
+      "type": "header",
+      "content": "Feature 2"
+    },
+    {
+      "type": "text",
+      "id": "feature_2_stat",
+      "label": "Stat 2",
+      "default": "3-in-1"
+    },
+    {
+      "type": "text",
+      "id": "feature_2_text",
+      "label": "Description 2",
+      "default": "Hydrates, Calms, Exfoliates"
+    },
+    {
+      "type": "header",
+      "content": "Feature 3"
+    },
+    {
+      "type": "text",
+      "id": "feature_3_stat",
+      "label": "Stat 3",
+      "default": "Zero"
+    },
+    {
+      "type": "text",
+      "id": "feature_3_text",
+      "label": "Description 3",
+      "default": "Synthetic Fragrances"
+    },
+    {
+      "type": "header",
+      "content": "Typography Adjustments"
+    },
+    {
+      "type": "select",
+      "id": "heading_transform",
+      "label": "Heading Capitalization",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "uppercase", "label": "Uppercase" }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_desktop",
+      "min": 20, "max": 80, "step": 1, "unit": "px",
+      "label": "Heading Size (Desktop)", "default": 48
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "min": 20, "max": 60, "step": 1, "unit": "px",
+      "label": "Heading Size (Mobile)", "default": 32
+    },
+    {
+      "type": "range",
+      "id": "text_size_desktop",
+      "min": 12, "max": 24, "step": 1, "unit": "px",
+      "label": "Paragraph Size (Desktop)", "default": 16
+    },
+    {
+      "type": "range",
+      "id": "text_size_mobile",
+      "min": 12, "max": 20, "step": 1, "unit": "px",
+      "label": "Paragraph Size (Mobile)", "default": 14
+    },
+    {
+      "type": "range",
+      "id": "stat_size_desktop",
+      "min": 16, "max": 40, "step": 1, "unit": "px",
+      "label": "Feature Stat Size (Desktop)", "default": 30
+    },
+    {
+      "type": "range",
+      "id": "stat_size_mobile",
+      "min": 16, "max": 30, "step": 1, "unit": "px",
+      "label": "Feature Stat Size (Mobile)", "default": 24
+    },
+    {
+      "type": "range",
+      "id": "feature_text_size_desktop",
+      "min": 12, "max": 20, "step": 1, "unit": "px",
+      "label": "Feature Text Size (Desktop)", "default": 16
+    },
+    {
+      "type": "range",
+      "id": "feature_text_size_mobile",
+      "min": 12, "max": 18, "step": 1, "unit": "px",
+      "label": "Feature Text Size (Mobile)", "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0, "max": 100, "step": 5, "unit": "px",
+      "label": "Top Padding (Desktop)", "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0, "max": 100, "step": 5, "unit": "px",
+      "label": "Bottom Padding (Desktop)", "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0, "max": 100, "step": 5, "unit": "px",
+      "label": "Top Padding (Mobile)", "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0, "max": 100, "step": 5, "unit": "px",
+      "label": "Bottom Padding (Mobile)", "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Image with Text"
+    }
+  ]
+}
+{% endschema %}

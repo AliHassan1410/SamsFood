@@ -1,0 +1,81 @@
+{%- comment -%}
+  Sam's Food - Customer reviews section.
+  Renders nothing until at least one review block is added in the theme editor, so no placeholder
+  reviews ever reach shoppers. Only add real customer reviews.
+{%- endcomment -%}
+
+{%- if section.blocks.size > 0 -%}
+<section
+  class="sams-reviews-section"
+  style="padding-block-start: min({{ section.settings.pad_top }}px, 11vw); padding-block-end: min({{ section.settings.pad_bottom }}px, 11vw); background: {{ section.settings.bg_color }};"
+>
+  <div class="page-width" style="max-width: 1240px; margin: 0 auto; padding-inline: 20px;">
+    <div style="text-align: center; margin-bottom: clamp(24px, 5vw, 44px);">
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="sams-eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+      <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 0 0 10px; color: var(--espresso); font-family: var(--font-editorial);">
+        {{ section.settings.heading }}
+      </h2>
+      {%- if section.settings.subheading != blank -%}
+        <p style="color: var(--muted); margin: 0; font-family: var(--font-clean);">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px;">
+      {%- for block in section.blocks -%}
+        {%- assign stars = block.settings.stars | default: 5 -%}
+        <figure
+          style="margin: 0; padding: 28px; background: #FFFFFF; border: 1px solid var(--line); border-radius: var(--radius-card); display: flex; flex-direction: column; gap: 12px;"
+          {{ block.shopify_attributes }}
+        >
+          <p aria-label="{{ stars }} out of 5 stars" style="margin: 0; color: var(--gold); letter-spacing: 2px;">
+            {%- for i in (1..5) -%}{% if i <= stars %}★{% else %}☆{% endif %}{%- endfor -%}
+          </p>
+          <blockquote style="margin: 0; color: var(--espresso); font-family: var(--font-editorial); font-size: 1.1rem; line-height: 1.5;">
+            “{{ block.settings.quote }}”
+          </blockquote>
+          <figcaption style="margin-top: auto; font-family: var(--font-clean); font-size: 14px; color: var(--muted);">
+            <strong style="color: var(--espresso);">{{ block.settings.name }}</strong>
+            {%- if block.settings.location != blank %} · {{ block.settings.location }}{% endif -%}
+            {%- if block.settings.product != blank -%}
+              <br>{{ block.settings.product }}
+            {%- endif -%}
+          </figcaption>
+        </figure>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Sam's Reviews",
+  "tag": "section",
+  "class": "sams-reviews",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "WHAT CUSTOMERS SAY" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Reviews from our customers" },
+    { "type": "text", "id": "subheading", "label": "Subheading" },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#FBF6EE" },
+    { "type": "range", "id": "pad_top", "label": "Padding top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 80 },
+    { "type": "range", "id": "pad_bottom", "label": "Padding bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 80 }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "range", "id": "stars", "label": "Stars", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "textarea", "id": "quote", "label": "Review text" },
+        { "type": "text", "id": "name", "label": "Customer name" },
+        { "type": "text", "id": "location", "label": "City (optional)" },
+        { "type": "text", "id": "product", "label": "Product (optional)" }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [{ "name": "Sam's Reviews" }]
+}
+{% endschema %}

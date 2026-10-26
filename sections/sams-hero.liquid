@@ -1,0 +1,227 @@
+{%- comment -%}
+  Sam's Food - Luxury Middle Eastern Hero Section
+  Eyebrow, Fraunces Serif Heading with Gold Italic accent, 2 Buttons, 2 Floating Notes, SVG swirl line
+{%- endcomment -%}
+
+<section
+  class="sams-hero-section"
+  style="position: relative; overflow: hidden; background: linear-gradient(180deg, var(--ivory) 0%, var(--sesame) 100%); padding-block-start: {{ section.settings.pad_top }}px; padding-block-end: {{ section.settings.pad_bottom }}px;"
+>
+  <!-- Background subtle swirl decoration -->
+  <div class="sams-hero-swirl" style="position: absolute; top: 10%; right: -5%; width: 500px; height: 500px; opacity: 0.18; pointer-events: none; z-index: 1;">
+    <svg viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+      <path d="M50 250 C120 100, 380 80, 420 220 C450 320, 320 440, 200 400 C120 370, 100 280, 180 230 C240 190, 320 220, 310 280 C300 320, 250 330, 230 300" stroke="#A87B32" stroke-width="4" stroke-linecap="round" stroke-dasharray="8 6"/>
+    </svg>
+  </div>
+
+  <div class="page-width" style="max-width: 1240px; margin: 0 auto; padding-inline: 20px; position: relative; z-index: 2;">
+    <div style="display: grid; grid-template-columns: 1fr; gap: 48px; align-items: center;" class="sams-hero-grid">
+      <!-- Left Column: Editorial Copy -->
+      <div class="sams-hero-content">
+        <span class="sams-eyebrow">{{ section.settings.eyebrow }}</span>
+
+        <h1 style="font-size: clamp(2.4rem, 5vw, 3.8rem); line-height: 1.12; margin: 0 0 20px; color: var(--espresso); font-family: var(--font-editorial);">
+          {{ section.settings.heading }}
+        </h1>
+
+        <div class="sams-gold-divider sams-gold-divider--left"></div>
+
+        <p style="font-size: 1.15rem; line-height: 1.65; color: var(--espresso); opacity: 0.88; margin: 0 0 32px; max-width: 520px; font-family: var(--font-clean);">
+          {{ section.settings.subheading }}
+        </p>
+
+        <!-- CTA Buttons -->
+        <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 36px;">
+          {%- if section.settings.button_1_label != blank -%}
+            <a href="{{ section.settings.button_1_link }}" class="sams-btn-primary">
+              {{ section.settings.button_1_label }}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          {%- endif -%}
+
+          {%- if section.settings.button_2_label != blank -%}
+            <a href="{{ section.settings.button_2_link }}" class="sams-btn-secondary">
+              {{ section.settings.button_2_label }}
+            </a>
+          {%- endif -%}
+        </div>
+
+        <!-- Trust Badges Under Buttons -->
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+          <div class="sams-badge sams-badge--olive">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            {{ section.settings.floating_note_1 }}
+          </div>
+          <div class="sams-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            {{ section.settings.floating_note_2 }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Editorial Lifestyle Imagery & Floating Notes -->
+      <div class="sams-hero-media-wrap" style="position: relative;">
+        <div class="sams-card sams-media-zoom" style="border-radius: 28px; overflow: hidden; box-shadow: var(--shadow-card); background: var(--sesame); position: relative; aspect-ratio: 4 / 3.4;">
+          {%- if section.settings.hero_image != blank -%}
+            {%- assign hero_alt = "Sam's Food Middle Eastern Pantry" -%}
+            {{
+              section.settings.hero_image
+              | image_url: width: 1000
+              | image_tag:
+                loading: 'eager',
+                fetchpriority: 'high',
+                decoding: 'async',
+                widths: '500, 800, 1000',
+                sizes: '(max-width: 768px) 92vw, 45vw',
+                alt: hero_alt,
+                style: 'width: 100%; height: 100%; object-fit: cover;'
+            }}
+          {%- else -%}
+            <!-- Editorial Stylized Default Illustration & Pantry Composition -->
+            <img
+              src="{{ 'sams-hero-pantry.jpg' | asset_url }}"
+              srcset="{{ 'sams-hero-pantry.jpg' | asset_url }} 800w"
+              sizes="(max-width: 768px) 92vw, 45vw"
+              alt="Sam's Food Handcrafted Middle Eastern Pantry in Lahore"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+              width="800"
+              height="600"
+              style="width: 100%; height: 100%; object-fit: cover; display: block;"
+            >
+          {%- endif -%}
+        </div>
+
+        <!-- Floating Badge Card 1 -->
+        <div
+          class="sams-hero-floating-card sams-card"
+          style="position: absolute; bottom: -20px; inset-inline-start: -16px; background: #FFFFFF; padding: 14px 20px; border-radius: 18px; box-shadow: var(--shadow-card); display: flex; align-items: center; gap: 12px; z-index: 3;"
+        >
+          <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--gold-subtle); display: flex; align-items: center; justify-content: center; color: var(--gold); flex-shrink: 0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          </div>
+          <div>
+            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); font-weight: 600;">Authentic Taste</div>
+            <div style="font-size: 13px; font-weight: 600; color: var(--espresso);">Pure Middle Eastern Recipe</div>
+          </div>
+        </div>
+
+        <!-- Floating Badge Card 2 -->
+        <div
+          class="sams-hero-floating-card sams-card"
+          style="position: absolute; top: 16px; inset-inline-end: -16px; background: #FFFFFF; padding: 12px 18px; border-radius: 16px; box-shadow: var(--shadow-card); display: flex; align-items: center; gap: 10px; z-index: 3;"
+        >
+          <div style="width: 34px; height: 34px; border-radius: 50%; background: var(--olive-light); display: flex; align-items: center; justify-content: center; color: var(--olive); flex-shrink: 0;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <div>
+            <div style="font-size: 11px; color: var(--olive); font-weight: 600;">PFA LICENSED</div>
+            <div style="font-size: 12px; color: var(--espresso); font-weight: 500;">Our Kitchen in Lahore</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @media (min-width: 900px) {
+    .sams-hero-grid {
+      grid-template-columns: 1.15fr 0.95fr !important;
+    }
+  }
+  @media (max-width: 600px) {
+    .sams-hero-floating-card {
+      display: none !important;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Sams Hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "SLOW-GROUND IN LAHORE"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The <em>Middle Eastern</em> pantry, made with care."
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Silky tahina, glossy pomegranate molasses, golden falafel and stone-ground flour — made in our Lahore kitchen and delivered to your door."
+    },
+    {
+      "type": "text",
+      "id": "button_1_label",
+      "label": "Button 1 Label",
+      "default": "Shop the Pantry"
+    },
+    {
+      "type": "url",
+      "id": "button_1_link",
+      "label": "Button 1 Link"
+    },
+    {
+      "type": "text",
+      "id": "button_2_label",
+      "label": "Button 2 Label",
+      "default": "Build a Mezze Box"
+    },
+    {
+      "type": "url",
+      "id": "button_2_link",
+      "label": "Button 2 Link"
+    },
+    {
+      "type": "text",
+      "id": "floating_note_1",
+      "label": "Note 1 (Green badge)",
+      "default": "100% Halal"
+    },
+    {
+      "type": "text",
+      "id": "floating_note_2",
+      "label": "Note 2 (Gold badge)",
+      "default": "PFA Licensed Kitchen"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero Image"
+    },
+    {
+      "type": "range",
+      "id": "pad_top",
+      "label": "Padding Top",
+      "min": 40,
+      "max": 140,
+      "step": 4,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "pad_bottom",
+      "label": "Padding Bottom",
+      "min": 40,
+      "max": 140,
+      "step": 4,
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sams Hero"
+    }
+  ]
+}
+{% endschema %}

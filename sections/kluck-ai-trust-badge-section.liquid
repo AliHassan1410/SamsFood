@@ -1,0 +1,336 @@
+{% comment %}
+  Section: Kluck AI - Badges Section
+  - Purpose: Trust badges with global Kluck AI controls.
+  - Update: Added toggle to source text from product.metafields.kluck_ai.badge_text_1-4
+  - Fix: Forced single-line alignment for icon and text.
+{% endcomment %}
+
+{%- assign heading_font = section.settings.heading_font_family -%}
+{%- assign body_font = section.settings.body_font_family -%}
+
+{% comment %} 1. LOAD FONTS {% endcomment %}
+<style>
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ body_font | font_face: font_display: 'swap' }}
+</style>
+
+{% comment %} 2. MAIN CONTENT WRAPPER {% endcomment %}
+{% if shop.metafields.app.block_control.value %}
+
+  {% assign use_metafields_color = section.settings.use_metafield_text %}
+  {% assign use_metafields_text = section.settings.use_metafield_text %}
+  
+  {% assign opacity = section.settings.background_opacity | divided_by: 100.0 %}
+  {% assign bg_color = section.settings.background_color %}
+
+  {% comment %} HANDLE DYNAMIC BACKGROUND COLOR {% endcomment %}
+  {% if use_metafields_color
+    and product != blank
+    and product.metafields.kluck_ai.color_schema != blank
+  %}
+    {% assign bg_color = product.metafields.kluck_ai.color_schema %}
+  {% endif %}
+
+  <div id="KluckBadges-{{ section.id }}" class="kluck-badges-wrapper-{{ section.id }}">
+    <div class="inner-container-{{ section.id }}">
+      <div class="tb-track">
+        
+        {% comment %} --- SET 1: Always Visible --- {% endcomment %}
+        {% for block in section.blocks %}
+          
+          {% comment %} --- TEXT LOGIC START --- {% endcomment %}
+          {% assign final_text = block.settings.text %}
+          
+          {% if use_metafields_text and product != blank %}
+            {% comment %} 
+              Dynamically constructs key based on block index: 
+              Block 1 -> badge_text_1
+              Block 2 -> badge_text_2 
+            {% endcomment %}
+            {% assign mf_key = 'badge_text_' | append: forloop.index %}
+            {% assign mf_value = product.metafields.kluck_ai[mf_key] %}
+            
+            {% if mf_value != blank %}
+              {% assign final_text = mf_value %}
+            {% endif %}
+          {% endif %}
+          {% comment %} --- TEXT LOGIC END --- {% endcomment %}
+
+          <div class="tb-item" {{ block.shopify_attributes }}>
+            <div class="tb-icon-wrap">
+              {% if block.settings.custom_icon != blank %}
+                <img src="{{ block.settings.custom_icon | img_url: '60x' }}" class="tb-custom-img" alt="{{ final_text }}">
+              {% else %}
+                <svg class="tb-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              {% endif %}
+            </div>
+            <span class="tb-text">{{ final_text }}</span>
+          </div>
+        {% endfor %}
+
+        {% comment %} --- SET 2: CLONED (For Mobile Marquee) --- {% endcomment %}
+        {% if section.settings.mobile_auto_scroll %}
+          {% for block in section.blocks %}
+
+            {% comment %} --- TEXT LOGIC REPEATED FOR CLONES --- {% endcomment %}
+            {% assign final_text = block.settings.text %}
+            
+            {% if use_metafields_text and product != blank %}
+              {% assign mf_key = 'badge_text_' | append: forloop.index %}
+              {% assign mf_value = product.metafields.kluck_ai[mf_key] %}
+              
+              {% if mf_value != blank %}
+                {% assign final_text = mf_value %}
+              {% endif %}
+            {% endif %}
+
+            <div class="tb-item tb-cloned" aria-hidden="true">
+              <div class="tb-icon-wrap">
+                {% if block.settings.custom_icon != blank %}
+                  <img src="{{ block.settings.custom_icon | img_url: '60x' }}" class="tb-custom-img" alt="{{ final_text }}">
+                {% else %}
+                  <svg class="tb-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                {% endif %}
+              </div>
+              <span class="tb-text">{{ final_text }}</span>
+            </div>
+          {% endfor %}
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+{% endif %}
+
+<!-- 3. CSS STYLES & VARIABLES -->
+<style>
+  .kluck-badges-wrapper-{{ section.id }} {
+    /* --- Layout & Background --- */
+    --bg-opacity: {{ opacity }};
+    --container-width: {{ section.settings.container_max_width }}px;
+    
+    /* --- Badge Item Styling --- */
+    --item-bg: {{ section.settings.item_bg }};
+    --item-text: {{ section.settings.item_text }};
+    --item-border: {{ section.settings.item_border }};
+    --icon-circle-bg: {{ bg_color }};
+    --icon-color: {{ section.settings.icon_color }};
+    --radius: {{ section.settings.badge_radius }}px;
+
+    /* --- FONT FAMILIES --- */
+    --font-heading-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --font-body-family: {{ body_font.family }}, {{ body_font.fallback_families }};
+
+    /* --- TYPOGRAPHY --- */
+    --body-size: {{ section.settings.body_size }}px; --body-weight: {{ section.settings.body_weight }};
+
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding: {{ section.settings.padding_v_d }}px 0;
+  }
+
+  .kluck-badges-wrapper-{{ section.id }}::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--bg-color);
+    opacity: var(--bg-opacity);
+    z-index: 0;
+  }
+
+  .inner-container-{{ section.id }} {
+    position: relative;
+    z-index: 1;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .tb-track {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: {{ section.settings.alignment }};
+    gap: {{ section.settings.gap_d }}px;
+  }
+
+  .tb-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: nowrap; /* Ensures icon and text stay on one line */
+    background-color: var(--item-bg);
+    color: var(--item-text);
+    border: 1px solid var(--item-border);
+    border-radius: var(--radius);
+    padding: 10px 20px;
+    transition: transform 0.3s ease;
+  }
+
+  .tb-item:hover {
+    transform: translateY(-3px);
+  }
+
+  .tb-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--icon-circle-bg);
+    border-radius: 50%;
+    width: {{ section.settings.icon_size_d }}px;
+    height: {{ section.settings.icon_size_d }}px;
+    margin-right: 12px;
+    flex-shrink: 0; /* Prevents icon from squishing */
+  }
+
+  .tb-icon-svg { width: 55%; height: 55%; stroke: var(--icon-color); }
+  .tb-custom-img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
+
+  .tb-text {
+    font-family: var(--font-body-family);
+    font-size: var(--body-size);
+    font-weight: var(--body-weight);
+    line-height: 1;
+    margin: 0;
+    white-space: nowrap; /* Prevents text from breaking */
+    display: inline-block;
+  }
+
+  .tb-item.tb-cloned { display: none; }
+
+  /* --- MOBILE MARQUEE --- */
+  @media (max-width: 768px) {
+    .kluck-badges-wrapper-{{ section.id }} { padding: {{ section.settings.padding_v_m }}px 0; }
+    
+    {% if section.settings.mobile_auto_scroll %}
+      .inner-container-{{ section.id }} {
+        padding: 0;
+        max-width: 100vw;
+        mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+      }
+      .tb-track {
+        flex-wrap: nowrap;
+        width: max-content;
+        animation: tb-scroll-{{ section.id }} {{ section.settings.scroll_speed }}s linear infinite;
+        gap: {{ section.settings.gap_m }}px;
+        padding-left: {{ section.settings.gap_m }}px;
+      }
+      .tb-item.tb-cloned { display: inline-flex; }
+      @keyframes tb-scroll-{{ section.id }} {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+    {% else %}
+      .tb-track { justify-content: center; gap: {{ section.settings.gap_m }}px; }
+    {% endif %}
+
+    .tb-text { font-size: calc(var(--body-size) * 0.9); }
+    .tb-icon-wrap { 
+      width: {{ section.settings.icon_size_m }}px; 
+      height: {{ section.settings.icon_size_m }}px; 
+      margin-right: 8px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Kluck AI - Badges",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Kluck AI Data Controls"
+    },
+    { "type": "paragraph", "content": "Toggle these options to use dynamic data from product metafields." },
+    { "type": "checkbox", "id": "use_metafields", "label": "Use Metafields for Color Schema", "default": true },
+    { "type": "checkbox", "id": "use_metafield_text", "label": "Use Metafields for Badge Text", "default": false, "info": "Reads from: badge_text_1, badge_text_2, etc." },
+    
+    {
+      "type": "header",
+      "content": "Background & Layout"
+    },
+    { "type": "color", "id": "background_color", "label": "Manual background color", "default": "#000000" },
+    { "type": "range", "id": "background_opacity", "label": "Background opacity", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "container_max_width", "min": 800, "max": 2000, "step": 50, "unit": "px", "label": "Container Max Width", "default": 1400 },
+    { "type": "range", "id": "padding_v_d", "min": 0, "max": 100, "step": 5, "unit": "px", "label": "Desktop Padding Vertical", "default": 40 },
+    { "type": "range", "id": "padding_v_m", "min": 0, "max": 100, "step": 5, "unit": "px", "label": "Mobile Padding Vertical", "default": 30 },
+    { "type": "select", "id": "alignment", "label": "Desktop Alignment", "options": [
+      {"value": "flex-start", "label": "Left"},
+      {"value": "center", "label": "Center"},
+      {"value": "flex-end", "label": "Right"},
+      {"value": "space-between", "label": "Space Between"}
+    ], "default": "center" },
+
+    {
+      "type": "header",
+      "content": "Badge Styling"
+    },
+    { "type": "color", "id": "item_bg", "label": "Badge Background", "default": "transparent" },
+    { "type": "color", "id": "item_border", "label": "Badge Border Color", "default": "#e5e5e5" },
+    { "type": "color", "id": "item_text", "label": "Text Color", "default": "#000000" },
+    { "type": "range", "id": "badge_radius", "min": 0, "max": 100, "step": 2, "unit": "px", "label": "Badge Roundness", "default": 50 },
+    { "type": "range", "id": "gap_d", "label": "Desktop Gap", "min": 0, "max": 100, "default": 20 },
+    { "type": "range", "id": "gap_m", "label": "Mobile Gap", "min": 0, "max": 50, "default": 15 },
+
+    {
+      "type": "header",
+      "content": "Icons"
+    },
+    { "type": "color", "id": "icon_bg", "label": "Icon Circle BG", "default": "#EAE2D6" },
+    { "type": "color", "id": "icon_color", "label": "Icon Color", "default": "#000000" },
+    { "type": "range", "id": "icon_size_d", "min": 20, "max": 80, "default": 32, "label": "Desktop Icon Size" },
+    { "type": "range", "id": "icon_size_m", "min": 20, "max": 60, "default": 28, "label": "Mobile Icon Size" },
+
+    {
+      "type": "header",
+      "content": "Mobile Auto-Scroll"
+    },
+    { "type": "checkbox", "id": "mobile_auto_scroll", "label": "Enable Infinite Scroll on Mobile", "default": true },
+    { "type": "range", "id": "scroll_speed", "min": 5, "max": 60, "step": 1, "default": 20, "label": "Scroll Duration (Seconds)" },
+
+    {
+      "type": "header",
+      "content": "Fonts & Typography"
+    },
+    { "type": "font_picker", "id": "heading_font_family", "label": "Heading Font Family", "default": "abel_n4" },
+    { "type": "font_picker", "id": "body_font_family", "label": "Body Font Family", "default": "abel_n4" },
+    {
+      "type": "header",
+      "content": "Body (Used for Badge Text)"
+    },
+    { "type": "range", "id": "body_size", "min": 10, "max": 60, "step": 1, "unit": "px", "label": "Size", "default": 16 },
+    { "type": "range", "id": "body_weight", "min": 100, "max": 900, "step": 100, "label": "Weight", "default": 400 },
+    {
+      "type": "header",
+      "content": "Headings (Global Sync Controls)"
+    },
+    { "type": "range", "id": "h1_size", "min": 10, "max": 100, "step": 1, "unit": "px", "label": "H1 Size", "default": 48 },
+    { "type": "range", "id": "h1_weight", "min": 100, "max": 900, "step": 100, "label": "H1 Weight", "default": 700 },
+    { "type": "range", "id": "h2_size", "min": 20, "max": 120, "step": 1, "unit": "px", "label": "H2 Size", "default": 64 },
+    { "type": "range", "id": "h2_weight", "min": 100, "max": 900, "step": 100, "label": "H2 Weight", "default": 500 }
+  ],
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Badge",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Default Text", "default": "Free Shipping", "info": "Will be overridden if Metafield toggle is on and metafield exists." },
+        { "type": "image_picker", "id": "custom_icon", "label": "Custom Icon (Optional)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kluck AI - Badges",
+      "blocks": [
+        { "type": "badge", "settings": { "text": "Free Shipping" } },
+        { "type": "badge", "settings": { "text": "Money Guarantee" } },
+        { "type": "badge", "settings": { "text": "Online Support" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

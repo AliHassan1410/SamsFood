@@ -1,0 +1,65 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "wholesale_banner": {
+      "type": "sams-banner",
+      "settings": {
+        "eyebrow": "COMMERCIAL FOODSERVICE & BULK SUPPLY",
+        "heading": "Bulk Tahina & Flour at Trade Prices for Cafés & Restaurants",
+        "subheading": "Direct kitchen dispatch in Lahore and across Pakistan. Available in 3kg and 14kg buckets, plus 5kg multi-grain flour bags with dedicated account pricing.",
+        "button_label": "WhatsApp 0345-4788888 for Trade Sheet",
+        "bg_color": "#FBF6EE",
+        "card_color": "#EEDFCA",
+        "text_color": "#2B160E",
+        "pad_top": 56,
+        "pad_bottom": 72
+      }
+    },
+    "trust_strip": {
+      "type": "sams-trust-strip",
+      "settings": {
+        "bg_color": "#FBF6EE"
+      }
+    },
+    "bulk_products": {
+      "type": "sams-product-grid",
+      "settings": {
+        "eyebrow": "COMMERCIAL PACK SIZES",
+        "heading": "Restaurant & Bakery Packs",
+        "subheading": "Consistent high quality for catering, dining kitchens and commercial production.",
+        "collection": "all",
+        "products_to_show": 6,
+        "view_all_label": "Browse All Products",
+        "view_all_link": "/collections/all",
+        "bg_color": "#FFFFFF",
+        "pad_top": 80,
+        "pad_bottom": 80
+      }
+    },
+    "how_it_works": {
+      "type": "sams-steps",
+      "settings": {
+        "eyebrow": "WHOLESALE PROCESS",
+        "heading": "Ordering for Your Business",
+        "subheading": "Simple, reliable supply agreements for food establishments.",
+        "bg_color": "#F4E9DA",
+        "pad_top": 80,
+        "pad_bottom": 80
+      }
+    }
+  },
+  "order": [
+    "wholesale_banner",
+    "trust_strip",
+    "bulk_products",
+    "how_it_works"
+  ]
+}

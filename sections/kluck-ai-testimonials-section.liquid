@@ -1,0 +1,303 @@
+{% comment %}
+  Testimonials Slider - Fully Intelligent Contrast Version
+{% endcomment %}
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+
+
+{% if shop.metafields.app.block_control.value %}
+
+  {%- assign customer_name_1 = store_gen.home_page.text.customer_name_1 -%}
+  {%- assign customer_review_1 = store_gen.home_page.text.customer_review_1 -%}
+  {%- assign customer_name_2 = store_gen.home_page.text.customer_name_2 -%}
+  {%- assign customer_review_2 = store_gen.home_page.text.customer_review_2 -%}
+  {%- assign customer_name_3 = store_gen.home_page.text.customer_name_3 -%}
+  {%- assign customer_review_3 = store_gen.home_page.text.customer_review_3 -%}
+  {%- assign customer_name_4 = store_gen.home_page.text.customer_name_4 -%}
+  {%- assign customer_review_4 = store_gen.home_page.text.customer_review_4 -%}
+  {%- assign customer_name_5 = store_gen.home_page.text.customer_name_5 -%}
+  {%- assign customer_review_5 = store_gen.home_page.text.customer_review_5 -%}
+
+  {% style %}
+
+    #shopify-section-{{ section.id }} .ts-section {
+      --pt: {{ section.settings.padding_top }}px;
+      --pb: {{ section.settings.padding_bottom }}px;
+      --card-width-desktop: {{ section.settings.card_width_desktop }}px;
+      --card-width-mobile: {{ section.settings.card_width_mobile }}px;
+      --img-border-width: {{ section.settings.image_border_width }}px;
+      --star-color: {{ section.settings.star_color }};
+    }
+  {% endstyle %}
+
+  <style>
+    #shopify-section-{{ section.id }} .ts-section {
+      padding-top: var(--pt);
+      padding-bottom: var(--pb);
+      overflow: hidden;
+    }
+
+    .ts-container {
+      max-width: {% if section.settings.section_full_width %}100%{% else %}{{ section.settings.section_max_width }}px{% endif %};
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .ts-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 40px;
+    }
+
+    .ts-heading p {
+      font-size: 42px;
+      line-height: 1.1;
+      margin: 0;
+      font-family: var(--kluck-font-heading-family);
+    }
+    .ts-heading p em {
+      font-weight: 900;
+      font-family: "Instrument";
+
+  
+    }
+    
+
+    .ts-nav { display: flex; gap: 12px; }
+    @media(max-width: 767px) { .ts-nav { display: none; } }
+
+    .ts-btn {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 1px solid {{settings.color_scheme}};
+      background-color: white;
+      color: {{settings.color_scheme}};
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .ts-btn:hover { background: {{settings.color_scheme}}; color: white; }
+    .ts-btn svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+
+    .ts-slider-wrapper { margin: 0 -20px; padding: 0 20px; }
+    .ts-slider {
+      display: flex; gap: 20px; overflow-x: auto;
+      scroll-snap-type: x mandatory; padding-bottom: 20px;
+      scrollbar-width: none; scroll-behavior: smooth;
+    }
+    .ts-slider::-webkit-scrollbar { display: none; }
+
+    .ts-card {
+      background: var(--color-background);
+      border-radius: {{ section.settings.card_radius }}px;
+      padding: 30px;
+      flex: 0 0 var(--card-width-mobile);
+      scroll-snap-align: start;
+      display: flex; flex-direction: column;
+    }
+
+    @media (min-width: 768px) { .ts-card { flex: 0 0 var(--card-width-desktop); } }
+
+    .ts-author-row {
+      display: flex; align-items: center; gap: 15px;
+      margin-bottom: 20px; padding-bottom: 20px; position: relative;
+    }
+    .ts-author-row::after {
+      content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
+      background-color: currentColor; opacity: 0.15;
+    }
+
+    .ts-avatar { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: var(--img-border-width) solid currentColor; }
+    .ts-name { font-weight: 600; color: inherit; }
+    .ts-stars { display: flex; gap: 2px; margin-bottom: 15px; }
+    .ts-stars svg { width: 18px; height: 18px; fill: var(--star-color); }
+    .ts-review { line-height: 1.6; opacity: 0.85; color: inherit; margin: 0; }
+
+    .smart-light-bg,
+    .smart-light-bg h2, .smart-light-bg p,
+    .smart-light-bg .ts-name, .smart-light-bg .ts-review,
+    .smart-light-bg {
+       color: #484B4F !important;
+    }
+
+    .smart-dark-bg,
+    .smart-dark-bg h2, .smart-dark-bg p,
+    .smart-dark-bg .ts-name, .smart-dark-bg .ts-review,
+    .smart-dark-bg {
+       color: #FFFFFF !important;
+    }
+  </style>
+
+  <div class="ts-section color-{{ section.settings.color_scheme }}">
+    <div class="ts-container">
+      <div class="ts-header">
+        <div class="ts-heading">{{ section.settings.heading }}</div>
+        <div class="ts-nav">
+          <button class="ts-btn" id="prev-{{ section.id }}"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <button class="ts-btn" id="next-{{ section.id }}"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+        </div>
+      </div>
+
+      <div class="ts-slider-wrapper">
+        <div class="ts-slider" id="slider-{{ section.id }}">
+
+          {% if section.settings.use_kluck_ai_metafields %}
+
+            <div class="ts-card color-{{ section.settings.card_color_scheme }}">
+              <div class="ts-author-row">
+                <div style="width:60px;height:60px;border-radius:50%;background:currentColor;opacity:0.1;flex-shrink:0;"></div>
+                <h4 class="ts-name">{{ customer_name_1 | default: 'Reviewer Name' }}</h4>
+              </div>
+              <div class="ts-stars">{% for s in (1..5) %}<svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>{% endfor %}</div>
+              <p class="ts-review">{{ customer_review_1 | default: 'Enter customer review over here' }}</p>
+            </div>
+
+            <div class="ts-card color-{{ section.settings.card_color_scheme }}">
+              <div class="ts-author-row">
+                <div style="width:60px;height:60px;border-radius:50%;background:currentColor;opacity:0.1;flex-shrink:0;"></div>
+                <h4 class="ts-name">{{ customer_name_2 | default: 'Reviewer Name' }}</h4>
+              </div>
+              <div class="ts-stars">{% for s in (1..5) %}<svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>{% endfor %}</div>
+              <p class="ts-review">{{ customer_review_2 | default: 'Enter customer review over here' }}</p>
+            </div>
+
+            <div class="ts-card color-{{ section.settings.card_color_scheme }}">
+              <div class="ts-author-row">
+                <div style="width:60px;height:60px;border-radius:50%;background:currentColor;opacity:0.1;flex-shrink:0;"></div>
+                <h4 class="ts-name">{{ customer_name_3 | default: 'Reviewer Name' }}</h4>
+              </div>
+              <div class="ts-stars">{% for s in (1..5) %}<svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>{% endfor %}</div>
+              <p class="ts-review">{{ customer_review_3 | default: 'Enter customer review over here' }}</p>
+            </div>
+
+            <div class="ts-card color-{{ section.settings.card_color_scheme }}">
+              <div class="ts-author-row">
+                <div style="width:60px;height:60px;border-radius:50%;background:currentColor;opacity:0.1;flex-shrink:0;"></div>
+                <h4 class="ts-name">{{ customer_name_4 | default: 'Reviewer Name' }}</h4>
+              </div>
+              <div class="ts-stars">{% for s in (1..5) %}<svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>{% endfor %}</div>
+              <p class="ts-review">{{ customer_review_4 | default: 'Enter customer review over here' }}</p>
+            </div>
+
+            <div class="ts-card color-{{ section.settings.card_color_scheme }}">
+              <div class="ts-author-row">
+                <div style="width:60px;height:60px;border-radius:50%;background:currentColor;opacity:0.1;flex-shrink:0;"></div>
+                <h4 class="ts-name">{{ customer_name_5 | default: 'Reviewer Name' }}</h4>
+              </div>
+              <div class="ts-stars">{% for s in (1..5) %}<svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>{% endfor %}</div>
+              <p class="ts-review">{{ customer_review_5 | default: 'Enter customer review over here' }}</p>
+            </div>
+
+          {% else %}
+
+            {% for block in section.blocks %}
+              <div class="ts-card color-{{ section.settings.card_color_scheme }}" {{ block.shopify_attributes }}>
+                <div class="ts-author-row">
+                  {% if block.settings.author_image != blank %}
+                    {{ block.settings.author_image | image_url: width: 120 | image_tag: class: 'ts-avatar' }}
+                  {% else %}
+                    <div style="width:60px;height:60px;border-radius:50%;background:currentColor;opacity:0.1;flex-shrink:0;"></div>
+                  {% endif %}
+                  <h4 class="ts-name">{{ block.settings.author_name }}</h4>
+                </div>
+                <div class="ts-stars">
+                  {% for s in (1..block.settings.stars) %}<svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>{% endfor %}
+                </div>
+                <p class="ts-review">{{ block.settings.review_text }}</p>
+              </div>
+            {% endfor %}
+
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const slider = document.getElementById('slider-{{ section.id }}');
+      const prevBtn = document.getElementById('prev-{{ section.id }}');
+      const nextBtn = document.getElementById('next-{{ section.id }}');
+      if(slider && nextBtn) {
+        nextBtn.addEventListener('click', () => slider.scrollBy({ left: 300, behavior: 'smooth' }));
+        prevBtn.addEventListener('click', () => slider.scrollBy({ left: -300, behavior: 'smooth' }));
+      }
+
+      const getVisibleBgColor = (el) => {
+        let color = window.getComputedStyle(el).backgroundColor;
+        if ((color === 'rgba(0,0,0,0)' || color === 'transparent' || color === 'rgba(0, 0, 0, 0)') && el.parentElement) {
+          return getVisibleBgColor(el.parentElement);
+        }
+        return color;
+      };
+
+      const applySmartContrast = () => {
+        const targets = document.querySelectorAll('#shopify-section-{{ section.id }} .ts-section, #shopify-section-{{ section.id }} .ts-card');
+        targets.forEach(el => {
+          const bgColor = getVisibleBgColor(el);
+          const rgb = bgColor.match(/\d+/g);
+          if (rgb && rgb.length >= 3) {
+            const yiq = ((rgb[0] * 299) + (rgb[1] * 587) + (rgb[2] * 114)) / 1000;
+            if (yiq > 128) {
+              el.classList.add('smart-light-bg');
+              el.classList.remove('smart-dark-bg');
+            } else {
+              el.classList.add('smart-dark-bg');
+              el.classList.remove('smart-light-bg');
+            }
+          }
+        });
+      };
+
+      applySmartContrast();
+      setTimeout(applySmartContrast, 100);
+
+      if (Shopify.designMode) {
+        document.addEventListener('shopify:section:load', applySmartContrast);
+      }
+    });
+  </script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Testimonials Slider",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "use_kluck_ai_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true
+    },
+    { "type": "header", "content": "Layout" },
+    { "type": "checkbox", "id": "section_full_width", "label": "Full width", "default": false },
+    { "type": "range", "id": "section_max_width", "min": 800, "max": 1600, "step": 20, "unit": "px", "label": "Max Width", "default": 1320 },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Top Padding", "default": 60 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Bottom Padding", "default": 60 },
+    { "type": "header", "content": "Color Schemes" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Outer Section Scheme", "default": "scheme-1" },
+    { "type": "color_scheme", "id": "card_color_scheme", "label": "Inner Card Scheme", "default": "scheme-2" },
+    { "type": "color", "id": "star_color", "label": "Star Color", "default": "#FAE8A8" },
+    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Customer <em>Love</em></p>" },
+    { "type": "header", "content": "Card Style" },
+    { "type": "range", "id": "card_width_desktop", "min": 250, "max": 600, "step": 10, "unit": "px", "label": "Card Width (Desktop)", "default": 320 },
+    { "type": "range", "id": "card_width_mobile", "min": 200, "max": 400, "step": 10, "unit": "px", "label": "Card Width (Mobile)", "default": 280 },
+    { "type": "range", "id": "card_radius", "min": 0, "max": 40, "step": 1, "unit": "px", "label": "Card Radius", "default": 20 },
+    { "type": "range", "id": "image_border_width", "min": 0, "max": 5, "step": 1, "unit": "px", "label": "Avatar Border", "default": 1 }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        { "type": "image_picker", "id": "author_image", "label": "Photo" },
+        { "type": "text", "id": "author_name", "label": "Name", "default": "Emily Carter" },
+        { "type": "range", "id": "stars", "min": 1, "max": 5, "step": 1, "label": "Stars", "default": 5 },
+        { "type": "textarea", "id": "review_text", "label": "Text", "default": "Enter your text here." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Testimonials Slider", "blocks": [{"type": "testimonial"},{"type": "testimonial"}] }]
+}
+{% endschema %}

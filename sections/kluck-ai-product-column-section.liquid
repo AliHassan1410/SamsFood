@@ -1,0 +1,352 @@
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+
+{% if shop.metafields.app.block_control.value %}
+{% comment %}
+  Product Star Showcase (3-Col) - Intelligence for Col 3
+{% endcomment %}
+
+{% style %}
+  #ps-{{ section.id }} {
+    --feat-h-size: {{ section.settings.feat_h_size }}px;
+    --feat-p-size: {{ section.settings.feat_p_size }}px;
+    --section-height: {{ section.settings.section_height }}px;
+    --radius: {{ section.settings.border_radius }}px;
+  }
+{% endstyle %}
+
+<style>
+  #ps-{{ section.id }} .ps-section {
+    padding: 20px;
+  }
+
+  #ps-{{ section.id }} .ps-main-heading {
+    text-align: center;
+    margin-bottom: 30px;
+    line-height: 1.1;
+  }
+
+  #ps-{{ section.id }} .ps-part-1,
+  #ps-{{ section.id }} .ps-part-2 {
+    display: inline;
+    font-size:42px;
+  }
+
+  #ps-{{ section.id }} .ps-part-2 {
+    color: {{settings.color_scheme}};
+  }
+
+  /* --- GRID --- */
+  #ps-{{ section.id }} .ps-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1.1fr 1fr;
+    max-width: 1400px;
+    margin: 0 auto;
+    height: var(--section-height);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  }
+
+  /* --- COLUMN 1: MEDIA --- */
+  #ps-{{ section.id }} .ps-col-media {
+    position: relative; height: 100%; overflow: hidden;
+  }
+  #ps-{{ section.id }} .ps-media-item {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+
+  /* --- COLUMN 2: PRODUCT --- */
+  #ps-{{ section.id }} .ps-col-product {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+    gap:5px
+  }
+
+  #ps-{{ section.id }} .ps-float-badge {
+    position: absolute; top: 30px; left: 30px;
+    color: var(--color-background);
+    font-family: var(--font-b); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; padding: 6px 12px;
+    border-radius: 4px; letter-spacing: 1px; z-index: 2;
+  }
+
+  #ps-{{ section.id }} .ps-prod-img {
+    width: 280px; 
+    height: 280px; 
+    object-fit: contain;
+    margin-bottom: 25px;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    display: block;
+  }
+  #ps-{{ section.id }} .ps-prod-img:hover { transform: scale(1.05); }
+
+  #ps-{{ section.id }} .ps-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    border: 1px solid currentColor; padding: 6px 14px;
+    border-radius: 20px; font-family: var(--font-b); font-size: 11px;
+    margin-bottom: 15px;
+    background: transparent;
+    opacity: 0.8;
+  }
+  #ps-{{ section.id }} .ps-pill svg,
+  #ps-{{ section.id }} .ps-pill img { width: 12px; height: 12px; fill: currentColor; display: block; }
+
+  #ps-{{ section.id }} .ps-vendor {
+    text-transform: uppercase; letter-spacing: 2px;
+    font-size: 12px; margin-bottom: 5px; opacity: 0.7;
+  }
+  #ps-{{ section.id }} h3 {
+    font-size: 24px; margin: 0 0 10px 0; font-weight: 600;
+  }
+  #ps-{{ section.id }} .ps-price { font-size: 16px; margin: 5px 0; }
+  #ps-{{ section.id }} .ps-stars { color: #D4AF37; font-size: 14px; margin-bottom: 5px; }
+
+  #ps-{{ section.id }} .kluck-button {
+    display: inline-block;
+    text-decoration: none;
+    border-radius: 50px;
+    padding: 15px 30px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  #ps-{{ section.id }} .kluck-button:hover { transform: translateY(-2px); opacity: 0.9; }
+
+  /* --- COLUMN 3: FEATURES --- */
+  #ps-{{ section.id }} .ps-col-features {
+    background-color: var(--color-background);
+    padding: 0 10px 0 40px; 
+    position: relative;
+    display: flex; 
+    flex-direction: column; 
+    overflow: hidden; 
+  }
+
+  #ps-{{ section.id }} .ps-scroll-wrap {
+    width: 100%; height: 100%; overflow-y: auto; padding-right: 25px;
+    display: flex; flex-direction: column; justify-content: center; 
+    scrollbar-width: thin; scrollbar-color: currentColor transparent;
+  }
+  
+  #ps-{{ section.id }} .ps-scroll-wrap::-webkit-scrollbar { width: 4px; }
+  #ps-{{ section.id }} .ps-scroll-wrap::-webkit-scrollbar-thumb { background-color: currentColor; border-radius: 4px; }
+
+  #ps-{{ section.id }} .ps-feature-item {
+    display: flex; align-items: flex-start; gap: 20px; padding: 25px 0;
+    border-bottom: 1px solid currentColor; flex-shrink: 0; 
+  }
+  #ps-{{ section.id }} .ps-feature-item:last-child { border-bottom: none; }
+
+  #ps-{{ section.id }} .ps-icon-wrap { width: 32px; height: 32px; flex-shrink: 0; }
+  #ps-{{ section.id }} .ps-icon-wrap svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.5; }
+  
+  #ps-{{ section.id }} .ps-feat-content h4 { font-size: var(--feat-h-size); font-weight: 600; margin: 0 0 6px 0; color: inherit; }
+  #ps-{{ section.id }} .ps-feat-content p { font-size: var(--feat-p-size); line-height: 1.5; margin: 0; opacity: 0.85; color: inherit; }
+
+  /* --- COL 3 INTELLIGENCE OVERRIDES --- */
+  .ps-col3-light, .ps-col3-light h4, .ps-col3-light p { color: #121212 !important; }
+  .ps-col3-dark, .ps-col3-dark h4, .ps-col3-dark p { color: #FFFFFF !important; }
+
+  @media (max-width: 900px) {
+    #ps-{{ section.id }} .ps-grid { grid-template-columns: 1fr; height: auto; max-width: 500px; }
+    #ps-{{ section.id }} .ps-col-media { height: 400px; }
+    #ps-{{ section.id }} .ps-col-product { padding: 40px 20px; }
+    #ps-{{ section.id }} .ps-prod-img { width: 220px; height: 220px; }
+    #ps-{{ section.id }} .ps-col-features { padding: 40px 30px; height: auto; min-height: 400px; }
+    #ps-{{ section.id }} .ps-scroll-wrap { justify-content: flex-start; padding-right: 0; } 
+  }
+</style>
+
+<div id="ps-{{ section.id }}" class="color-{{ section.settings.color_scheme }}">
+  <div class="ps-section">
+    
+    <div class="ps-main-heading">
+      <h4 class="ps-part-1">{{ section.settings.heading_part_1 }}</h4>
+      <h4 class="ps-part-2">{{ section.settings.heading_part_2 }}</h4>
+    </div>
+
+    <div class="ps-grid">
+      
+      <!-- COL 1: MEDIA -->
+      <div class="ps-col-media">
+        {% assign kluck_star_image = shop.metafields.kluck_ai.star_image.value %}
+        {% if section.settings.use_kluck_ai_metafields %}
+          {% if section.settings.video_url != blank %}
+            <video class="ps-media-item" autoplay muted loop playsinline><source src="{{ section.settings.video_url }}" type="video/mp4"></video>
+          {% elsif kluck_star_image != blank %}
+            <img src="{{ kluck_star_image | image_url: width: 800 }}" class="ps-media-item" alt="Star image">
+          {% elsif section.settings.image_media != blank %}
+            <img src="{{ section.settings.image_media | img_url: '800x' }}" class="ps-media-item" alt="Model">
+          {% else %}{{ 'collection-1' | placeholder_svg_tag: 'ps-media-item' }}{% endif %}
+        {% else %}
+          {% if section.settings.video_url != blank %}
+            <video class="ps-media-item" autoplay muted loop playsinline><source src="{{ section.settings.video_url }}" type="video/mp4"></video>
+          {% elsif section.settings.image_media != blank %}
+            <img src="{{ section.settings.image_media | img_url: '800x' }}" class="ps-media-item" alt="Model">
+          {% else %}{{ 'collection-1' | placeholder_svg_tag: 'ps-media-item' }}{% endif %}
+        {% endif %}
+      </div>
+
+      <!-- COL 2: PRODUCT -->
+      {% assign product = section.settings.product %}
+      {% if section.settings.use_kluck_ai_metafields and store_gen.home_page.text.selected_product_1 != blank %}
+          {% assign product = all_products[store_gen.home_page.text.selected_product_1] %}
+      {% endif %}
+      {% assign img_obj = shop.metafields.kluck_ai.product_base_image_1.value %}
+
+      <div class="ps-col-product color-{{ section.settings.col_2_color_scheme }}">
+        {% if section.settings.show_float_badge %}<h4 class="ps-float-badge">{{ section.settings.float_badge_text }}</h4>{% endif %}
+        {% if img_obj != blank %}
+          <img src="{{ img_obj | img_url: '600x' }}" class="ps-prod-img" alt="{{ img_obj.alt | escape }}">
+        {% else %}{{ 'product-1' | placeholder_svg_tag: 'ps-prod-img' }}{% endif %}
+
+        {% if section.settings.show_pill %}
+          <div class="ps-pill">
+            {% if section.settings.pill_custom_icon != blank %}<img src="{{ section.settings.pill_custom_icon | img_url: '40x' }}" alt="icon">
+            {% else %}
+               {% case section.settings.pill_icon_select %}
+                 {% when 'leaf' %}<svg viewBox="0 0 24 24"><path d="M2.00026 11.9997C2.00026 11.9997 3.86877 21.084 12.0003 21.084C20.1318 21.084 22.0003 11.9997 22.0003 11.9997C22.0003 11.9997 20.1318 2.91552 12.0003 2.91552C3.86877 2.91552 2.00026 11.9997 2.00026 11.9997Z" stroke="currentColor" fill="none" stroke-width="2"/><path d="M12 21V3" stroke="currentColor" stroke-width="2"/><path d="M12 12L17 7" stroke="currentColor" stroke-width="2"/><path d="M12 12L7 17" stroke="currentColor" stroke-width="2"/></svg>
+                 {% when 'bunny' %}<svg viewBox="0 0 24 24"><path d="M12 10C12 10 13.5 14 17 14C20.5 14 21 10 21 10C21 10 21 5 18 5C16.5 5 15.5 6 15.5 6C15.5 6 15 2 12 2C9 2 8.5 6 8.5 6C8.5 6 7.5 5 6 5C3 5 3 10 3 10C3 10 3.5 14 7 14C10.5 14 12 10 12 10Z" stroke="currentColor" fill="none" stroke-width="2"/><path d="M9 16V22H15V16" stroke="currentColor" stroke-width="2"/></svg>
+                 {% when 'heart' %}<svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="currentColor" fill="none" stroke-width="2"/></svg>
+               {% endcase %}
+            {% endif %}
+            {{ section.settings.pill_text }}
+          </div>
+        {% endif %}
+
+        <div class="ps-vendor">{% if product != blank %}{{ product.vendor }}{% else %}BRAND NAME{% endif %}</div>
+        <h3 style="margin:0px;">{% if product != blank %}{{ product.title }}{% else %}Product Title Here{% endif %}</h3>
+        {% if section.settings.show_stars %}<div class="ps-stars">★★★★★ ({{ section.settings.review_count_manual }})</div>{% endif %}
+        <div class="ps-price">{% if product != blank %}From {{ product.price | money }}{% else %}From $90.00{% endif %}</div>
+        {% if section.settings.show_btn %}<a href="{{ product.url | default: '#' }}" class="kluck-button">{{ section.settings.btn_label }}</a>{% endif %}
+      </div>
+
+      <!-- COL 3: FEATURES -->
+      <div class="ps-col-features color-{{ section.settings.col_3_color_scheme }}">
+        <div class="ps-scroll-wrap">
+          {% for block in section.blocks %}
+            {% assign f_h = blank %}{% assign f_p = blank %}
+            {% case forloop.index %}
+              {% when 1 %}{% assign f_h = store_gen.home_page.text.star_product_feature_1 %}{% assign f_p = store_gen.home_page.text.star_product_feature_1_desc %}
+              {% when 2 %}{% assign f_h = store_gen.home_page.text.star_product_feature_2 %}{% assign f_p = store_gen.home_page.text.star_product_feature_2_desc %}
+              {% when 3 %}{% assign f_h = store_gen.home_page.text.star_product_feature_3 %}{% assign f_p = store_gen.home_page.text.star_product_feature_3_desc %}
+              {% when 4 %}{% assign f_h = store_gen.home_page.text.star_product_feature_4 %}{% assign f_p = store_gen.home_page.text.star_product_feature_4_desc %}
+            {% endcase %}
+
+            <div class="ps-feature-item" {{ block.shopify_attributes }}>
+              <div class="ps-icon-wrap">
+                {% if block.settings.custom_icon != blank %}<img src="{{ block.settings.custom_icon | img_url: '40x' }}" style="width:100%;">
+                {% else %}
+                   {% case block.settings.icon_select %}
+                     {% when 'drop' %}<svg viewBox="0 0 24 24"><path d="M12 22C16.4183 22 20 18.4183 20 14C20 8 12 2 12 2C12 2 4 8 4 14C4 18.4183 7.58172 22 12 22Z" /></svg>
+                     {% when 'star' %}<svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" /></svg>
+                     {% when 'leaf' %}<svg viewBox="0 0 24 24"><path d="M20.2 20.2C15.5 24.9 2 21 2 21C2 21 0.400002 6.30001 5.10002 1.60001C9.80002 -3.09999 21 2 21 2C21 2 24.9 15.5 20.2 20.2Z"/><path d="M2 21L21 2"/></svg>
+                     {% when 'moon' %}<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                   {% endcase %}
+                {% endif %}
+              </div>
+              <div class="ps-feat-content">
+                <h4>{% if section.settings.use_kluck_ai_metafields and f_h != blank %}{{ f_h }}{% else %}{{ block.settings.heading }}{% endif %}</h4>
+                <p>{% if section.settings.use_kluck_ai_metafields and f_p != blank %}{{ f_p }}{% else %}{{ block.settings.text }}{% endif %}</p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    const getBgColor = (el) => {
+      let color = window.getComputedStyle(el).backgroundColor;
+      if ((color === 'rgba(0,0,0,0)' || color === 'transparent') && el.parentElement) return getBgColor(el.parentElement);
+      return color;
+    };
+
+    const applyIntelligence = () => {
+      const col3 = document.querySelector('#ps-{{ section.id }} .ps-col-features');
+      if (!col3) return;
+
+      const rgb = getBgColor(col3).match(/\d+/g);
+      if (rgb && rgb.length >= 3) {
+        const yiq = ((rgb[0] * 299) + (rgb[1] * 587) + (rgb[2] * 114)) / 1000;
+        if (yiq > 128) {
+          col3.classList.add('ps-col3-light');
+          col3.classList.remove('ps-col3-dark');
+        } else {
+          col3.classList.add('ps-col3-dark');
+          col3.classList.remove('ps-col3-light');
+        }
+      }
+    };
+
+    window.addEventListener('load', applyIntelligence);
+    if (Shopify.designMode) document.addEventListener('shopify:section:load', applyIntelligence);
+  })();
+</script>
+
+{% endif %}
+
+{% schema %}
+{
+  "name": "Product Star 3-Col",
+  "settings": [
+    { "type": "checkbox", "id": "use_kluck_ai_metafields", "label": "Use Kluck AI metafields", "default": true },
+    { "type": "header", "content": "Split Heading" },
+    { "type": "text", "id": "heading_part_1", "label": "Heading Part 1", "default": "Star Product" },
+    { "type": "text", "id": "heading_part_2", "label": "Heading Part 2", "default": " of this season." },
+    { "type": "header", "content": "Color Schemes" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Outer Section Scheme", "default": "scheme-1" },
+    { "type": "color_scheme", "id": "col_2_color_scheme", "label": "Col 2 (Product) Scheme", "default": "scheme-2" },
+    { "type": "color_scheme", "id": "col_3_color_scheme", "label": "Col 3 (Features) Scheme", "default": "scheme-3" },
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "section_height", "min": 500, "max": 900, "step": 50, "default": 700, "label": "Desktop Height (px)" },
+    { "type": "range", "id": "border_radius", "min": 0, "max": 40, "default": 0, "label": "Corner Radius" },
+    { "type": "header", "content": "Column 1: Media" },
+    { "type": "image_picker", "id": "image_media", "label": "Image" },
+    { "type": "text", "id": "video_url", "label": "MP4 Video URL" },
+    { "type": "header", "content": "Column 2: Product" },
+    { "type": "product", "id": "product", "label": "Select Product" },
+    { "type": "checkbox", "id": "show_float_badge", "label": "Show 'Best Seller' Badge", "default": true },
+    { "type": "text", "id": "float_badge_text", "label": "Badge Text", "default": "BEST SELLER" },
+    { "type": "checkbox", "id": "show_stars", "label": "Show Star Rating", "default": true },
+    { "type": "text", "id": "review_count_manual", "label": "Manual Review Count", "default": "5" },
+    { "type": "header", "content": "Column 2: Pill Badge" },
+    { "type": "checkbox", "id": "show_pill", "label": "Show Pill Badge", "default": true },
+    { "type": "text", "id": "pill_text", "label": "Pill Text", "default": "Cruelty-free" },
+    { "type": "select", "id": "pill_icon_select", "label": "Pill Icon", "options": [
+        {"value": "leaf", "label": "Leaf"}, {"value": "bunny", "label": "Bunny"}, {"value": "heart", "label": "Heart"}
+      ], "default": "leaf" 
+    },
+    { "type": "image_picker", "id": "pill_custom_icon", "label": "Custom Pill Icon" },
+    { "type": "header", "content": "Column 2: Button" },
+    { "type": "checkbox", "id": "show_btn", "label": "Show Button", "default": true },
+    { "type": "text", "id": "btn_label", "label": "Button Label", "default": "Shop Now" },
+    { "type": "header", "content": "Column 3: Features" },
+    { "type": "range", "id": "feat_h_size", "label": "Feature Heading Size", "min": 14, "max": 24, "default": 16 },
+    { "type": "range", "id": "feat_p_size", "label": "Feature Body Size", "min": 12, "max": 18, "default": 13 }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature Item",
+      "settings": [
+        { "type": "select", "id": "icon_select", "label": "Icon", "options": [
+            { "value": "drop", "label": "Drop" }, { "value": "star", "label": "Star" }, { "value": "leaf", "label": "Leaf" }, { "value": "moon", "label": "Moon" }
+          ], "default": "drop"
+        },
+        { "type": "image_picker", "id": "custom_icon", "label": "Custom Icon" },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Deeply hydrating" },
+        { "type": "textarea", "id": "text", "label": "Description", "default": "Description here." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Product Star 3-Col" }]
+}
+{% endschema %}

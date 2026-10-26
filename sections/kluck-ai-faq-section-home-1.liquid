@@ -1,0 +1,393 @@
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+
+{% if shop.metafields.app.block_control.value %}
+<div id="fs-{{ section.id }}" class="fs-section-wrapper color-{{ section.settings.color_scheme }}">
+  
+  {% comment %} CSS STYLES {% endcomment %}
+  {% style %}
+    #fs-{{ section.id }} {
+      /* SPACING & SIZING */
+      --pt: {{ section.settings.padding_top }}px;
+      --pb: {{ section.settings.padding_bottom }}px;
+      --max-width: {% if section.settings.section_full_width %}100%{% else %}{{ section.settings.section_max_width }}px{% endif %};
+    }
+  {% endstyle %}
+
+  <style>
+    #fs-{{ section.id }} {
+      background-color: var(--color-background);
+      color: var(--color-foreground);
+      padding-top: var(--pt);
+      padding-bottom: var(--pb);
+      padding-left: 20px;
+      padding-right: 20px;
+      overflow: hidden;
+    }
+
+    #fs-{{ section.id }} .fs-container {
+      max-width: var(--max-width); 
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.2fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    /* TEXT COL */
+    #fs-{{ section.id }} .fs-text-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+      color:black;
+    }
+    #fs-{{ section.id }} h2 {
+      font-size: 42px;
+      line-height: 1.1;
+      margin: 0 0 25px 0;
+      font-weight: 500;
+    }
+    #fs-{{ section.id }} p {
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 0 0 20px 0;
+      opacity: 0.9;
+    }
+    #fs-{{ section.id }} .kluck-button {
+    display: inline-block;
+    text-decoration: none;
+    border-radius: 50px;
+    padding: 15px 30px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    #fs-{{ section.id }} .kluck-button:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+    }
+
+    /* IMAGE COL */
+    #fs-{{ section.id }} .fs-image-col {
+      max-width:350px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #fs-{{ section.id }} .fs-img {
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+      filter: none; 
+    }
+
+    /* FAQ COL */
+    #fs-{{ section.id }} .fs-faq-col {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    #fs-{{ section.id }} .fs-faq-item {
+      position: relative;
+      border-radius: 16px;
+      background-color: transparent; /* Starts transparent */
+      overflow: hidden;
+      transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+    }
+
+    /* Smart Border using pseudo-element to control opacity of currentColor */
+    #fs-{{ section.id }} .fs-faq-item::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      border: 1px solid currentColor;
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Active State Background - Fills with Inner Scheme Background */
+    #fs-{{ section.id }} .fs-faq-item.active {
+      background-color: var(--color-background); 
+    }
+
+    #fs-{{ section.id }} .fs-faq-header {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 25px;
+      cursor: pointer;
+      user-select: none;
+    }
+    
+    #fs-{{ section.id }} .fs-faq-title {
+      font-size: 16px;
+      font-weight: 500;
+      margin: 0;
+    }
+
+    /* Smoothed Icon Animation */
+    #fs-{{ section.id }} .fs-faq-icon {
+      width: 18px;
+      height: 18px;
+      color: currentColor;
+      flex-shrink: 0;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #fs-{{ section.id }} .fs-faq-icon .fs-vertical-line {
+      transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: center;
+    }
+
+    /* Turns the '+' into a '-' smoothly */
+    #fs-{{ section.id }} .fs-faq-item.active .fs-faq-icon {
+      transform: rotate(180deg);
+    }
+    #fs-{{ section.id }} .fs-faq-item.active .fs-faq-icon .fs-vertical-line {
+      opacity: 0;
+      transform: rotate(90deg) scale(0.5);
+    }
+
+    /* Smoothed Height Animation */
+    #fs-{{ section.id }} .fs-faq-content {
+      position: relative;
+      z-index: 2;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+    }
+    #fs-{{ section.id }} .fs-faq-item.active .fs-faq-content {
+      opacity: 1;
+    }
+    #fs-{{ section.id }} .fs-faq-inner {
+      padding: 0 25px 25px 25px;
+      font-size: 14px;
+      line-height: 1.6;
+      opacity: 0.8;
+    }
+
+    /* MOBILE */
+    @media (max-width: 900px) {
+      #fs-{{ section.id }} .fs-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+      #fs-{{ section.id }} .fs-text-col {
+        align-items: center; text-align: center; order: 1;
+      }
+      #fs-{{ section.id }} .fs-image-col {
+        order: 2; max-width: 200px; margin: 0 auto;
+      }
+      #fs-{{ section.id }} .fs-faq-col {
+        order: 3;
+      }
+      #fs-{{ section.id }} h2 { font-size: 32px; margin-bottom: 15px; }
+    }
+  </style>
+
+  {% comment %} HTML STRUCTURE {% endcomment %}
+  <div class="fs-container">
+    
+    <!-- 1. Text -->
+    <div class="fs-text-col">
+  <h2>{{ section.settings.heading }}</h2>
+  <div class="fs-rte"><p>{{ section.settings.text }}</p></div>
+  
+  {% comment %} Changed href to point to the collections list page {% endcomment %}
+  <a href="/pages/faq" class="kluck-button">
+    {{ section.settings.btn_label | default: 'Shop All' }}
+  </a>
+</div>
+
+    <!-- 2. Image -->
+    {% if store_gen.mode == "single" %}
+      {%- assign kluck_feature_image = shop.metafields.kluck_ai.product_base_image.value -%}
+    {% else %}
+      {%- assign kluck_feature_image = shop.metafields.kluck_ai.product_base_image_2.value -%}
+    {% endif %}
+
+    <div class="fs-image-col">
+      {% if section.settings.image != blank %}
+        <img src="{{ section.settings.image | image_url: width: 800 }}" alt="Showcase" class="fs-img">
+      {% elsif section.settings.use_kluck_ai_metafields and kluck_feature_image != blank %}
+        <img src="{{ kluck_feature_image | image_url: width: 800 }}" alt="Showcase" class="fs-img">
+      {% else %}
+        {{ 'collection-1' | placeholder_svg_tag: 'fs-img' }}
+      {% endif %}
+    </div>
+
+    <!-- 3. FAQ (Wrapped in Inner Color Scheme) -->
+    <div class="fs-faq-col">
+      {% for block in section.blocks %}
+        {% assign kluck_faq_question = blank %}
+        {% assign kluck_faq_answer = blank %}
+
+        {% case forloop.index %}
+          {% when 1 %}
+            {% assign kluck_faq_question = store_gen.home_page.text.faq_question_1 %}
+            {% assign kluck_faq_answer = store_gen.home_page.text.faq_answer_1 %}
+          {% when 2 %}
+            {% assign kluck_faq_question = store_gen.home_page.text.faq_question_2 %}
+            {% assign kluck_faq_answer = store_gen.home_page.text.faq_answer_2 %}
+          {% when 3 %}
+            {% assign kluck_faq_question = store_gen.home_page.text.faq_question_3 %}
+            {% assign kluck_faq_answer = store_gen.home_page.text.faq_answer_3 %}
+          {% when 4 %}
+            {% assign kluck_faq_question = store_gen.home_page.text.faq_question_4 %}
+            {% assign kluck_faq_answer = store_gen.home_page.text.faq_answer_4 %}
+        {% endcase %}
+
+        <div class="fs-faq-item color-{{ section.settings.faq_color_scheme }}" {{ block.shopify_attributes }}>
+          <div class="fs-faq-header" onclick="fsToggleAccordion(this)">
+            <h3 class="fs-faq-title">
+              {% if section.settings.use_kluck_ai_metafields %}
+                {% if kluck_faq_question != blank %}
+                  {{ kluck_faq_question }}
+                {% else %}
+                  {{ block.settings.title }}
+                {% endif %}
+              {% else %}
+                {{ block.settings.title }}
+              {% endif %}
+            </h3>
+            <div class="fs-faq-icon">
+              <!-- SVG updated to support smooth minus/plus transition -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line class="fs-vertical-line" x1="12" y1="5" x2="12" y2="19"></line>
+                <line class="fs-horizontal-line" x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </div>
+          </div>
+          <div class="fs-faq-content">
+            <div class="fs-faq-inner">
+              {% if section.settings.use_kluck_ai_metafields %}
+                {% if kluck_faq_answer != blank %}
+                  {{ kluck_faq_answer }}
+                {% else %}
+                  {{ block.settings.content }}
+                {% endif %}
+              {% else %}
+                {{ block.settings.content }}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+
+  {% comment %} JAVASCRIPT {% endcomment %}
+  <script>
+    function fsToggleAccordion(header) {
+      const item = header.parentElement;
+      const content = item.querySelector('.fs-faq-content');
+      
+      // Close other open accordions within the same section
+      const allItems = item.closest('.fs-faq-col').querySelectorAll('.fs-faq-item');
+      allItems.forEach(el => {
+        if (el !== item && el.classList.contains('active')) {
+          el.classList.remove('active');
+          el.querySelector('.fs-faq-content').style.maxHeight = 0;
+        }
+      });
+
+      // Toggle clicked item
+      item.classList.toggle('active');
+      if (item.classList.contains('active')) {
+        content.style.maxHeight = content.scrollHeight + "px";
+      } else {
+        content.style.maxHeight = 0;
+      }
+    }
+
+    // Automatically adjust height if window resizes while accordion is open
+    window.addEventListener('resize', () => {
+      document.querySelectorAll('.fs-faq-item.active .fs-faq-content').forEach(content => {
+        content.style.maxHeight = content.scrollHeight + "px";
+      });
+    });
+  </script>
+
+</div> 
+<!-- END OF MAIN DIV -->
+{% endif %}
+
+{% schema %}
+{
+  "name": "FAQ & Showcase",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "use_kluck_ai_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true
+    },
+    { "type": "header", "content": "Layout & Sizing" },
+    {
+      "type": "checkbox",
+      "id": "section_full_width",
+      "label": "Make section full width",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "section_max_width",
+      "min": 800,
+      "max": 1600,
+      "step": 20,
+      "unit": "px",
+      "label": "Maximum Content Width",
+      "default": 1300
+    },
+    { "type": "header", "content": "Color Schemes" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Outer Section Scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color_scheme",
+      "id": "faq_color_scheme",
+      "label": "FAQ Card Scheme",
+      "default": "scheme-2",
+      "info": "Applies to the FAQ items. The background color of this scheme appears when the FAQ is expanded."
+    },
+    { "type": "header", "content": "Text Content" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "We're answerable!" },
+    { "type": "textarea", "id": "text", "label": "Body Text", "default": "Any question about our products? Check here." },
+    { "type": "header", "content": "Button" },
+    { "type": "text", "id": "btn_label", "label": "Button Label", "default": "See More Answers" },
+    { "type": "url", "id": "btn_link", "label": "Button Link" },
+    { "type": "header", "content": "Image Showcase" },
+    { "type": "image_picker", "id": "image", "label": "Center Image (Transparent PNG)" },
+    { "type": "header", "content": "Spacing" },
+    { "type": "range", "id": "padding_top", "min": 20, "max": 100, "default": 60, "label": "Top Padding" },
+    { "type": "range", "id": "padding_bottom", "min": 20, "max": 100, "default": 60, "label": "Bottom Padding" }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Question", "default": "How long does shipping take?" },
+        { "type": "textarea", "id": "content", "label": "Answer", "default": "3-5 business days." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ & Showcase",
+      "blocks": [
+        { "type": "faq_item" },
+        { "type": "faq_item" },
+        { "type": "faq_item" }
+      ]
+    }
+  ]
+}
+{% endschema %}

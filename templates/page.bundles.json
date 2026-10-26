@@ -1,0 +1,87 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "sams_bundles": {
+      "type": "sams-bundles",
+      "blocks": {
+        "bundle_1": {
+          "type": "bundle",
+          "settings": {
+            "title": "Mezze Night",
+            "subtitle": "Complete dinner spread with ready-to-scoop sides",
+            "badge": "Lahore Delivery Only",
+            "savings_text": "Save Rs 200",
+            "included_items": "Sam's Hummus 250g, Sam's Falafel (16 pcs box), Pure Roasted Tahina 600g",
+            "original_price": "Rs 2,250",
+            "bundle_price": "Rs 2,050",
+            "link": "/pages/bundles#mezze-night"
+          }
+        },
+        "bundle_2": {
+          "type": "bundle",
+          "settings": {
+            "title": "Healthy Pantry",
+            "subtitle": "Nourishing stone-ground goodness & breakfast staples",
+            "badge": "Nationwide Delivery",
+            "savings_text": "Save Rs 350",
+            "included_items": "Multigrain Flour 5kg, Pure Tahina 600g, Pomegranate Molasses 1000g",
+            "original_price": "Rs 5,990",
+            "bundle_price": "Rs 5,640",
+            "link": "/pages/bundles#healthy-pantry"
+          }
+        },
+        "bundle_3": {
+          "type": "bundle",
+          "settings": {
+            "title": "Chef's Middle Eastern Box",
+            "subtitle": "The ultimate master pantry collection",
+            "badge": "Lahore Special",
+            "savings_text": "Save Rs 500",
+            "included_items": "Pure Tahina 600g, Pomegranate Molasses 1000g, Sam's Hummus, Sam's Falafel",
+            "original_price": "Rs 5,050",
+            "bundle_price": "Rs 4,550",
+            "link": "/pages/bundles#chefs-middle-eastern-box"
+          }
+        }
+      },
+      "block_order": [
+        "bundle_1",
+        "bundle_2",
+        "bundle_3"
+      ],
+      "settings": {
+        "eyebrow": "CURATED PAIRINGS",
+        "heading": "Mezze Bundles & Pantry Boxes",
+        "subheading": "Everything you need for an authentic Middle Eastern table, bundled with exclusive savings.",
+        "bg_color": "#F4E9DA",
+        "pad_top": 80,
+        "pad_bottom": 80
+      }
+    },
+    "sams_build_box": {
+      "type": "sams-build-box",
+      "settings": {
+        "eyebrow": "CUSTOMIZE YOUR TABLE",
+        "heading": "Build Your Own Mezze Box",
+        "subheading": "Select your favorite spreads, flours, and mezze sides. Reach Rs 3,000 for automatic FREE delivery!",
+        "free_delivery_threshold": 3000,
+        "collection": "all",
+        "bg_color": "#FBF6EE",
+        "pad_top": 80,
+        "pad_bottom": 80
+      }
+    }
+  },
+  "order": [
+    "sams_bundles",
+    "sams_build_box"
+  ]
+}

@@ -1,0 +1,810 @@
+{%- assign thumb_count = section.settings.thumbs_count -%}
+{%- assign show_thumbs = section.settings.show_thumbs -%}
+{%- assign heading_font = section.settings.heading_font_family -%}
+{%- assign body_font = section.settings.body_font_family -%}
+
+<!-- 1. FONT LOADING -->
+{% style %}
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ body_font | font_face: font_display: 'swap' }}
+{% endstyle %}
+
+<!-- 2. MAIN LOGIC WRAPPER -->
+{% if shop.metafields.app.block_control.value %}
+  {% assign use_metafields = section.settings.use_metafields %}
+  {% assign opacity = section.settings.background_opacity | divided_by: 100.0 %}
+  {% assign bg_color = section.settings.background_color %}
+
+  {% if use_metafields
+    and product != blank
+    and product.metafields.kluck_ai.color_schema != blank
+  %}
+    {% assign bg_color = product.metafields.kluck_ai.color_schema %}
+  {% endif %}
+  
+  <div class="product-split section-scope section-scope-{{ section.id }}">
+    <div class="product-split__container">
+    
+      <!-- LEFT SIDE STACK (Sticky on Desktop) -->
+      <div class="product-split__left-side">
+        
+        <!-- MEDIA PANEL -->
+        {%- liquid
+          assign fallback_images = ''
+          if product.handle contains 'falafel' or product.title contains 'Falafel'
+            assign fallback_images = 'sams-falafel-box-front.jpg,sams-falafel-box-open-frozen.jpg,sams-falafel-herb-interior.jpg,sams-falafel-platter-topdown.jpg,sams-falafel-lifestyle-steaming.jpg,sams-falafel-dark-slate.jpg,sams-falafel-box-angle.jpg'
+          elsif product.handle contains 'hummus' or product.title contains 'Hummus'
+            assign fallback_images = 'sams-hummus-tub-open-front.jpg,sams-hummus-tub-topdown.jpg,sams-hummus-pita-dip.jpg,sams-hummus-infographic-creamy.jpg,sams-hummus-infographic-ways-to-enjoy.jpg,sams-hummus-family-dinner.jpg,sams-hummus-kitchen-counter.jpg'
+          elsif product.handle contains 'tahina' or product.title contains 'Tahina'
+            if product.handle contains 'bulk' or product.handle contains 'bucket' or product.title contains 'Bucket' or product.title contains 'Bulk' or product.title contains 'Wholesale'
+              assign fallback_images = 'sams-tahina-bucket-front.jpg,sams-tahina-bucket-ladle-pour.jpg,sams-tahina-bucket-infographic-real-tahina.jpg,sams-tahina-bucket-infographic-small-bucket.jpg,sams-tahina-bucket-table-sesame.jpg,sams-tahina-bucket-family-dining.jpg'
+            else
+              assign fallback_images = 'sams-tahina-jar-front.jpg,sams-tahina-spoon-scoop.jpg,sams-tahina-jar-sesame-scoop.jpg,sams-tahina-infographic-smooth-nutty.jpg,sams-tahina-infographic-uses.jpg,sams-tahina-drizzle-falafel.jpg,sams-tahina-shawarma-wrap.jpg,sams-tahina-mezze-board.jpg'
+            endif
+          elsif product.handle contains 'flour' or product.title contains 'Flour'
+            assign fallback_images = 'sams-flour-5kg-field.jpg,sams-flour-infographic-stone-ground.jpg'
+          endif
+          assign fallback_list = fallback_images | split: ','
+        -%}
+        <div class="product-split__panel product-split__panel--media">
+          <div class="ps-gallery-wrapper ps-gallery--{{ section.settings.thumb_position }}">
+            <div class="ps-main-col">
+              <div class="ps-main-item" id="PS-MainWrapper-{{ section.id }}">
+                <div class="ps-main-track" id="PS-Track-{{ section.id }}">
+                  {% if product.images.size > 0 %}
+                    {% for image in product.images limit: thumb_count %}
+                      <img src="{{ image | img_url: '1000x' }}" 
+                           class="ps-main-img" 
+                           alt="{{ image.alt | escape }}"
+                           draggable="false"
+                           data-image-id="{{ image.id }}"> <!-- Added Data ID -->
+                    {% endfor %}
+                  {% elsif fallback_list.size > 0 %}
+                    {% for fb_img in fallback_list limit: thumb_count %}
+                      <img src="{{ fb_img | asset_url }}" 
+                           class="ps-main-img" 
+                           alt="{{ product.title | escape }}"
+                           draggable="false"
+                           data-image-id="{{ forloop.index }}">
+                    {% endfor %}
+                  {% else %}
+                    {{ 'product-1' | placeholder_svg_tag: 'ps-main-img' }}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            {% if show_thumbs and product.images.size > 1 %}
+              <div class="ps-thumbs-col">
+                {% for image in product.images limit: thumb_count %}
+                  <div class="ps-thumb {% if forloop.first %}is-active{% endif %}" 
+                       onclick="psChangeImage(this, '{{ section.id }}', {{ forloop.index0 }})">
+                    <img src="{{ image | img_url: '400x' }}" alt="{{ image.alt | escape }}" draggable="false">
+                  </div>
+                {% endfor %}
+              </div>
+            {% elsif show_thumbs and fallback_list.size > 1 %}
+              <div class="ps-thumbs-col">
+                {% for fb_img in fallback_list limit: thumb_count %}
+                  <div class="ps-thumb {% if forloop.first %}is-active{% endif %}" 
+                       onclick="psChangeImage(this, '{{ section.id }}', {{ forloop.index0 }})">
+                    <img src="{{ fb_img | asset_url }}" alt="{{ product.title | escape }}" draggable="false">
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- FAQ PANEL (Now grouped with Media) -->
+        {% if section.settings.show_faq %}
+          <div class="product-split__faq-wrapper">
+            <div class="ps-faq-container">
+              {% for i in (1..5) %}
+                {% comment %} 1. Define Standard Settings Keys {% endcomment %}
+                {% capture q_id %}faq_q{{ i }}{% endcapture %}
+                {% capture a_id %}faq_a{{ i }}{% endcapture %}
+                
+                {% assign question = section.settings[q_id] %}
+                {% assign answer = section.settings[a_id] %}
+
+                {% comment %} 2. Metafield Logic Override {% endcomment %}
+                {% if use_metafields %}
+                  {% capture mf_q_key %}product_question_{{ i }}{% endcapture %}
+                  {% capture mf_a_key %}product_question_{{ i }}_answer{% endcapture %}
+                  
+                  {% assign mf_question = product.metafields.kluck_ai[mf_q_key] %}
+                  {% assign mf_answer = product.metafields.kluck_ai[mf_a_key] %}
+
+                  {% if mf_question != blank and mf_answer != blank %}
+                    {% assign question = mf_question %}
+                    {% assign answer = mf_answer %}
+                  {% endif %}
+                {% endif %}
+              
+                {% if question != blank %}
+                  <div class="pf-faq-item">
+                    <div class="pf-faq-header" onclick="pfToggleFaq(this)">
+                      <p class="pf-faq-title">{{ question }}</p>
+                      <div class="pf-faq-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                      </div>
+                    </div>
+                    <div class="pf-faq-content">
+                      <div class="pf-faq-inner">{{ answer }}</div>
+                    </div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      </div> <!-- End Left Side Stack -->
+
+      <!-- RIGHT PANEL: DETAILS -->
+      <div class="product-split__panel product-split__panel--details">
+        {% for block in section.blocks %}
+          {% render block %}
+        {% endfor %}
+      </div>
+
+    </div>
+  </div>
+{% endif %}
+
+<!-- 4. CSS STYLES -->
+<style>
+  .section-scope-{{ section.id }} {
+    /* Layout Variables */
+    --bg-color: {{ bg_color }};
+    --bg-opacity: {{ opacity }};
+    --main-radius: {{ section.settings.main_radius }}px;
+    --thumb-radius: {{ section.settings.thumb_radius }}px;
+    --gallery-width: {{ section.settings.gallery_width }}%;
+    --left-pd-x: {{ section.settings.pad_left_x }}px;
+    --left-pd-y: {{ section.settings.pad_left_y }}px;
+    --right-pd-x: {{ section.settings.pad_right_x }}px;
+    --right-pd-y: {{ section.settings.pad_right_y }}px;
+    --n: {{ thumb_count }}; 
+    --gap: 12px; 
+    --thumb-w: calc((100% - (var(--gap) * var(--n))) / (var(--n) + 1));
+    --main-w: calc(100% - var(--thumb-w) - var(--gap));
+    
+    /* Font Families */
+    --font-heading-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --font-body-family: {{ body_font.family }}, {{ body_font.fallback_families }};
+
+    /* Typography Settings (Derived from Schema) */
+    --body-size: {{ section.settings.body_size }}px;
+    --body-weight: {{ section.settings.body_weight }};
+
+    --h1-size: {{ section.settings.h1_size }}px;
+    --h1-weight: {{ section.settings.h1_weight }};
+    
+    --h2-size: {{ section.settings.h2_size }}px;
+    --h2-weight: {{ section.settings.h2_weight }};
+
+    --h3-size: {{ section.settings.h3_size }}px;
+    --h3-weight: {{ section.settings.h3_weight }};
+
+    --h4-size: {{ section.settings.h4_size }}px;
+    --h4-weight: {{ section.settings.h4_weight }};
+
+    --h5-size: {{ section.settings.h5_size }}px;
+    --h5-weight: {{ section.settings.h5_weight }};
+
+    --h6-size: {{ section.settings.h6_size }}px;
+    --h6-weight: {{ section.settings.h6_weight }};
+
+    /* FAQ Variables */
+    --faq-bg: {{ section.settings.faq_bg_color }};
+    --faq-border: {{ section.settings.faq_border_color }};
+    --faq-margin: {{ section.settings.faq_margin_top }}px;
+    --faq-q-font: var(--font-body-family);
+    --faq-q-size: var(--body-size);
+    --faq-q-color: {{ section.settings.faq_color_q }};
+    --faq-a-font: var(--font-body-family);
+    --faq-a-size: var(--body-size);
+    --faq-a-color: {{ section.settings.faq_color_a }};
+    --faq-icon-bg: {{ section.settings.faq_icon_bg }};
+    --faq-icon-color: {{ section.settings.faq_icon_color }};
+  }
+
+  .section-scope-{{ section.id }} {
+    position: relative;
+    width: 100%;
+    font-family: var(--font-body-family);
+    font-size: var(--body-size);
+    font-weight: var(--body-weight);
+    line-height: 1.6;
+    color: inherit;
+  }
+
+  /* Typography Application for App Blocks */
+  .section-scope-{{ section.id }} h1, .section-scope-{{ section.id }} .h1 { font-family: var(--font-heading-family); font-size: var(--h1-size); font-weight: var(--h1-weight); line-height: 1.2; margin-bottom: 0.5em; }
+  .section-scope-{{ section.id }} h2, .section-scope-{{ section.id }} .h2 { font-family: var(--font-heading-family); font-size: var(--h2-size); font-weight: var(--h2-weight); line-height: 1.3; margin-bottom: 0.5em; }
+  .section-scope-{{ section.id }} h3, .section-scope-{{ section.id }} .h3 { font-family: var(--font-heading-family); font-size: var(--h3-size); font-weight: var(--h3-weight); line-height: 1.3; margin-bottom: 0.5em; }
+  .section-scope-{{ section.id }} h4, .section-scope-{{ section.id }} .h4 { font-family: var(--font-heading-family); font-size: var(--h4-size); font-weight: var(--h4-weight); line-height: 1.3; margin-bottom: 0.5em; }
+  .section-scope-{{ section.id }} h5, .section-scope-{{ section.id }} .h5 { font-family: var(--font-heading-family); font-size: var(--h5-size); font-weight: var(--h5-weight); line-height: 1.3; margin-bottom: 0.5em; }
+  .section-scope-{{ section.id }} h6, .section-scope-{{ section.id }} .h6 { font-family: var(--font-heading-family); font-size: var(--h6-size); font-weight: var(--h6-weight); line-height: 1.3; margin-bottom: 0.5em; }
+  
+  .section-scope-{{ section.id }} p {
+    font-size: var(--body-size);
+    font-weight: var(--body-weight);
+  }
+
+  .section-scope-{{ section.id }}::before {
+    content: ""; position: absolute; inset: 0;
+    background-color: var(--bg-color);
+    opacity: var(--bg-opacity);
+    z-index: 0; pointer-events: none;
+  }
+
+  .product-split__container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: {{ section.settings.container_max_width }}px;
+    margin: 0 auto;
+  }
+  
+  /* Desktop Layout Styles */
+  @media (min-width: 990px) {
+    /* Gallery Position Logic */
+    .ps-gallery--left { flex-direction: row-reverse; }
+    
+    /* Bottom Layout Configuration */
+    .ps-gallery--bottom { flex-direction: column; }
+    .ps-gallery--bottom .ps-main-col, .ps-gallery--bottom .ps-thumbs-col { width: 100%; }
+    .ps-gallery--bottom .ps-thumbs-col { flex-direction: row; }
+    
+    .ps-gallery--bottom .ps-thumb {
+      width: calc((100% - (var(--gap) * (var(--n) - 1))) / var(--n));
+    }
+
+    .product-split__container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: start; /* Essential for sticky to work */
+    }
+
+    .product-split__left-side {
+      position: sticky;
+      top: 20px;
+      height: fit-content;
+      display: flex;
+      flex-direction: column;
+      padding: var(--left-pd-y) var(--left-pd-x);
+      z-index: 2; 
+    }
+
+    .product-split__panel--media { padding: 0; }
+    .product-split__faq-wrapper { padding: 0; margin-top: var(--faq-margin); }
+    .ps-faq-container { max-width: var(--gallery-width); margin-left: auto; }
+    
+    /* Right Panel Width Constraints */
+    .product-split__panel--details { 
+      padding: var(--right-pd-y) var(--right-pd-x);
+      position: sticky;      
+      top: 20px;             
+      height: fit-content;   
+      z-index: 2;
+      min-width: 0; 
+      width: 100%; 
+    }
+
+    .product-split__panel--details > * {
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow-wrap: break-word;
+    }
+  }
+
+  /* Mobile Layout Styles */
+  @media (max-width: 989px) {
+    .product-split__left-side { order: 1; display: contents; }
+    .product-split__panel--media { order: 1; padding: 20px 10px 0 10px; }
+    
+    .product-split__panel--details { 
+      order: 2; 
+      padding: 20px; 
+      width: 100%; 
+      box-sizing: border-box; 
+    }
+    
+    .product-split__panel--details > * {
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow-wrap: break-word;
+    }
+
+    .product-split__faq-wrapper { order: 3; padding: 0 20px 40px 20px; }
+    .ps-faq-container { width: 100%; }
+    
+    /* Mobile Gallery Logic */
+    .ps-gallery-wrapper { 
+      flex-direction: column !important; 
+      max-width: 100%; 
+      margin: 0 auto !important; 
+    }
+
+    .ps-main-col, .ps-thumbs-col { width: 100% !important; }
+    .ps-thumbs-col { 
+      flex-direction: row !important; 
+      overflow-x: auto; 
+      scroll-snap-type: x mandatory; 
+      scrollbar-width: none; 
+      padding-bottom: 5px;
+    }
+    .ps-thumbs-col::-webkit-scrollbar { display: none; }
+    .ps-thumb { 
+      width: calc((100% - (var(--gap) * (var(--n) - 1))) / var(--n)) !important; 
+      scroll-snap-align: start;
+    }
+  }
+
+  /* Gallery Styles - SLIDE VERSION */
+  .ps-gallery-wrapper { display: flex; width: 100%; gap: var(--gap); align-items: flex-start; max-width: var(--gallery-width); margin-left: auto; }
+  
+  .ps-main-col { width: var(--main-w); flex-shrink: 0; overflow: hidden; }
+  .ps-main-item { width: 100%; aspect-ratio: 1/1; background: #f4f4f4; border-radius: var(--main-radius); overflow: hidden; position: relative; touch-action: pan-y; }
+  
+  .ps-main-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .ps-main-img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    flex: 0 0 100%;
+    user-select: none;
+  }
+
+  .ps-thumbs-col { width: var(--thumb-w); display: flex; flex-direction: column; gap: var(--gap); }
+  .ps-thumb { aspect-ratio: 1/1; border-radius: var(--thumb-radius); overflow: hidden; cursor: pointer; border: 2px solid transparent; flex-shrink: 0; }
+  .ps-thumb.is-active { border-color: #000; }
+  .ps-thumb img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+
+  /* FAQ Internal Styles */
+  .ps-faq-container { display: flex; flex-direction: column; gap: 8px; }
+  .pf-faq-item { background: var(--faq-bg); border: 1px solid var(--faq-border); border-radius: 12px; overflow: hidden; }
+  .pf-faq-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; cursor: pointer; }
+  .pf-faq-title { font-family: var(--faq-q-font); font-size: var(--faq-q-size); color: var(--faq-q-color); margin: 0; font-weight: 500; }
+  .pf-faq-icon { width: 28px; height: 28px; border-radius: 50%; background: var(--faq-icon-bg); display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+  .pf-faq-icon svg { width: 12px; height: 12px; stroke: var(--faq-icon-color); stroke-width: 2; }
+  .pf-faq-item.active .pf-faq-icon { transform: rotate(45deg); }
+  .pf-faq-content { max-height: 0; overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s; opacity: 0; }
+  .pf-faq-item.active .pf-faq-content { opacity: 1; }
+  .pf-faq-inner { padding: 0 18px 18px 18px; font-family: var(--faq-a-font); font-size: var(--faq-a-size); color: var(--faq-a-color); line-height: 1.5; }
+
+</style>
+
+<!-- 5. JAVASCRIPT -->
+<script>
+  function psChangeImage(el, sectionId, index) {
+    const track = document.getElementById('PS-Track-' + sectionId);
+    if(track) {
+      track.style.transform = `translateX(-${index * 100}%)`;
+    }
+    
+    const thumbsCol = el.closest('.ps-thumbs-col');
+    if(thumbsCol) {
+      thumbsCol.querySelectorAll('.ps-thumb').forEach(t => t.classList.remove('is-active'));
+      el.classList.add('is-active');
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  }
+
+  function pfToggleFaq(header) {
+    const item = header.parentElement;
+    const content = item.querySelector('.pf-faq-content');
+    const isActive = item.classList.toggle('active');
+    content.style.maxHeight = isActive ? content.scrollHeight + "px" : "0";
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const mainWrapper = document.getElementById('PS-MainWrapper-{{ section.id }}');
+    if (!mainWrapper) return;
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    mainWrapper.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, {passive: true});
+
+    mainWrapper.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, {passive: true});
+
+    function handleSwipe() {
+      const thumbs = Array.from(document.querySelectorAll('.section-scope-{{ section.id }} .ps-thumb'));
+      if (thumbs.length < 2) return;
+      
+      const activeIndex = thumbs.findIndex(t => t.classList.contains('is-active'));
+      const swipeThreshold = 50;
+
+      if (touchEndX < touchStartX - swipeThreshold) {
+        const nextIndex = (activeIndex + 1) % thumbs.length;
+        thumbs[nextIndex].click();
+      }
+      if (touchEndX > touchStartX + swipeThreshold) {
+        const prevIndex = (activeIndex - 1 + thumbs.length) % thumbs.length;
+        thumbs[prevIndex].click();
+      }
+    }
+  });
+
+  // NEW LOGIC: Listen for variant changes from the App Block
+  document.addEventListener('variantChanged', function(e) {
+    if (!e.detail || !e.detail.variantId) return;
+
+    // 1. Generate a dictionary in JS that maps Variant IDs to their assigned Image IDs
+    const variantImageMap = {
+      {% for variant in product.variants %}
+        {% if variant.featured_image %}
+          "{{ variant.id }}": "{{ variant.featured_image.id }}",
+        {% endif %}
+      {% endfor %}
+    };
+
+    const variantId = String(e.detail.variantId);
+    const targetImageId = variantImageMap[variantId];
+    
+    // If variant doesn't have an attached image, do nothing
+    if (!targetImageId) return;
+
+    const sectionId = '{{ section.id }}';
+    const track = document.getElementById('PS-Track-' + sectionId);
+    if (!track) return;
+
+    // 2. Find the index of the image in the current loaded images
+    const mainImages = Array.from(track.querySelectorAll('.ps-main-img'));
+    const targetIndex = mainImages.findIndex(img => img.getAttribute('data-image-id') === targetImageId);
+
+    if (targetIndex !== -1) {
+      // 3. Trigger sliding transition
+      track.style.transform = `translateX(-${targetIndex * 100}%)`;
+
+      // 4. Update the active thumbnail styles below the slider
+      const thumbsCol = document.querySelector('.section-scope-' + sectionId + ' .ps-thumbs-col');
+      if (thumbsCol) {
+        const thumbs = Array.from(thumbsCol.querySelectorAll('.ps-thumb'));
+        thumbs.forEach(t => t.classList.remove('is-active'));
+        
+        if (thumbs[targetIndex]) {
+          thumbs[targetIndex].classList.add('is-active');
+          thumbs[targetIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+      }
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Kluck AI - Hero Section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "use_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Manual background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "background_opacity",
+      "label": "Background opacity",
+      "min": 0, "max": 100, "step": 5, "unit": "%", "default": 10
+    },
+    {
+      "type": "range",
+      "id": "container_max_width",
+      "min": 800, "max": 1800, "step": 50, "unit": "px",
+      "label": "Container Max Width",
+      "default": 1250
+    },
+    {
+      "type": "header",
+      "content": "Fonts"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font_family",
+      "label": "Heading Font Family",
+      "default": "abel_n4"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font_family",
+      "label": "Body Font Family",
+      "default": "abel_n4"
+    },
+    {
+      "type": "header",
+      "content": "Body Typography"
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "min": 10, "max": 60, "step": 1, "unit": "px",
+      "label": "Body Font Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "body_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "Body Font Weight",
+      "default": 400
+    },
+    {
+      "type": "header",
+      "content": "Heading 1 (H1)"
+    },
+    {
+      "type": "range",
+      "id": "h1_size",
+      "min": 10, "max": 100, "step": 1, "unit": "px",
+      "label": "H1 Font Size",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "h1_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "H1 Font Weight",
+      "default": 700
+    },
+    {
+      "type": "header",
+      "content": "Heading 2 (H2)"
+    },
+    {
+      "type": "range",
+      "id": "h2_size",
+      "min": 10, "max": 100, "step": 1, "unit": "px",
+      "label": "H2 Font Size",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "h2_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "H2 Font Weight",
+      "default": 700
+    },
+    {
+      "type": "header",
+      "content": "Heading 3 (H3)"
+    },
+    {
+      "type": "range",
+      "id": "h3_size",
+      "min": 10, "max": 100, "step": 1, "unit": "px",
+      "label": "H3 Font Size",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "h3_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "H3 Font Weight",
+      "default": 600
+    },
+    {
+      "type": "header",
+      "content": "Heading 4 (H4)"
+    },
+    {
+      "type": "range",
+      "id": "h4_size",
+      "min": 10, "max": 100, "step": 1, "unit": "px",
+      "label": "H4 Font Size",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "h4_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "H4 Font Weight",
+      "default": 600
+    },
+    {
+      "type": "header",
+      "content": "Heading 5 (H5)"
+    },
+    {
+      "type": "range",
+      "id": "h5_size",
+      "min": 10, "max": 100, "step": 1, "unit": "px",
+      "label": "H5 Font Size",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "h5_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "H5 Font Weight",
+      "default": 500
+    },
+    {
+      "type": "header",
+      "content": "Heading 6 (H6)"
+    },
+    {
+      "type": "range",
+      "id": "h6_size",
+      "min": 10, "max": 100, "step": 1, "unit": "px",
+      "label": "H6 Font Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "h6_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "H6 Font Weight",
+      "default": 500
+    },
+    {
+      "type": "header",
+      "content": "Panel Spacing"
+    },
+    {
+      "type": "range",
+      "id": "pad_left_x",
+      "min": 0, "max": 100, "step": 5, "unit": "px",
+      "label": "Left Panel: Side Padding",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "pad_left_y",
+      "min": 0, "max": 100, "step": 5, "unit": "px",
+      "label": "Left Panel: Vertical Padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "pad_right_x",
+      "min": 0, "max": 100, "step": 5, "unit": "px",
+      "label": "Right Panel: Side Padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "pad_right_y",
+      "min": 0, "max": 100, "step": 5, "unit": "px",
+      "label": "Right Panel: Vertical Padding",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Gallery Configuration"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_thumbs",
+      "label": "Show Thumbnails",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "thumbs_count",
+      "min": 2, "max": 5, "step": 1,
+      "label": "Number of Thumbnails",
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "thumb_position",
+      "label": "Desktop Position",
+      "options": [
+        { "value": "right", "label": "Right" },
+        { "value": "left", "label": "Left" },
+        { "value": "bottom", "label": "Bottom" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "range",
+      "id": "gallery_width",
+      "min": 50, "max": 100, "step": 5, "unit": "%",
+      "label": "Gallery Width Scale",
+      "default": 90
+    },
+    {
+      "type": "range",
+      "id": "main_radius",
+      "min": 0, "max": 40, "step": 2, "unit": "px",
+      "label": "Main Image Radius",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "thumb_radius",
+      "min": 0, "max": 40, "step": 2, "unit": "px",
+      "label": "Thumbnail Radius",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "FAQ Configuration"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_faq",
+      "label": "Show FAQ",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "faq_margin_top",
+      "min": 0, "max": 100, "step": 5, "unit": "px",
+      "label": "Gap between Media & FAQ (Desktop)",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "faq_bg_color",
+      "label": "FAQ Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "faq_border_color",
+      "label": "FAQ Border",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "faq_color_q",
+      "label": "Question Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "faq_color_a",
+      "label": "Answer Color",
+      "default": "#555555"
+    },
+    {
+      "type": "color",
+      "id": "faq_icon_bg",
+      "label": "Icon Background",
+      "default": "#f0f0f0"
+    },
+    {
+      "type": "color",
+      "id": "faq_icon_color",
+      "label": "Icon Color",
+      "default": "#333333"
+    },
+    { "type": "text", "id": "faq_q1", "label": "Q1", "default": "Shipping info?" },
+    { "type": "textarea", "id": "faq_a1", "label": "A1", "default": "Ships in 3 days." },
+    { "type": "text", "id": "faq_q2", "label": "Q2", "default": "Returns?" },
+    { "type": "textarea", "id": "faq_a2", "label": "A2", "default": "30-day returns." },
+    { "type": "text", "id": "faq_q3", "label": "Q3" },
+    { "type": "textarea", "id": "faq_a3", "label": "A3" },
+    { "type": "text", "id": "faq_q4", "label": "Q4" },
+    { "type": "textarea", "id": "faq_a4", "label": "A4" },
+    { "type": "text", "id": "faq_q5", "label": "Q5" },
+    { "type": "textarea", "id": "faq_a5", "label": "A5" }
+  ],
+  "blocks": [{ "type": "@app" } ,   { "type": "@theme" }, ],
+  "presets": [{ "name": "Kluck AI - Hero Section" }]
+}
+{% endschema %}

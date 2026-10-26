@@ -1,0 +1,201 @@
+{%- comment -%}
+  Sam's Food - Announcement ticker. Messages are split on " · " and scroll right to left.
+  The sequence is rendered in two identical halves so the -50% loop is seamless; each half
+  repeats the messages so the bar stays full on wide screens.
+{%- endcomment -%}
+
+{%- liquid
+  assign messages = section.settings.announcement_text | split: ' · '
+  assign wa_digits = section.settings.whatsapp_number | remove: ' ' | remove: '-' | remove: '+'
+  assign wa_first = wa_digits | slice: 0
+  if wa_first == '0'
+    assign wa_digits = wa_digits | remove_first: '0' | prepend: '92'
+  endif
+-%}
+
+<div
+  class="sams-announcement-bar"
+  style="--sams-ticker-bg: {{ section.settings.bg_color }}; --sams-ticker-fg: {{ section.settings.text_color }}; --sams-ticker-duration: {{ section.settings.speed }}s;"
+  role="region"
+  aria-label="Announcements"
+>
+  <div class="sams-ticker">
+    <div class="sams-ticker__track">
+      {%- for half in (1..2) -%}
+        {%- for rep in (1..4) -%}
+          {%- liquid
+            assign is_copy = false
+            if half > 1 or rep > 1
+              assign is_copy = true
+            endif
+          -%}
+          <div class="sams-ticker__group" {% if is_copy %}aria-hidden="true"{% endif %}>
+            {%- for message in messages -%}
+              <span class="sams-ticker__item">{{ message | strip }}</span>
+            {%- endfor -%}
+            {%- if section.settings.show_whatsapp and wa_digits != blank -%}
+              <a
+                class="sams-ticker__item sams-ticker__wa"
+                href="https://wa.me/{{ wa_digits }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                {% if is_copy %}tabindex="-1"{% endif %}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.8 14.13c-.25.7-1.45 1.34-2 1.43-.52.08-1.18.11-1.9-.12-.44-.14-1-.32-1.73-.64-3.04-1.31-5.03-4.37-5.18-4.57-.15-.2-1.24-1.65-1.24-3.15 0-1.5.78-2.23 1.06-2.54.28-.31.6-.38.8-.38.2 0 .4 0 .58.01.19.01.44-.07.69.53.25.6.85 2.08.93 2.23.07.15.12.33.02.53-.1.2-.15.32-.3.5-.15.17-.31.39-.45.52-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.03 1.12 1 2.07 1.31 2.36 1.46.3.15.47.13.64-.08.17-.2.74-.86.94-1.16.2-.3.4-.25.67-.15.27.1 1.73.82 2.02.97.3.15.5.22.57.35.08.12.08.72-.17 1.42z"/></svg>
+                WhatsApp {{ section.settings.whatsapp_number }}
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .sams-announcement-bar {
+    background: var(--sams-ticker-bg, var(--espresso));
+    color: var(--sams-ticker-fg, var(--ivory));
+    border-bottom: 1px solid rgba(229, 214, 194, 0.15);
+    font-family: var(--font-clean);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .sams-ticker {
+    overflow: hidden;
+    padding-block: 10px;
+  }
+
+  .sams-ticker__track {
+    display: flex;
+    width: max-content;
+    animation: sams-ticker-scroll var(--sams-ticker-duration, 40s) linear infinite;
+  }
+
+  .sams-ticker:hover .sams-ticker__track,
+  .sams-ticker:focus-within .sams-ticker__track {
+    animation-play-state: paused;
+  }
+
+  .sams-ticker__group {
+    display: flex;
+    flex-shrink: 0;
+  }
+
+  .sams-ticker__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .sams-ticker__item::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    margin-inline: 28px 22px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .sams-ticker__wa {
+    color: var(--gold-light);
+    text-decoration: none;
+  }
+
+  .sams-ticker__wa:hover {
+    color: var(--ivory);
+  }
+
+  @keyframes sams-ticker-scroll {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sams-ticker__track {
+      width: auto;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: none;
+    }
+
+    .sams-ticker__group[aria-hidden='true'] {
+      display: none;
+    }
+
+    .sams-ticker__group {
+      flex-wrap: wrap;
+      justify-content: center;
+      row-gap: 4px;
+    }
+
+    .sams-ticker__item::before {
+      margin-inline: 14px 10px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Sams Announcement",
+  "settings": [
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "label": "Announcement Text",
+      "info": "Separate messages with \" · \" to show them as separate ticker items.",
+      "default": "Free delivery in Lahore on orders over Rs 3,000 · Cash on delivery nationwide"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Scroll duration",
+      "info": "Seconds for one full loop. Higher is slower.",
+      "min": 15,
+      "max": 90,
+      "step": 5,
+      "unit": "s",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#2B160E"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#FBF6EE"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_whatsapp",
+      "label": "Show WhatsApp Number",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_number",
+      "label": "WhatsApp number",
+      "info": "A leading 0 is replaced with Pakistan's 92 for the WhatsApp link.",
+      "default": "0345-4788888"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sams Announcement"
+    }
+  ]
+}
+{% endschema %}

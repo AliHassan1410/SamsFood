@@ -1,0 +1,147 @@
+{%- assign section_scheme = section.settings.color_scheme | default: 'scheme-1' -%}
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+{% assign home = store_gen.home_page %}
+{% assign hi = home.images %}
+{% assign use_mf = section.settings.use_kluck_ai_metafields %}
+{% assign homeData = section.settings.homeData %}
+{% if hi == blank and homeData.images != blank %}{% assign hi = homeData.images %}{% endif %}
+
+{% assign banner_image = section.settings.banner_image %}
+{% assign banner_image_mobile = section.settings.banner_image_mobile %}
+{% if use_mf %}
+  {% if shop.metafields.kluck_ai.banner_image.value != blank %}
+    {% assign banner_image = shop.metafields.kluck_ai.banner_image.value %}
+  {% elsif hi.banner_image != blank %}
+    {% assign banner_image = hi.banner_image %}
+  {% endif %}
+  {% if shop.metafields.kluck_ai.banner_image_mobile.value != blank %}
+    {% assign banner_image_mobile = shop.metafields.kluck_ai.banner_image_mobile.value %}
+  {% elsif hi.banner_image_mobile != blank %}
+    {% assign banner_image_mobile = hi.banner_image_mobile %}
+  {% endif %}
+{% endif %}
+{% if banner_image_mobile == blank %}
+  {% assign banner_image_mobile = banner_image %}
+{% endif %}
+
+{% if shop.metafields.app.block_control.value %}
+<style>
+  #shopify-section-{{ section.id }} {
+    width: 100%;
+    max-width: none;
+  }
+    #ch-{{ section.id }} {
+  --c-ink: var(--color-foreground-heading, #111);
+  --c-ink-muted: var(--color-foreground-muted, rgba(0,0,0,0.55));
+  --c-surface: var(--color-background, #fff);
+  --c-accent: var(--color-accent, var(--color-primary-button-background, currentColor));
+  --c-accent-soft: var(--color-accent-soft, var(--color-background, #f5f5f5));
+  --c-on-accent: var(--color-on-accent, #fff);
+  --c-border: var(--color-border, rgba(0,0,0,0.08));
+  --c-heading-font: var(--section-heading-font, Georgia, 'Times New Roman', serif);
+  --c-body-font: var(--section-body-font, system-ui, sans-serif); background: var(--c-surface); padding: 0 0 8px; }
+  #ch-{{ section.id }} .ch-wrap { max-width: 1920px; margin: 0 auto; width: 100%; }
+  /*
+    Lock the frame to the same ratios we generate (desktop 16:9, mobile 9:16).
+    Cap height so the section is never taller than before; shrink width if needed.
+    Absolute img fill avoids iframe/preview bugs where height:100% fails on
+    aspect-ratio boxes (which left the #0a0a0a stage as black side bars).
+  */
+  #ch-{{ section.id }} .ch-banner {
+    position: relative;
+    overflow: hidden;
+    background: #0a0a0a;
+    margin-inline: auto;
+  }
+  #ch-{{ section.id }} .ch-banner--desktop { display: none; }
+  #ch-{{ section.id }} .ch-banner--mobile {
+    display: block;
+    aspect-ratio: 9 / 16;
+    width: min(100%, calc(80svh * 9 / 16));
+    height: auto;
+    max-height: 80svh;
+  }
+  #ch-{{ section.id }} .ch-banner img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+  @media (min-width: 768px) {
+    #ch-{{ section.id }} { padding: 12px 16px 16px; }
+    #ch-{{ section.id }} .ch-banner {
+      border-radius: 24px;
+      aspect-ratio: 16 / 9;
+      width: min(100%, calc((100svh - 160px) * 16 / 9));
+      height: auto;
+      max-height: calc(100svh - 160px);
+    }
+    #ch-{{ section.id }} .ch-banner--desktop { display: block; }
+    #ch-{{ section.id }} .ch-banner--mobile { display: none; }
+  }
+</style>
+<section id="ch-{{ section.id }}" class="color-{{ section_scheme }}">
+  <div class="ch-wrap">
+    <div class="ch-banner ch-banner--mobile">
+      {% if banner_image_mobile != blank %}
+        {% if banner_image_mobile contains 'http' %}
+          <img src="{{ banner_image_mobile }}" alt="Hero banner" loading="eager">
+        {% else %}
+          <img src="{{ banner_image_mobile | image_url: width: 1200 }}" alt="Hero banner" loading="eager">
+        {% endif %}
+      {% else %}
+        {{ 'lifestyle-1' | placeholder_svg_tag }}
+      {% endif %}
+    </div>
+    <div class="ch-banner ch-banner--desktop">
+      {% if banner_image != blank %}
+        {% if banner_image contains 'http' %}
+          <img src="{{ banner_image }}" alt="Hero banner" loading="eager">
+        {% else %}
+          <img src="{{ banner_image | image_url: width: 2000 }}" alt="Hero banner" loading="eager">
+        {% endif %}
+      {% else %}
+        {{ 'lifestyle-1' | placeholder_svg_tag }}
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Kluck AI - Cin Hero",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_kluck_ai_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "Banner image (16:9)"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image_mobile",
+      "label": "Mobile banner (9:16)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kluck AI - Cin Hero"
+    }
+  ]
+}
+{% endschema %}

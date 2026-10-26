@@ -1,0 +1,176 @@
+{% comment %}
+Tabbed Product Grid - 3 PRODUCT LIMIT VERSION
+Features: Auto-fetches "whats-hot", "best-sellers", and "on-sale" collections.
+Limit: Strictly 3 products per tab.
+{% endcomment %}
+
+{% style %}
+  #tpg-{{ section.id }} {
+    --text-sale: {{ section.settings.sale_color }};
+    --badge-sale-bg: {{ section.settings.badge_sale_bg }};
+    --badge-sale-text: {{ section.settings.badge_sale_text }};
+    --badge-custom-bg: {{ section.settings.badge_custom_bg }};
+    --badge-custom-text: {{ section.settings.badge_custom_text }};
+    --grid-gap: {{ section.settings.grid_gap }}px;
+    --cols-d: {{ section.settings.cols_desktop }};
+    --cols-m: {{ section.settings.cols_mobile }};
+    --radius: {{ section.settings.card_radius }}px;
+  }
+{% endstyle %}
+
+<style>
+  #tpg-{{ section.id }} .tpg-section { background-color: var(--color-background); color: var(--color-foreground); padding: 60px 0; }
+  #tpg-{{ section.id }} .tpg-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+  #tpg-{{ section.id }} .tpg-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; flex-wrap: wrap; gap: 20px; }
+  #tpg-{{ section.id }} .tpg-tabs-nav { display: flex; gap: 40px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+  #tpg-{{ section.id }} .tpg-tabs-nav::-webkit-scrollbar { display: none; }
+  #tpg-{{ section.id }} .tpg-tab-btn { background: none; border: none; font-family: var(--font-h); font-size: 36px; color: rgba(var(--color-foreground-rgb), 0.3); cursor: pointer; transition: all 0.3s ease; padding: 0; line-height: 1.1; font-weight: 500; }
+  #tpg-{{ section.id }} .tpg-tab-btn.active { color: var(--color-foreground); transform: translateY(-2px); }
+  #tpg-{{ section.id }} .tpg-shop-all { font-family: var(--font-b); font-size: 14px; text-decoration: none; color: var(--color-foreground); border-bottom: 1px solid var(--color-foreground); padding-bottom: 2px; font-weight: 600; }
+  
+  #tpg-{{ section.id }} .tpg-grid-panel { display: none; grid-template-columns: repeat(var(--cols-d), 1fr); gap: var(--grid-gap); animation: tpgFadeIn 0.6s ease; }
+  #tpg-{{ section.id }} .tpg-grid-panel.active { display: grid; }
+  
+  @keyframes tpgFadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+  
+  #tpg-{{ section.id }} .tpg-card { display: flex; flex-direction: column; text-decoration: none; color: inherit; position: relative; }
+  #tpg-{{ section.id }} .tpg-img-wrap { background-color: rgba(var(--color-foreground-rgb), 0.05); border-radius: var(--radius); overflow: hidden; position: relative; aspect-ratio: 1 / 1; margin-bottom: 18px; }
+  #tpg-{{ section.id }} .tpg-img { width: 100%; height: 100% ; object-fit: cover; transition: transform 0.5s ease; }
+  #tpg-{{ section.id }} .tpg-card:hover .tpg-img { transform: scale(1.08); }
+  
+  #tpg-{{ section.id }} .tpg-badges { position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; }
+  #tpg-{{ section.id }} .tpg-badge { padding: 5px 10px; border-radius: 4px; font-family: var(--font-b); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+  #tpg-{{ section.id }} .tpg-badge-sale { background-color: var(--badge-sale-bg); color: var(--badge-sale-text); }
+  #tpg-{{ section.id }} .tpg-badge-custom { background-color: var(--badge-custom-bg); color: var(--badge-custom-text); }
+  
+  #tpg-{{ section.id }} .tpg-quick-add { position: absolute; bottom: 15px; right: 15px; width: 44px; height: 44px; background: var(--color-button-background); color: var(--color-button-text); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: none; cursor: pointer; z-index: 3; transition: 0.3s; }
+  #tpg-{{ section.id }} .tpg-quick-add:hover { transform: scale(1.1); background: var(--color-button-background-hover); }
+  
+  #tpg-{{ section.id }} .tpg-title { font-family: var(--font-h); font-size: 19px; margin: 0 0 8px 0; text-decoration: none; color: inherit; line-height: 1.3; }
+  #tpg-{{ section.id }} .tpg-price { font-family: var(--font-b); font-size: 17px; font-weight: 700; }
+  #tpg-{{ section.id }} .tpg-compare { text-decoration: line-through; opacity: 0.4; margin-left: 8px; font-weight: 400; font-size: 0.9em; }
+  #tpg-{{ section.id }} .tpg-price-sale { color: var(--text-sale); }
+  #tpg-{{ section.id }} .tpg-footer-mobile { display: none; margin-top: 35px; text-align: center; }
+
+  @media (max-width: 768px) {
+    #tpg-{{ section.id }} .tpg-header { justify-content: center; text-align: center; }
+    #tpg-{{ section.id }} .tpg-tab-btn { font-size: 26px; }
+    #tpg-{{ section.id }} .tpg-shop-all { display: none; }
+    #tpg-{{ section.id }} .tpg-footer-mobile { display: block; }
+    #tpg-{{ section.id }} .tpg-grid-panel { grid-template-columns: repeat(var(--cols-m), 1fr); gap: 15px; }
+  }
+</style>
+
+<div id="tpg-{{ section.id }}">
+  <div class="tpg-section color-{{ section.settings.color_scheme }}">
+    <div class="tpg-container">
+      
+      <div class="tpg-header">
+        <nav class="tpg-tabs-nav">
+          <button class="tpg-tab-btn active" data-target="hot-{{ section.id }}">What's Hot</button>
+        </nav>
+        <a href="/collections/all" class="tpg-shop-all">Explore All</a>
+      </div>
+
+      {%- assign tab_handles = "whats-hot,best-sellers,on-sale" | split: "," -%}
+      {%- assign tab_ids = "hot,best,sale" | split: "," -%}
+
+      {% for handle in tab_handles %}
+        {% assign current_id = tab_ids[forloop.index0] %}
+        {% assign collection = collections[handle] %}
+        
+        {% comment %} Use 'all' collection as a safety fallback if the specific handle doesn't exist {% endcomment %}
+        {% if collection == blank or collection.products_count == 0 %}
+          {% assign collection = collections['all'] %}
+        {% endif %}
+
+        <div id="{{ current_id }}-{{ section.id }}" class="tpg-grid-panel {% if forloop.first %}active{% endif %}">
+          {% comment %} HARD LIMIT OF 3 PRODUCTS {% endcomment %}
+          {% for product in collection.products limit: 3 %}
+            <div class="tpg-card">
+              <div class="tpg-img-wrap">
+                <div class="tpg-badges">
+                  {% if product.compare_at_price > product.price %}
+                    {% assign save = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round %}
+                    <span class="tpg-badge tpg-badge-sale">-{{ save }}%</span>
+                  {% endif %}
+                  {% for tag in product.tags %}
+                    {% if tag contains 'badge:' %}
+                      <span class="tpg-badge tpg-badge-custom">{{ tag | remove: 'badge:' }}</span>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+
+                <a href="{{ product.url }}">
+                  {% if product.featured_image %}
+                    <img src="{{ product.featured_image | img_url: '700x' }}" class="tpg-img" alt="{{ product.title }}" loading="lazy">
+                  {% else %}
+                    {{ 'product-1' | placeholder_svg_tag: 'tpg-img' }}
+                  {% endif %}
+                </a>
+              </div>
+
+              <a href="{{ product.url }}" class="tpg-title">{{ product.title }}</a>
+              <div class="tpg-price">
+                {% if product.compare_at_price > product.price %}
+                  <span class="tpg-price-sale">{{ product.price | money }}</span>
+                  <span class="tpg-compare">{{ product.compare_at_price | money }}</span>
+                {% else %}
+                  {{ product.price | money }}
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endfor %}
+
+      <div class="tpg-footer-mobile">
+        <a href="/collections/all" class="tpg-shop-all-mobile">Explore All Products</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const sectionId = "{{ section.id }}";
+    const tabs = document.querySelectorAll(`#tpg-${sectionId} .tpg-tab-btn`);
+    const panels = document.querySelectorAll(`#tpg-${sectionId} .tpg-grid-panel`);
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        tabs.forEach(t => t.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+        
+        this.classList.add('active');
+        const targetId = this.getAttribute('data-target');
+        const panel = document.getElementById(targetId);
+        if(panel) panel.classList.add('active');
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Kluck AI - Products Grid",
+  "settings": [
+    { "type": "paragraph", "content": "Automatically shows exactly 3 products from collections with handles: 'whats-hot', 'best-sellers', and 'on-sale'." },
+    { "type": "range", "id": "cols_desktop", "label": "Columns (Desktop)", "min": 2, "max": 4, "default": 3 },
+    { "type": "select", "id": "cols_mobile", "label": "Columns (Mobile)", "options": [{"value":"1","label":"1"},{"value":"2","label":"2"}], "default": "1" },
+    { "type": "range", "id": "grid_gap", "label": "Grid Gap", "min": 10, "max": 60, "default": 30 },
+    { "type": "range", "id": "card_radius", "label": "Corner Radius", "min": 0, "max": 40, "default": 16 },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color Scheme", "default": "scheme-1" },
+    { "type": "color", "id": "sale_color", "label": "Sale Price Color", "default": "#cf2e2e" },
+    { "type": "header", "content": "Badges" },
+    { "type": "color", "id": "badge_sale_bg", "label": "Sale BG", "default": "#cf2e2e" },
+    { "type": "color", "id": "badge_sale_text", "label": "Sale Text", "default": "#ffffff" },
+    { "type": "color", "id": "badge_custom_bg", "label": "Custom Badge BG", "default": "#000000" },
+    { "type": "color", "id": "badge_custom_text", "label": "Custom Badge Text", "default": "#ffffff" }
+  ],
+  "presets": [
+    { "name": "Kluck AI - Products Grid" }
+  ]
+}
+{% endschema %}

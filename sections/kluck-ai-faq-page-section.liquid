@@ -1,0 +1,482 @@
+{%- comment -%}
+  Custom Split FAQ Section
+{%- endcomment -%}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    background-color: {{ section.settings.bg_color }};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .faq-split-wrapper {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+    font-family: inherit;
+  }
+
+  /* --- Header Styling --- */
+  .faq-header-area {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  .faq-main-title {
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 500;
+    color: {{ section.settings.text_color }};
+    margin: 0 0 15px 0;
+    line-height: 1.2;
+  }
+  .faq-subtitle {
+    font-size: 16px;
+    color: {{ section.settings.text_color }};
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* --- Layout Grid --- */
+  .faq-content-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  /* Desktop layout: Image Left, FAQ Right. 
+     Using row-reverse because FAQ is first in HTML for mobile stacking */
+  @media screen and (min-width: 900px) {
+    .faq-content-grid {
+      flex-direction: row-reverse;
+      align-items: center; /* Vertically centers the FAQ blocks alongside the image */
+      gap: 60px;
+    }
+    .faq-accordion-col { width: 60%; }
+    .faq-image-col { width: 40%; }
+  }
+
+  /* --- FAQ Accordion Styling --- */
+  .faq-accordion-col {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .faq-item {
+    border-bottom: 1px solid #eaeaea;
+  }
+  .faq-item:first-child {
+    border-top: none; 
+  }
+
+  .faq-item summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 0;
+    font-size: clamp(18px, 2vw, 24px);
+    font-weight: 500;
+    cursor: pointer;
+    list-style: none;
+    color: {{ section.settings.text_color }};
+    transition: color 0.2s ease;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  
+  .faq-icon {
+    flex-shrink: 0;
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .faq-icon svg {
+    width: 20px;
+    height: 20px;
+    stroke: {{ section.settings.text_color }};
+    transition: transform 0.3s ease;
+  }
+  
+  /* --- The Morphing +/- Animation --- */
+  .icon-vertical {
+    transition: transform 0.3s ease;
+    transform-origin: center;
+  }
+  .faq-item.is-active .icon-vertical {
+    transform: rotate(90deg); /* Merges vertical line into horizontal line */
+  }
+  
+/* --- Open State Styling --- */
+  .faq-item.is-active summary {
+    border-bottom: 1px solid #000;
+  }
+
+  /* --- Smooth Dropdown Animation --- */
+  .faq-answer-wrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.4s ease-out, padding 0.4s ease-out;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  
+  .faq-answer-inner {
+    min-height: 0; 
+    opacity: 0;   
+    transition: opacity 0.4s ease-out;
+    overflow: hidden;
+    font-size: 15px;
+    line-height: 1.6;
+    color: {{ section.settings.text_color | color_modify: 'alpha', 0.8 }};
+  }
+  
+  .faq-item.is-active .faq-answer-wrapper {
+    grid-template-rows: 1fr;
+    padding-top: 20px; 
+    padding-bottom: 30px;
+  }
+  
+  .faq-item.is-active .faq-answer-inner {
+    opacity: 1;
+  }
+
+  /* --- Image Banner Styling --- */
+  .faq-image-card {
+    position: relative;
+    width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 1 / 1; /* Changed to 1:1 Square */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .faq-image-card img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
+
+  /* Gradient overlay for text readability */
+  .faq-image-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%);
+    z-index: 2;
+  }
+
+  .faq-card-content {
+    position: absolute; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    width: 100%;
+    z-index: 3;
+    text-align: center;
+    padding: 30px;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .faq-card-title {
+    font-size: clamp(28px, 3vw, 36px);
+    font-weight: 500;
+    margin: 0 0 10px 0;
+    color: #fff;
+  }
+
+  .faq-card-text {
+    font-size: 15px;
+    margin: 0 0 25px 0;
+    line-height: 1.5;
+    max-width: 250px;
+  }
+
+  .faq-card-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    color: #000000;
+    text-decoration: none;
+    padding: 14px 32px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+  .faq-card-btn:hover {
+    background: #f0f0f0;
+    transform: translateY(-2px);
+  }
+{%- endstyle -%}
+
+{%- assign kluck_feature_image = shop.metafields.kluck_ai.highlight_image.value -%}
+
+
+<div class="section-{{ section.id }}-padding">
+  <div class="faq-split-wrapper">
+    
+    <!-- Top Header -->
+    <div class="faq-header-area">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="faq-main-title">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <div class="faq-subtitle">{{ section.settings.subheading }}</div>
+      {%- endif -%}
+    </div>
+
+    <!-- Main Content -->
+    <div class="faq-content-grid">
+      
+      <!-- FAQ Accordion Container -->
+      <div class="faq-accordion-col" id="FAQ-Accordion-{{ section.id }}">
+        {%- for block in section.blocks -%}
+          <details class="faq-item" {{ block.shopify_attributes }}>
+            <summary>
+              {{ block.settings.question }}
+              <span class="faq-icon">
+                <svg class="faq-animated-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <line class="icon-vertical" x1="12" y1="5" x2="12" y2="19"></line>
+                </svg>
+              </span>
+            </summary>
+            <div class="faq-answer-wrapper">
+              <div class="faq-answer-inner">
+                {{ block.settings.answer }}
+              </div>
+            </div>
+          </details>
+        {%- endfor -%}
+      </div>
+
+      <!-- Left Image Banner -->
+      <div class="faq-image-col">
+        <div class="faq-image-card">
+        {%- if kluck_feature_image != blank -%}
+            <img 
+                src="{{ kluck_feature_image | image_url: width: 1200 }}" 
+                alt="Highlight" 
+                class="modern-contact__bg-image"
+                loading="lazy"
+            >
+
+            {%- elsif section.settings.image != blank -%}
+            {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'modern-contact__bg-image', loading: 'lazy' }}
+
+            {%- else -%}
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'modern-contact__bg-image' }}
+            {%- endif -%}
+          
+          <div class="faq-image-overlay"></div>
+          
+          <div class="faq-card-content">
+            {%- if section.settings.card_heading != blank -%}
+              <h3 class="faq-card-title">{{ section.settings.card_heading }}</h3>
+            {%- endif -%}
+            
+            {%- if section.settings.card_text != blank -%}
+              <p class="faq-card-text">{{ section.settings.card_text }}</p>
+            {%- endif -%}
+            
+            {%- if section.settings.btn_label != blank -%}
+            <a href="/pages/contact" class="faq-card-btn">
+                {{ section.settings.btn_label }}
+            </a>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const section = document.getElementById('FAQ-Accordion-{{ section.id }}');
+    if (!section) return;
+
+    const summaries = section.querySelectorAll('.faq-item summary');
+
+    summaries.forEach((summary) => {
+      summary.addEventListener('click', (e) => {
+        e.preventDefault(); 
+        const targetDetail = summary.parentElement;
+        const isOpen = targetDetail.classList.contains('is-active');
+
+        section.querySelectorAll('details.faq-item').forEach((detail) => {
+          if (detail !== targetDetail && detail.classList.contains('is-active')) {
+            detail.classList.remove('is-active'); 
+            
+            setTimeout(() => {
+              if (!detail.classList.contains('is-active')) {
+                detail.removeAttribute('open');
+              }
+            }, 400); 
+          }
+        });
+
+        if (!isOpen) {
+          targetDetail.setAttribute('open', '');
+          requestAnimationFrame(() => {
+            targetDetail.classList.add('is-active'); 
+          });
+        } else {
+          targetDetail.classList.remove('is-active'); 
+          setTimeout(() => {
+            if (!targetDetail.classList.contains('is-active')) {
+              targetDetail.removeAttribute('open');
+            }
+          }, 400);
+        }
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "FAQ Split Section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Main Settings"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Main Heading",
+      "default": "Discover more in our FAQ"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Have a question or comment? Don't be shy: Reach out and say hi!\nSupport hours: Monday-Friday, 7am-3pm"
+    },
+    {
+      "type": "header",
+      "content": "Image Banner Settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background Image"
+    },
+    {
+      "type": "text",
+      "id": "card_heading",
+      "label": "Card Heading",
+      "default": "Still need help?"
+    },
+    {
+      "type": "textarea",
+      "id": "card_text",
+      "label": "Card Text",
+      "default": "Shoot our team an email & we'll get back to you ASAP"
+    },
+    {
+      "type": "text",
+      "id": "btn_label",
+      "label": "Button Label",
+      "default": "Contact Us"
+    },
+    {
+      "type": "url",
+      "id": "btn_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Layout & Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "label": "Maximum Width",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Enter your text"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Enter your text.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Split Section",
+      "blocks": [
+        { "type": "faq_item" },
+        { "type": "faq_item" },
+        { "type": "faq_item" },
+        { "type": "faq_item" }
+      ]
+    }
+  ]
+}
+{% endschema %}

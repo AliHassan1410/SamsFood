@@ -1,0 +1,208 @@
+{%- assign section_scheme = section.settings.color_scheme | default: 'scheme-2' -%}
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+{% assign home = store_gen.home_page %}
+{% assign ht = home.text %}
+{% assign use_mf = section.settings.use_kluck_ai_metafields %}
+{% assign homeData = section.settings.homeData %}
+{% if ht == blank and homeData.text != blank %}{% assign ht = homeData.text %}{% endif %}
+
+{% assign trust_1_title = section.settings.trust_1_title %}{% assign trust_1_line = section.settings.trust_1_line %}
+{% assign trust_2_title = section.settings.trust_2_title %}
+{% assign trust_2_line = section.settings.trust_2_line %}
+{% assign trust_3_title = section.settings.trust_3_title %}
+{% assign trust_3_line = section.settings.trust_3_line %}
+{% assign trust_4_title = section.settings.trust_4_title %}
+{% assign trust_4_line = section.settings.trust_4_line %}
+{% if use_mf %}
+  {% if ht.trust_1_title != blank %}{% assign trust_1_title = ht.trust_1_title %}{% endif %}
+  {% if ht.trust_1_line != blank %}{% assign trust_1_line = ht.trust_1_line %}{% endif %}
+  {% if ht.trust_2_title != blank %}{% assign trust_2_title = ht.trust_2_title %}{% endif %}
+  {% if ht.trust_2_line != blank %}{% assign trust_2_line = ht.trust_2_line %}{% endif %}
+  {% if ht.trust_3_title != blank %}{% assign trust_3_title = ht.trust_3_title %}{% endif %}
+  {% if ht.trust_3_line != blank %}{% assign trust_3_line = ht.trust_3_line %}{% endif %}
+  {% if ht.trust_4_title != blank %}{% assign trust_4_title = ht.trust_4_title %}{% endif %}
+  {% if ht.trust_4_line != blank %}{% assign trust_4_line = ht.trust_4_line %}{% endif %}
+{% endif %}
+
+{% if shop.metafields.app.block_control.value %}
+<style>
+  #shopify-section-{{ section.id }} {
+    width: 100%;
+    max-width: none;
+  }
+    #ct-{{ section.id }} {
+  --c-ink: var(--color-foreground-heading, #111);
+  --c-ink-muted: var(--color-foreground-muted, rgba(0,0,0,0.55));
+  --c-surface: var(--color-background, #fff);
+  --c-accent: var(--color-accent, var(--color-primary-button-background, currentColor));
+  --c-accent-soft: var(--color-accent-soft, var(--color-background, #f5f5f5));
+  --c-on-accent: var(--color-on-accent, #fff);
+  --c-border: var(--color-border, rgba(0,0,0,0.08));
+  --c-heading-font: var(--section-heading-font, Georgia, 'Times New Roman', serif);
+  --c-body-font: var(--section-body-font, system-ui, sans-serif);
+    
+    border-top: 1px solid var(--c-border); border-bottom: 1px solid var(--c-border); background: var(--c-accent-soft);
+  }
+  #ct-{{ section.id }} .ct-desktop { display: none; width: 100%; max-width: 1400px; margin: 0 auto; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  #ct-{{ section.id }} .ct-item {
+    display: flex; align-items: center; gap: 12px; padding: 24px; border-left: 1px solid var(--c-border); justify-content: center;
+  }
+  #ct-{{ section.id }} .ct-item:first-child { border-left: 0; }
+  #ct-{{ section.id }} .ct-icon {
+    width: 44px; height: 44px; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--c-accent) 45%, transparent); background: var(--c-surface);
+    display: flex; align-items: center; justify-content: center; color: var(--c-accent); flex-shrink: 0;
+  }
+  #ct-{{ section.id }} .ct-icon svg { width: 20px; height: 20px; }
+  #ct-{{ section.id }} h3 { margin: 0; font-family: var(--c-heading-font); font-size: 16px; color: var(--c-ink); font-weight: 700; }
+  #ct-{{ section.id }} p { margin: 2px 0 0; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--c-ink-muted); }
+  #ct-{{ section.id }} .ct-mobile {
+    display: block; overflow: hidden;
+  }
+  #ct-{{ section.id }} .ct-mobile-track {
+    display: flex; width: 200%;
+    animation: ct-switch-{{ section.id }} 8s ease-in-out infinite;
+  }
+  #ct-{{ section.id }} .ct-mobile-slide {
+    width: 50%; display: grid; grid-template-columns: 1fr 1fr;
+  }
+  #ct-{{ section.id }} .ct-mobile .ct-item {
+    justify-content: flex-start; padding: 16px; border-left: 0;
+    border-right: 1px solid var(--c-border);
+  }
+  #ct-{{ section.id }} .ct-mobile .ct-item:nth-child(2n) { border-right: 0; }
+  @keyframes ct-switch-{{ section.id }} {
+    0%, 42% { transform: translateX(0); }
+    50%, 92% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #ct-{{ section.id }} .ct-mobile-track { animation: none; }
+  }
+  @media (min-width: 768px) {
+    #ct-{{ section.id }} .ct-mobile { display: none; }
+    #ct-{{ section.id }} .ct-desktop { display: grid; }
+  }
+</style>
+<section id="ct-{{ section.id }}" class="color-{{ section_scheme }}">
+  {% capture trust_item_1 %}
+    {% if trust_1_title != blank %}
+      <article class="ct-item">
+        <span class="ct-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9"/></svg>
+        </span>
+        <div><h3>{{ trust_1_title }}</h3>{% if trust_1_line != blank %}<p>{{ trust_1_line }}</p>{% endif %}</div>
+      </article>
+    {% endif %}
+  {% endcapture %}
+  {% capture trust_item_2 %}
+    {% if trust_2_title != blank %}
+      <article class="ct-item">
+        <span class="ct-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9"/></svg>
+        </span>
+        <div><h3>{{ trust_2_title }}</h3>{% if trust_2_line != blank %}<p>{{ trust_2_line }}</p>{% endif %}</div>
+      </article>
+    {% endif %}
+  {% endcapture %}
+  {% capture trust_item_3 %}
+    {% if trust_3_title != blank %}
+      <article class="ct-item">
+        <span class="ct-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9"/></svg>
+        </span>
+        <div><h3>{{ trust_3_title }}</h3>{% if trust_3_line != blank %}<p>{{ trust_3_line }}</p>{% endif %}</div>
+      </article>
+    {% endif %}
+  {% endcapture %}
+  {% capture trust_item_4 %}
+    {% if trust_4_title != blank %}
+      <article class="ct-item">
+        <span class="ct-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9"/></svg>
+        </span>
+        <div><h3>{{ trust_4_title }}</h3>{% if trust_4_line != blank %}<p>{{ trust_4_line }}</p>{% endif %}</div>
+      </article>
+    {% endif %}
+  {% endcapture %}
+  <div class="ct-desktop">{{ trust_item_1 }}{{ trust_item_2 }}{{ trust_item_3 }}{{ trust_item_4 }}</div>
+  <div class="ct-mobile">
+    <div class="ct-mobile-track">
+      <div class="ct-mobile-slide">{{ trust_item_1 }}{{ trust_item_2 }}</div>
+      <div class="ct-mobile-slide">{{ trust_item_3 }}{{ trust_item_4 }}</div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Kluck AI - Cin Trust",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_kluck_ai_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "trust_1_title",
+      "label": "Trust 1 title",
+      "default": "Free Shipping"
+    },
+    {
+      "type": "text",
+      "id": "trust_1_line",
+      "label": "Trust 1 line",
+      "default": "Nationwide"
+    },
+    {
+      "type": "text",
+      "id": "trust_2_title",
+      "label": "Trust 2 title",
+      "default": "Satisfied"
+    },
+    {
+      "type": "text",
+      "id": "trust_2_line",
+      "label": "Trust 2 line",
+      "default": "Customers"
+    },
+    {
+      "type": "text",
+      "id": "trust_3_title",
+      "label": "Trust 3 title",
+      "default": "365 Days"
+    },
+    {
+      "type": "text",
+      "id": "trust_3_line",
+      "label": "Trust 3 line",
+      "default": "Warranty"
+    },
+    {
+      "type": "text",
+      "id": "trust_4_title",
+      "label": "Trust 4 title",
+      "default": "Certified"
+    },
+    {
+      "type": "text",
+      "id": "trust_4_line",
+      "label": "Trust 4 line",
+      "default": "Products"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kluck AI - Cin Trust"
+    }
+  ]
+}
+{% endschema %}

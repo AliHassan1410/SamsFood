@@ -1,0 +1,339 @@
+{%- comment -%}
+  Sam's Food - Shop by Category Tiles (auto-scrolling single-row carousel)
+  Spreads & Sauces · Wholesome Flour · Mezze Ready · Bundles & Gifts · Bulk & Restaurant
+{%- endcomment -%}
+
+<section
+  class="sams-categories-section"
+  style="padding-block-start: min({{ section.settings.pad_top }}px, 11vw); padding-block-end: min({{ section.settings.pad_bottom }}px, 11vw); background: {{ section.settings.bg_color }};"
+>
+  <div class="page-width" style="max-width: 1240px; margin: 0 auto; padding-inline: 20px;">
+    <!-- Section Header -->
+    <div style="text-align: center; margin-bottom: clamp(24px, 5vw, 48px);" class="sams-fade-up">
+      <span class="sams-eyebrow">{{ section.settings.eyebrow }}</span>
+      <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 0 0 12px; color: var(--espresso); font-family: var(--font-editorial);">
+        {{ section.settings.heading }}
+      </h2>
+      <div class="sams-gold-divider"></div>
+      <p style="font-size: 1.05rem; color: var(--muted); margin: 0 auto; max-width: 540px; font-family: var(--font-clean);">
+        {{ section.settings.subheading }}
+      </p>
+    </div>
+  </div>
+
+  {%- liquid
+    assign total_sets = 2
+  -%}
+
+  <!-- Category Tiles Carousel: the tiles are repeated to fill two identical halves; the track slides by -50% and loops -->
+  <div class="sams-cat-marquee sams-fade-up" style="--sams-cat-duration: {{ section.settings.speed }}s;">
+    <div class="sams-cat-track">
+      {%- for pass in (1..total_sets) -%}
+      {%- for block in section.blocks -%}
+        <div
+          class="sams-card sams-media-zoom sams-cat-tile"
+          style="display: flex; flex-direction: column; border-radius: var(--radius-card); background: #FFFFFF;"
+          {% if pass == 1 %}{{ block.shopify_attributes }}{% else %}aria-hidden="true"{% endif %}
+        >
+          <div style="position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--sesame);">
+            {%- if block.settings.image != blank -%}
+              {{
+                block.settings.image
+                | image_url: width: 600
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '300, 450, 600',
+                  alt: block.settings.title,
+                  style: 'width: 100%; height: 100%; object-fit: cover;'
+              }}
+            {%- else -%}
+              {%- assign default_img = '' -%}
+              {%- if block.settings.title contains 'Spread' or block.settings.title contains 'Sauce' or block.settings.title contains 'Tahina' -%}
+                {%- assign default_img = 'sams-tahina-jar-front.jpg' -%}
+              {%- elsif block.settings.title contains 'Flour' -%}
+                {%- assign default_img = 'sams-flour-5kg-field.jpg' -%}
+              {%- elsif block.settings.title contains 'Mezze' or block.settings.title contains 'Falafel' or block.settings.title contains 'Hummus' -%}
+                {%- assign default_img = 'sams-hummus-pita-dip.jpg' -%}
+              {%- elsif block.settings.title contains 'Bundle' -%}
+                {%- assign default_img = 'sams-tahina-mezze-board.jpg' -%}
+              {%- elsif block.settings.title contains 'Bulk' or block.settings.title contains 'Restaurant' or block.settings.title contains 'Commercial' -%}
+                {%- assign default_img = 'sams-tahina-bucket-table-sesame.jpg' -%}
+              {%- endif -%}
+
+              {%- if default_img != blank -%}
+                <img
+                  src="{{ default_img | asset_url }}"
+                  alt="{{ block.settings.title }}"
+                  loading="lazy"
+                  decoding="async"
+                  width="600"
+                  height="375"
+                  style="width: 100%; height: 100%; object-fit: cover; display: block;"
+                >
+              {%- else -%}
+                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, #FAF1E4 0%, #EADBCA 100%);">
+                  <span style="font-family: var(--font-editorial); font-size: 1.25rem; font-style: italic; color: var(--gold);">
+                    {{ block.settings.title }}
+                  </span>
+                </div>
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- if block.settings.badge != blank -%}
+              <span
+                class="sams-badge"
+                style="position: absolute; top: 12px; inset-inline-start: 12px; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px);"
+              >
+                {{ block.settings.badge }}
+              </span>
+            {%- endif -%}
+          </div>
+
+          <div style="padding: 24px 22px; display: flex; flex-direction: column; flex-grow: 1;">
+            <h3 style="font-family: var(--font-editorial); font-size: 1.35rem; margin: 0 0 8px; color: var(--espresso);">
+              {{ block.settings.title }}
+            </h3>
+            <p style="font-family: var(--font-clean); font-size: 0.92rem; line-height: 1.5; color: var(--muted); margin: 0 0 20px; flex-grow: 1;">
+              {{ block.settings.description }}
+            </p>
+            <div>
+              <a
+                href="{{ block.settings.link }}"
+                class="sams-btn-secondary"
+                style="padding: 10px 20px; font-size: 12px; width: 100%;"
+                {% if pass > 1 %}tabindex="-1"{% endif %}
+              >
+                {{ block.settings.button_text | default: 'Explore Category' }}
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .sams-cat-marquee {
+    overflow: hidden;
+    padding-block: 8px 28px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+  }
+
+  .sams-cat-track {
+    display: flex;
+    width: max-content;
+    animation: sams-cat-scroll var(--sams-cat-duration, 50s) linear infinite;
+  }
+
+  .sams-cat-marquee:hover .sams-cat-track,
+  .sams-cat-marquee:focus-within .sams-cat-track {
+    animation-play-state: paused;
+  }
+
+  /* Spacing is a margin on every tile (not a flex gap) so both halves of the track have exactly the same width */
+  .sams-cat-tile {
+    flex: 0 0 260px;
+    margin-inline-end: 20px;
+
+    @media screen and (min-width: 750px) {
+      flex-basis: 300px;
+      margin-inline-end: 24px;
+    }
+  }
+
+  @keyframes sams-cat-scroll {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sams-cat-marquee {
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-mask-image: none;
+      mask-image: none;
+      padding-inline: 20px;
+    }
+
+    .sams-cat-track {
+      animation: none;
+    }
+
+    .sams-cat-tile {
+      scroll-snap-align: start;
+    }
+
+    .sams-cat-tile[aria-hidden='true'] {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Sams Category Tiles",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "CURATED COLLECTIONS"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop by Category"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Explore our small-batch tahina, stone-ground flours, authentic mezze, and bulk wholesale offerings."
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Carousel loop duration",
+      "info": "Seconds for one full loop. Higher is slower.",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "unit": "s",
+      "default": 50
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#FBF6EE"
+    },
+    {
+      "type": "range",
+      "id": "pad_top",
+      "label": "Padding Top",
+      "min": 40,
+      "max": 140,
+      "step": 4,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "pad_bottom",
+      "label": "Padding Bottom",
+      "min": 40,
+      "max": 140,
+      "step": 4,
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category_tile",
+      "name": "Category Tile",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Spreads & Sauces"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Slow-roasted tahina & thick pomegranate molasses."
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Optional Badge",
+          "default": "Shelf-stable"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Collection Link"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Label",
+          "default": "View Spreads"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sams Category Tiles",
+      "blocks": [
+        {
+          "type": "category_tile",
+          "settings": {
+            "title": "Spreads & Sauces",
+            "description": "Slow-roasted tahina & tangy pomegranate molasses.",
+            "badge": "Nationwide",
+            "link": "/collections/all",
+            "button_text": "Shop Spreads"
+          }
+        },
+        {
+          "type": "category_tile",
+          "settings": {
+            "title": "Wholesome Flour",
+            "description": "Nine grains & seeds stone-ground for nourishing parathas, rotis & breads.",
+            "badge": "Stone Ground",
+            "link": "/collections/all",
+            "button_text": "Shop Flours"
+          }
+        },
+        {
+          "type": "category_tile",
+          "settings": {
+            "title": "Mezze Ready",
+            "description": "Velvety fresh hummus and herb-packed crispy falafels ready to fry or bake.",
+            "badge": "Lahore Chilled/Frozen",
+            "link": "/collections/all",
+            "button_text": "Shop Mezze"
+          }
+        },
+        {
+          "type": "category_tile",
+          "settings": {
+            "title": "Bundles & Gifts",
+            "description": "Thoughtfully curated mezze boxes and pantry pairings with exclusive savings.",
+            "badge": "Save up to Rs 500",
+            "link": "/collections/all",
+            "button_text": "View Bundles"
+          }
+        },
+        {
+          "type": "category_tile",
+          "settings": {
+            "title": "Bulk & Restaurant",
+            "description": "Commercial 3kg & 14kg tahina buckets and wholesale flour for dining kitchens.",
+            "badge": "Trade Pricing",
+            "link": "/collections/all",
+            "button_text": "Wholesale Packs"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

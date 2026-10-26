@@ -1,0 +1,299 @@
+{%- comment -%}
+  Kluck AI — About Us tabbed split (self-contained CSS + JS).
+{%- endcomment -%}
+{%- assign section_scheme = section.settings.section_color_scheme | default: 'scheme-1' -%}
+{%- assign panel_scheme = section.settings.panel_color_scheme | default: 'scheme-2' -%}
+{%- assign blocks_count = section.blocks | size -%}
+
+{%- style -%}
+  #KluckAboutH2-{{ section.id }} {
+    --at-pt-mobile: {{ section.settings.padding_top_mobile }}px;
+    --at-pb-mobile: {{ section.settings.padding_bottom_mobile }}px;
+    --at-pt-desk: {{ section.settings.padding_top_desktop }}px;
+    --at-pb-desk: {{ section.settings.padding_bottom_desktop }}px;
+    --at-container-width: {{ section.settings.container_width }}px;
+    --at-container-radius: {{ section.settings.container_radius }}px;
+    --at-tab-color: {{ section.settings.tab_color }};
+    --at-tab-active: {{ section.settings.tab_active_color }};
+    --at-tab-size: {{ section.settings.tab_size }}px;
+    --at-subtitle-size: {{ section.settings.subtitle_size }}px;
+    --at-heading-mobile: {{ section.settings.heading_size_mobile }}px;
+    --at-heading-desk: {{ section.settings.heading_size_desktop }}px;
+    --at-text-size: {{ section.settings.text_size }}px;
+  }
+  #KluckAboutH2-{{ section.id }}.about-tabs-outer {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding-top: var(--at-pt-mobile);
+    padding-bottom: var(--at-pb-mobile);
+  }
+  @media screen and (min-width: 769px) {
+    #KluckAboutH2-{{ section.id }}.about-tabs-outer {
+      padding-top: var(--at-pt-desk);
+      padding-bottom: var(--at-pb-desk);
+    }
+  }
+  #KluckAboutH2-{{ section.id }} .modern-tabs-root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: var(--at-container-width);
+    margin: 0 auto;
+    padding: 0 20px;
+    width: 100%;
+    min-width: 0;
+  }
+  #KluckAboutH2-{{ section.id }} .modern-tabs__nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 40px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    max-width: 100%;
+  }
+  #KluckAboutH2-{{ section.id }} .modern-tabs__nav::-webkit-scrollbar { display: none; }
+  #KluckAboutH2-{{ section.id }} .modern-tabs__btn {
+    background: none;
+    border: none;
+    padding: 0 0 4px 0;
+    font-size: var(--at-tab-size);
+    color: var(--at-tab-color);
+    cursor: pointer;
+    font-weight: 500;
+    position: relative;
+    transition: color 0.3s ease;
+    white-space: nowrap;
+  }
+  #KluckAboutH2-{{ section.id }} .modern-tabs__btn.is-active { color: var(--at-tab-active); }
+  #KluckAboutH2-{{ section.id }} .modern-tabs__btn::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    background-color: var(--at-tab-active);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  #KluckAboutH2-{{ section.id }} .modern-tabs__btn.is-active::after { transform: scaleX(1); }
+  #KluckAboutH2-{{ section.id }} .modern-tabs__content-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    position: relative;
+    border-radius: var(--at-container-radius);
+    overflow: hidden;
+  }
+  #KluckAboutH2-{{ section.id }} .modern-tabs__panel {
+    display: none;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    min-width: 0;
+  }
+  #KluckAboutH2-{{ section.id }} .modern-tabs__panel.is-active {
+    display: grid;
+    animation: kluckAboutFadeIn-{{ section.id }} 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  }
+  @keyframes kluckAboutFadeIn-{{ section.id }} {
+    0% { opacity: 0; transform: translateY(15px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @media screen and (min-width: 900px) {
+    #KluckAboutH2-{{ section.id }} .modern-tabs__panel {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    #KluckAboutH2-{{ section.id }}[data-image-position="left"] .modern-tabs__text-area { order: 2; }
+    #KluckAboutH2-{{ section.id }}[data-image-position="left"] .modern-tabs__image-area { order: 1; }
+  }
+  #KluckAboutH2-{{ section.id }} .modern-tabs__text-area {
+    padding: 50px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-width: 0;
+    max-width: 100%;
+  }
+  @media screen and (min-width: 900px) {
+    #KluckAboutH2-{{ section.id }} .modern-tabs__text-area { padding: 60px 80px; }
+  }
+  #KluckAboutH2-{{ section.id }} .modern-tabs__subtitle {
+    font-size: var(--at-subtitle-size);
+    font-weight: 500;
+    margin: 0 0 20px 0;
+  }
+  #KluckAboutH2-{{ section.id }} .modern-tabs__heading {
+    font-size: var(--at-heading-mobile);
+    margin: 0 0 24px 0;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    font-weight: 500;
+    overflow-wrap: break-word;
+  }
+  @media screen and (min-width: 900px) {
+    #KluckAboutH2-{{ section.id }} .modern-tabs__heading { font-size: var(--at-heading-desk); }
+  }
+  #KluckAboutH2-{{ section.id }} .modern-tabs__description {
+    font-size: var(--at-text-size);
+    line-height: 1.6;
+    margin: 0;
+    opacity: 0.9;
+    overflow-wrap: break-word;
+  }
+  #KluckAboutH2-{{ section.id }} .modern-tabs__description p { margin: 0 0 0.75em; }
+  #KluckAboutH2-{{ section.id }} .modern-tabs__description p:last-child { margin-bottom: 0; }
+  #KluckAboutH2-{{ section.id }} .modern-tabs__image-area {
+    width: 100%;
+    min-height: 400px;
+    min-width: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  @media screen and (min-width: 900px) {
+    #KluckAboutH2-{{ section.id }} .modern-tabs__image-area { min-height: 600px; }
+  }
+  #KluckAboutH2-{{ section.id }} .modern-tabs__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+{%- endstyle -%}
+
+<div
+  id="KluckAboutH2-{{ section.id }}"
+  class="about-tabs-outer color-{{ section_scheme }} gradient"
+  data-image-position="{{ section.settings.image_position }}"
+>
+  <div class="modern-tabs-root">
+    {%- if blocks_count > 0 -%}
+      <div class="modern-tabs__nav" role="tablist">
+        {%- for block in section.blocks -%}
+          <button
+            type="button"
+            class="modern-tabs__btn{% if forloop.first %} is-active{% endif %}"
+            role="tab"
+            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            data-target="panel-{{ block.id }}"
+            {{ block.shopify_attributes }}
+          >{{ block.settings.tab_title }}</button>
+        {%- endfor -%}
+      </div>
+      <div class="modern-tabs__content-wrapper color-{{ panel_scheme }} gradient">
+        {%- for block in section.blocks -%}
+          <div
+            class="modern-tabs__panel{% if forloop.first %} is-active{% endif %}"
+            id="panel-{{ block.id }}"
+            role="tabpanel"
+          >
+            <div class="modern-tabs__text-area">
+              {%- if block.settings.subtitle != blank -%}
+                <h4 class="modern-tabs__subtitle">{{ block.settings.subtitle }}</h4>
+              {%- endif -%}
+              {%- if block.settings.heading != blank -%}
+                <h2 class="modern-tabs__heading">{{ block.settings.heading }}</h2>
+              {%- endif -%}
+              {%- if block.settings.text != blank -%}
+                <div class="modern-tabs__description">{{ block.settings.text }}</div>
+              {%- endif -%}
+            </div>
+            <div class="modern-tabs__image-area">
+              {%- if block.settings.image != blank -%}
+                {{
+                  block.settings.image
+                  | image_url: width: 1200
+                  | image_tag: class: 'modern-tabs__image', loading: 'lazy', widths: '600, 900, 1200'
+                }}
+              {%- else -%}
+                {{ 'product-1' | placeholder_svg_tag: 'modern-tabs__image' }}
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+<script>
+  (function () {
+    var section = document.getElementById('KluckAboutH2-{{ section.id }}');
+    if (!section || section.dataset.kluckAboutTabsInit) return;
+    section.dataset.kluckAboutTabsInit = '1';
+    var tabs = section.querySelectorAll('.modern-tabs__btn');
+    var panels = section.querySelectorAll('.modern-tabs__panel');
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        tabs.forEach(function (t) {
+          t.classList.remove('is-active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        panels.forEach(function (p) { p.classList.remove('is-active'); });
+        tab.classList.add('is-active');
+        tab.setAttribute('aria-selected', 'true');
+        var target = section.querySelector('#' + tab.getAttribute('data-target'));
+        if (target) target.classList.add('is-active');
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Kluck AI - About Tabs",
+  "tag": "section",
+  "class": "section-kluck-ai-about-h2",
+  "settings": [
+    { "type": "range", "id": "container_width", "min": 900, "max": 1600, "step": 20, "unit": "px", "label": "Container width", "default": 1400 },
+    { "type": "range", "id": "container_radius", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Container radius", "default": 20 },
+    { "type": "select", "id": "image_position", "label": "Image position", "options": [
+      { "value": "right", "label": "Right" },
+      { "value": "left", "label": "Left" }
+    ], "default": "right" },
+    { "type": "color_scheme", "id": "section_color_scheme", "label": "Section color scheme", "default": "scheme-1" },
+    { "type": "color_scheme", "id": "panel_color_scheme", "label": "Panel color scheme", "default": "scheme-2" },
+    { "type": "color", "id": "tab_color", "label": "Tab color", "default": "#666666" },
+    { "type": "color", "id": "tab_active_color", "label": "Active tab color", "default": "#000000" },
+    { "type": "range", "id": "tab_size", "min": 12, "max": 28, "step": 1, "unit": "px", "label": "Tab size", "default": 18 },
+    { "type": "range", "id": "subtitle_size", "min": 12, "max": 24, "step": 1, "unit": "px", "label": "Subtitle size", "default": 14 },
+    { "type": "range", "id": "heading_size_desktop", "min": 24, "max": 64, "step": 2, "unit": "px", "label": "Heading size desktop", "default": 40 },
+    { "type": "range", "id": "heading_size_mobile", "min": 20, "max": 48, "step": 2, "unit": "px", "label": "Heading size mobile", "default": 28 },
+    { "type": "range", "id": "text_size", "min": 12, "max": 22, "step": 1, "unit": "px", "label": "Text size", "default": 16 },
+    { "type": "range", "id": "padding_top_desktop", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Padding top desktop", "default": 60 },
+    { "type": "range", "id": "padding_bottom_desktop", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Padding bottom desktop", "default": 60 },
+    { "type": "range", "id": "padding_top_mobile", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding top mobile", "default": 40 },
+    { "type": "range", "id": "padding_bottom_mobile", "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Padding bottom mobile", "default": 40 }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "settings": [
+        { "type": "text", "id": "tab_title", "label": "Tab title", "default": "2024" },
+        { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Our Journey" },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Built with care from day one" },
+        { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Every detail is designed to feel premium, useful, and lasting — so shopping with us feels as good as owning the product.</p>" },
+        { "type": "image_picker", "id": "image", "label": "Image" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kluck AI - About Tabs",
+      "blocks": [
+        { "type": "tab", "settings": { "tab_title": "Start", "subtitle": "Our Journey", "heading": "Built with care from day one" } },
+        { "type": "tab", "settings": { "tab_title": "Today", "subtitle": "Our Promise", "heading": "Quality you can feel" } },
+        { "type": "tab", "settings": { "tab_title": "Next", "subtitle": "What's Ahead", "heading": "Always improving for you" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

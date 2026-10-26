@@ -1,0 +1,169 @@
+{%- comment -%}
+  Sam's Food - Brand Story Split Section
+  "From farm to market" · Our Kitchen in Lahore · PFA Licensed · Artisanal Craftsmanship
+{%- endcomment -%}
+
+<section
+  id="sams-story"
+  class="sams-story-section"
+  style="padding-block-start: min({{ section.settings.pad_top }}px, 11vw); padding-block-end: min({{ section.settings.pad_bottom }}px, 11vw); background: {{ section.settings.bg_color }};"
+>
+  <div class="page-width" style="max-width: 1240px; margin: 0 auto; padding-inline: 20px;">
+    <div style="display: grid; grid-template-columns: 1fr; gap: clamp(28px, 5vw, 48px); align-items: center;" class="sams-story-grid">
+      <!-- Media Column -->
+      <div class="sams-media-zoom sams-fade-up" style="position: relative;">
+        <div class="sams-card" style="border-radius: 28px; overflow: hidden; background: var(--sesame); aspect-ratio: 4 / 3.2; position: relative;">
+          {%- if section.settings.image != blank -%}
+            {{
+              section.settings.image
+              | image_url: width: 1000
+              | image_tag:
+                loading: 'lazy',
+                widths: '500, 800, 1000',
+                sizes: '(max-width: 768px) 90vw, 50vw',
+                alt: "Sam's Food Kitchen in Lahore",
+                style: 'width: 100%; height: 100%; object-fit: cover;'
+            }}
+          {%- else -%}
+            <!-- Artisanal Kitchen & Production photo -->
+            <img
+              src="{{ 'sams-story-kitchen.jpg' | asset_url }}"
+              alt="Sam's Food kitchen in Lahore"
+              loading="lazy"
+              decoding="async"
+              width="800"
+              height="600"
+              style="width: 100%; height: 100%; object-fit: cover; display: block;"
+            >
+          {%- endif -%}
+        </div>
+
+        <!-- Floating License Pill -->
+        <div
+          class="sams-card"
+          style="position: absolute; bottom: 20px; inset-inline-end: 20px; background: #FFFFFF; padding: 10px 18px; border-radius: var(--radius-pill); box-shadow: var(--shadow-card); display: flex; align-items: center; gap: 8px;"
+        >
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--olive);"></span>
+          <span style="font-family: var(--font-clean); font-size: 12px; font-weight: 600; color: var(--espresso);">
+            PFA LIC: LHR/R-C/48356291
+          </span>
+        </div>
+      </div>
+
+      <!-- Text Column -->
+      <div class="sams-fade-up">
+        <span class="sams-eyebrow">{{ section.settings.eyebrow }}</span>
+
+        <h2 style="font-size: clamp(2rem, 3.5vw, 2.9rem); line-height: 1.18; margin: 0 0 16px; color: var(--espresso); font-family: var(--font-editorial);">
+          {{ section.settings.heading }}
+        </h2>
+
+        <div class="sams-gold-divider sams-gold-divider--left"></div>
+
+        <div style="font-family: var(--font-clean); font-size: 1.05rem; line-height: 1.7; color: var(--espresso); opacity: 0.9; margin: 0 0 28px;">
+          {{ section.settings.content }}
+        </div>
+
+        <!-- Points list -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px;">
+          <div style="border-left: 2px solid var(--gold); padding-left: 14px;">
+            <div style="font-weight: 700; font-size: 1.1rem; color: var(--espresso);">Stone-Ground</div>
+            <div style="font-size: 0.85rem; color: var(--muted);">Low-heat natural milling</div>
+          </div>
+          <div style="border-left: 2px solid var(--gold); padding-left: 14px;">
+            <div style="font-weight: 700; font-size: 1.1rem; color: var(--espresso);">No Preservatives</div>
+            <div style="font-size: 0.85rem; color: var(--muted);">Pure clean food labels</div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+          <a href="{{ section.settings.button_link | default: '/collections/all' }}" class="sams-btn-primary">
+            {{ section.settings.button_label | default: 'Shop the Pantry' }}
+          </a>
+          <a href="/collections/bulk-wholesale" class="sams-btn-secondary">
+            Wholesale Inquiry
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @media (min-width: 900px) {
+    .sams-story-grid {
+      grid-template-columns: 1fr 1fr !important;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Sams Brand Story",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "FROM FARM TO MARKET"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Slow-ground in our Lahore kitchen with pure care."
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Story Content",
+      "default": "<p>At Sam's Food, we believe authentic Middle Eastern staples should never be compromised with artificial thickeners, additives, or industrial shortcuts.</p><p>From select roasted sesame seeds ground slowly to velvety perfection, to hearty stone-ground flours containing nine whole grains, every batch is prepared fresh in our kitchen in Lahore under Punjab Food Authority standards.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "Read Our Story"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Kitchen / Craft Photo"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#F4E9DA"
+    },
+    {
+      "type": "range",
+      "id": "pad_top",
+      "label": "Padding Top",
+      "min": 40,
+      "max": 140,
+      "step": 4,
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "pad_bottom",
+      "label": "Padding Bottom",
+      "min": 40,
+      "max": 140,
+      "step": 4,
+      "default": 88
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sams Brand Story"
+    }
+  ]
+}
+{% endschema %}

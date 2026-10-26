@@ -1,0 +1,135 @@
+{%- assign section_scheme = section.settings.color_scheme | default: 'scheme-1' -%}
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+{% assign home = store_gen.home_page %}
+{% assign ht = home.text %}
+{% assign use_mf = section.settings.use_kluck_ai_metafields %}
+{% assign homeData = section.settings.homeData %}
+{% if ht == blank and homeData.text != blank %}{% assign ht = homeData.text %}{% endif %}
+
+{% assign sticky_cta = section.settings.sticky_cta %}
+{% if use_mf and ht.sticky_cta != blank %}{% assign sticky_cta = ht.sticky_cta %}{% endif %}
+
+{% assign sticky_product = blank %}
+{% if section.settings.product != blank %}
+  {% assign sticky_product = section.settings.product %}
+{% elsif ht.selected_product != blank %}
+  {% assign sticky_product = all_products[ht.selected_product] %}
+{% elsif collections.all.products.first != blank %}
+  {% assign sticky_product = collections.all.products.first %}
+{% endif %}
+
+{% if shop.metafields.app.block_control.value %}
+<style>
+  #shopify-section-{{ section.id }} {
+    width: 100%;
+    max-width: none;
+  }
+    #csb-{{ section.id }} {
+  --c-ink: var(--color-on-accent, #fff);
+  --c-ink-muted: var(--color-on-accent-muted, rgba(255,255,255,0.55));
+  --c-surface: var(--color-accent, var(--color-primary-button-background, #111));
+  --c-accent: var(--color-accent, var(--color-primary-button-background, currentColor));
+  --c-accent-soft: var(--color-accent-soft, rgba(255,255,255,0.2));
+  --c-on-accent: var(--color-on-accent, #fff);
+  --c-border: color-mix(in srgb, var(--c-on-accent) 20%, transparent);
+  --c-heading-font: var(--section-heading-font, Georgia, 'Times New Roman', serif);
+  --c-body-font: var(--section-body-font, system-ui, sans-serif);
+    
+    position: fixed; inset-inline: 0; bottom: 0; z-index: 50;
+    border-top: 1px solid color-mix(in srgb, var(--c-accent) 25%, transparent);
+    background: color-mix(in srgb, var(--c-surface) 95%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: var(--c-ink);
+  }
+  #csb-{{ section.id }} .csb-inner {
+    max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 12px 20px;
+  }
+  #csb-{{ section.id }} .csb-title {
+    margin: 0; font-size: 13px; font-weight: 500; color: var(--c-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  #csb-{{ section.id }} .csb-meta { margin: 2px 0 0; font-size: 11px; color: var(--c-ink-muted); }
+  #csb-{{ section.id }} .csb-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+  #csb-{{ section.id }} .csb-price {
+    font-family: var(--c-heading-font); font-size: 1.25rem; color: var(--c-on-accent);
+  }
+  #csb-{{ section.id }} .csb-compare {
+    margin-right: 8px; font-size: 14px; color: var(--c-ink-muted); text-decoration: line-through; display: none;
+  }
+  #csb-{{ section.id }} .csb-cta {
+    display: inline-flex; border-radius: 999px; background: var(--c-on-accent); color: var(--c-surface);
+    padding: 10px 20px; font-size: 12px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase;
+    text-decoration: none; transition: background .2s;
+  }
+  #csb-{{ section.id }} .csb-cta:hover { opacity: 0.9; }
+  @media (min-width: 640px) {
+    #csb-{{ section.id }} .csb-inner { padding: 12px 32px; }
+    #csb-{{ section.id }} .csb-compare { display: inline; }
+    #csb-{{ section.id }} .csb-price { font-size: 1.5rem; }
+  }
+  body { padding-bottom: 72px; }
+</style>
+<div id="csb-{{ section.id }}" class="color-{{ section_scheme }}">
+  <div class="csb-inner">
+    <div class="csb-left" style="min-width:0">
+      <p class="csb-title">
+        {% if sticky_product != blank %}{{ sticky_product.title }}{% else %}{{ section.settings.fallback_title }}{% endif %}
+      </p>
+      <p class="csb-meta">★★★★★ · Shop with confidence</p>
+    </div>
+    <div class="csb-right">
+      {% if sticky_product != blank %}
+        <p style="margin:0;text-align:right">
+          {% if sticky_product.compare_at_price > sticky_product.price %}
+            <span class="csb-compare">{{ sticky_product.compare_at_price | money }}</span>
+          {% endif %}
+          <span class="csb-price">{{ sticky_product.price | money }}</span>
+        </p>
+        <a class="csb-cta" href="{{ sticky_product.url }}">{% if sticky_cta != blank %}{{ sticky_cta }}{% else %}Shop now{% endif %}</a>
+      {% else %}
+        <a class="csb-cta" href="{{ routes.all_products_collection_url }}">{% if sticky_cta != blank %}{{ sticky_cta }}{% else %}Shop now{% endif %}</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Kluck AI - Cin Sticky",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_kluck_ai_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    },
+    {
+      "type": "text",
+      "id": "sticky_cta",
+      "label": "CTA label",
+      "default": "Shop now"
+    },
+    {
+      "type": "text",
+      "id": "fallback_title",
+      "label": "Fallback title",
+      "default": "Featured product"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kluck AI - Cin Sticky"
+    }
+  ]
+}
+{% endschema %}

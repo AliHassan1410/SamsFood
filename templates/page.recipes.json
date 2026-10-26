@@ -1,0 +1,75 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "sams_recipes": {
+      "type": "sams-recipes",
+      "blocks": {
+        "rec_1": {
+          "type": "recipe",
+          "settings": {
+            "category": "Mezze Dip",
+            "title": "Classic Velvety Hummus",
+            "description": "Blend Sam's roasted tahina with chickpeas, lemon and iced water for the creamiest swirl.",
+            "prep_time": "10 Mins",
+            "pantry_item": "Sam's Tahina"
+          }
+        },
+        "rec_2": {
+          "type": "recipe",
+          "settings": {
+            "category": "Main Wrap",
+            "title": "Golden Falafel Pita Wrap",
+            "description": "Air-fry crispy falafels and layer in warm pita bread with shredded pickles and garlicky tahini sauce.",
+            "prep_time": "15 Mins",
+            "pantry_item": "Sam's Falafel"
+          }
+        },
+        "rec_3": {
+          "type": "recipe",
+          "settings": {
+            "category": "Fresh Salad",
+            "title": "Fattoush Salad with Tangy Molasses",
+            "description": "Crisp romaine, radishes and toasted pita chips tossed in glossy, tart pomegranate molasses dressing.",
+            "prep_time": "12 Mins",
+            "pantry_item": "Pomegranate Molasses"
+          }
+        },
+        "rec_4": {
+          "type": "recipe",
+          "settings": {
+            "category": "Artisan Bread",
+            "title": "Wholesome 9-Grain Paratha",
+            "description": "Flaky, nutty multi-grain flatbread prepared with stone-ground flour and ghee, bursting with natural fiber.",
+            "prep_time": "20 Mins",
+            "pantry_item": "Multigrain Flour"
+          }
+        }
+      },
+      "block_order": [
+        "rec_1",
+        "rec_2",
+        "rec_3",
+        "rec_4"
+      ],
+      "settings": {
+        "eyebrow": "FROM OUR LAHORE TABLE",
+        "heading": "Recipes to Inspire Your Table",
+        "subheading": "Simple, soulful Middle Eastern meals cooked with our pantry ingredients.",
+        "bg_color": "#FBF6EE",
+        "pad_top": 80,
+        "pad_bottom": 80
+      }
+    }
+  },
+  "order": [
+    "sams_recipes"
+  ]
+}

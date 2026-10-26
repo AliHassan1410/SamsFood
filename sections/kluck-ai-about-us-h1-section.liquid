@@ -1,0 +1,207 @@
+{%- comment -%}
+  Kluck AI — About Us rich text (self-contained CSS + JS).
+{%- endcomment -%}
+{%- assign section_scheme = section.settings.color_scheme | default: 'scheme-1' -%}
+
+{%- style -%}
+  #KluckAboutH1-{{ section.id }} {
+    --mrt-pt-mobile: {{ section.settings.padding_top_mobile }}px;
+    --mrt-pb-mobile: {{ section.settings.padding_bottom_mobile }}px;
+    --mrt-pt-desk: {{ section.settings.padding_top_desktop }}px;
+    --mrt-pb-desk: {{ section.settings.padding_bottom_desktop }}px;
+    --mrt-watermark-offset-y: {{ section.settings.watermark_offset_y }}%;
+    --mrt-watermark-gradient: {{ section.settings.watermark_gradient }};
+    --mrt-watermark-opacity: {{ section.settings.watermark_opacity | divided_by: 100.0 }};
+    --mrt-wm-size-mobile: {{ section.settings.watermark_size_mobile }}vw;
+    --mrt-wm-size-desk: {{ section.settings.watermark_size_desktop }}vw;
+    --mrt-content-max-width: {{ section.settings.content_max_width }}px;
+    --mrt-content-gap: {{ section.settings.content_gap }}px;
+    --mrt-heading-mobile: {{ section.settings.heading_size_mobile }}px;
+    --mrt-heading-desk: {{ section.settings.heading_size_desktop }}px;
+    --mrt-text-mobile: {{ section.settings.text_size_mobile }}px;
+    --mrt-text-desk: {{ section.settings.text_size_desktop }}px;
+  }
+  #KluckAboutH1-{{ section.id }}.about-rich-text {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding-top: var(--mrt-pt-mobile);
+    padding-bottom: var(--mrt-pb-mobile);
+    overflow-x: hidden;
+  }
+  @media screen and (min-width: 769px) {
+    #KluckAboutH1-{{ section.id }}.about-rich-text {
+      padding-top: var(--mrt-pt-desk);
+      padding-bottom: var(--mrt-pb-desk);
+    }
+  }
+  #KluckAboutH1-{{ section.id }} .modern-rich-text-root {
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  #KluckAboutH1-{{ section.id }} .modern-rich-text__watermark {
+    position: absolute;
+    top: var(--mrt-watermark-offset-y);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 100%;
+    font-size: var(--mrt-wm-size-mobile);
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    opacity: var(--mrt-watermark-opacity);
+    background: var(--mrt-watermark-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    overflow: hidden;
+  }
+  @media screen and (min-width: 769px) {
+    #KluckAboutH1-{{ section.id }} .modern-rich-text__watermark {
+      font-size: var(--mrt-wm-size-desk);
+    }
+  }
+  #KluckAboutH1-{{ section.id }} .modern-rich-text__content {
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: min(100%, var(--mrt-content-max-width));
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--mrt-content-gap);
+  }
+  #KluckAboutH1-{{ section.id }} .modern-rich-text__heading {
+    margin: 0;
+    width: 100%;
+    font-size: var(--mrt-heading-mobile);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-align: center;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+  #KluckAboutH1-{{ section.id }} .modern-rich-text__text {
+    margin: 0;
+    width: 100%;
+    font-size: var(--mrt-text-mobile);
+    line-height: 1.6;
+    font-weight: 400;
+    text-align: center;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+  #KluckAboutH1-{{ section.id }} .modern-rich-text__text p {
+    margin: 0 0 0.75em;
+  }
+  #KluckAboutH1-{{ section.id }} .modern-rich-text__text p:last-child {
+    margin-bottom: 0;
+  }
+  @media screen and (min-width: 769px) {
+    #KluckAboutH1-{{ section.id }} .modern-rich-text__heading {
+      font-size: var(--mrt-heading-desk);
+    }
+    #KluckAboutH1-{{ section.id }} .modern-rich-text__text {
+      font-size: var(--mrt-text-desk);
+    }
+  }
+  #KluckAboutH1-{{ section.id }} .modern-rich-text--animated .animate-el {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  #KluckAboutH1-{{ section.id }} .modern-rich-text--animated.is-visible .animate-el {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  #KluckAboutH1-{{ section.id }} .delay-1 { transition-delay: 0.1s; }
+  #KluckAboutH1-{{ section.id }} .delay-2 { transition-delay: 0.3s; }
+  #KluckAboutH1-{{ section.id }} .modern-rich-text--animated .modern-rich-text__watermark {
+    opacity: 0;
+    transition: opacity 1.5s ease 0.2s;
+  }
+  #KluckAboutH1-{{ section.id }} .modern-rich-text--animated.is-visible .modern-rich-text__watermark {
+    opacity: var(--mrt-watermark-opacity);
+  }
+{%- endstyle -%}
+
+<div id="KluckAboutH1-{{ section.id }}" class="about-rich-text color-{{ section_scheme }} gradient">
+  <div class="modern-rich-text-root{% if section.settings.enable_animation %} modern-rich-text--animated{% endif %}">
+    {%- if section.settings.watermark_text != blank -%}
+      <div class="modern-rich-text__watermark">{{ section.settings.watermark_text }}</div>
+    {%- endif -%}
+    <div class="modern-rich-text__content">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="modern-rich-text__heading animate-el delay-1">{{ section.settings.heading | newline_to_br }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="modern-rich-text__text animate-el delay-2">{{ section.settings.text }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var root = document.querySelector('#KluckAboutH1-{{ section.id }} .modern-rich-text--animated');
+    if (!root) return;
+    var obs = new IntersectionObserver(function (entries, o) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          o.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2, rootMargin: '0px 0px -50px 0px' });
+    obs.observe(root);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Kluck AI - About",
+  "tag": "section",
+  "class": "section-kluck-ai-about-h1",
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" },
+    { "type": "text", "id": "watermark_text", "label": "Watermark", "default": "Our Story" },
+    { "type": "text", "id": "watermark_gradient", "label": "Watermark gradient", "default": "linear-gradient(180deg, rgba(251, 239, 234, 1), rgba(251, 239, 234, 0) 100%)" },
+    { "type": "range", "id": "watermark_size_desktop", "min": 10, "max": 40, "step": 1, "unit": "vw", "label": "Watermark size desktop", "default": 24 },
+    { "type": "range", "id": "watermark_size_mobile", "min": 20, "max": 60, "step": 1, "unit": "vw", "label": "Watermark size mobile", "default": 40 },
+    { "type": "range", "id": "watermark_opacity", "min": 0, "max": 100, "step": 5, "unit": "%", "label": "Watermark opacity", "default": 80 },
+    { "type": "range", "id": "watermark_offset_y", "min": 0, "max": 100, "step": 1, "unit": "%", "label": "Watermark vertical offset", "default": 35 },
+    { "type": "textarea", "id": "heading", "label": "Heading", "default": "Because you need time for yourself." },
+    { "type": "range", "id": "heading_size_desktop", "min": 24, "max": 72, "step": 2, "unit": "px", "label": "Heading size desktop", "default": 42 },
+    { "type": "range", "id": "heading_size_mobile", "min": 20, "max": 48, "step": 2, "unit": "px", "label": "Heading size mobile", "default": 28 },
+    { "type": "richtext", "id": "text", "label": "Body", "default": "<p>We build products with care — thoughtful design, honest materials, and support you can count on.</p>" },
+    { "type": "range", "id": "text_size_desktop", "min": 14, "max": 24, "step": 1, "unit": "px", "label": "Text size desktop", "default": 18 },
+    { "type": "range", "id": "text_size_mobile", "min": 12, "max": 20, "step": 1, "unit": "px", "label": "Text size mobile", "default": 16 },
+    { "type": "range", "id": "content_max_width", "min": 600, "max": 1200, "step": 20, "unit": "px", "label": "Content max width", "default": 900 },
+    { "type": "range", "id": "content_gap", "min": 10, "max": 60, "step": 2, "unit": "px", "label": "Content gap", "default": 30 },
+    { "type": "checkbox", "id": "enable_animation", "label": "Enable scroll animation", "default": true },
+    { "type": "range", "id": "padding_top_desktop", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "Padding top desktop", "default": 100 },
+    { "type": "range", "id": "padding_bottom_desktop", "min": 0, "max": 160, "step": 4, "unit": "px", "label": "Padding bottom desktop", "default": 100 },
+    { "type": "range", "id": "padding_top_mobile", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Padding top mobile", "default": 60 },
+    { "type": "range", "id": "padding_bottom_mobile", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Padding bottom mobile", "default": 60 }
+  ],
+  "presets": [{ "name": "Kluck AI - About" }]
+}
+{% endschema %}

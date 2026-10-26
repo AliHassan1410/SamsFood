@@ -1,0 +1,619 @@
+{% comment %}
+  Section: Kluck AI - FAQ Section
+  - Purpose: Accordion-style FAQ with Kluck AI design standards.
+  - Updates: 
+    1. Reads content from product.metafields.kluck_ai (faq_question_1..3) when enabled.
+    2. Sets Item Background to 10% opacity of the Kluck Color Schema.
+    3. Sets Section Background to plain white.
+{% endcomment %}
+
+{%- assign heading_font = section.settings.heading_font_family -%}
+{%- assign body_font = section.settings.body_font_family -%}
+
+{% comment %} 
+  1. LOAD FONTS 
+{% endcomment %}
+<style>
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ body_font | font_face: font_display: 'swap' }}
+</style>
+
+{% comment %} 
+  2. LOGIC & VARIABLES 
+{% endcomment %}
+{% if shop.metafields.app.block_control.value %}
+
+  {% assign use_metafields = section.settings.use_metafields %}
+  
+  {% comment %} Default Variables {% endcomment %}
+  {% assign main_bg_color = section.settings.background_color %}
+  {% assign main_bg_opacity = section.settings.background_opacity | divided_by: 100.0 %}
+  {% assign item_bg_color = section.settings.item_bg %}
+  {% assign icon_color_final = section.settings.icon_color %}
+  
+  {% comment %} Metafield Overrides {% endcomment %}
+  {% if use_metafields and product != blank and product.metafields.kluck_ai.color_schema != blank %}
+    
+    {% assign kluck_hex = product.metafields.kluck_ai.color_schema %}
+
+    {% comment %} Requirement: Background will be plain white {% endcomment %}
+    {% assign main_bg_color = '#ffffff' %}
+    {% assign main_bg_opacity = 1.0 %}
+
+    {% comment %} Requirement: Item background 10% opacity of kluck color {% endcomment %}
+    {% assign item_bg_color = kluck_hex | color_to_rgb | color_modify: 'alpha', 0.1 %}
+    
+    {% comment %} Style Match: Set icon color to the solid brand color {% endcomment %}
+    {% assign icon_color_final = kluck_hex %}
+
+  {% endif %}
+
+  <div id="FAQ-{{ section.id }}" class="kluck-faq-section-{{ section.id }} faq-section-wrapper">
+    <div class="inner-container-{{ section.id }}">
+
+      {% if section.settings.title != blank or section.settings.subtitle != blank %}
+        <div class="faq-header">
+          {% if section.settings.title != blank %}
+            <h2 class="faq-main-title">{{ section.settings.title }}</h2>
+          {% endif %}
+          {% if section.settings.subtitle != blank %}
+            <p class="faq-main-subtitle">{{ section.settings.subtitle }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <div class="faq-list">
+        
+        {% comment %} 
+          LOGIC: Content Rendering 
+          If metafields are enabled and product exists, loop 1-3. 
+          Otherwise, use blocks.
+        {% endcomment %}
+        
+        {% if use_metafields and product != blank %}
+          
+          {% for i in (1..3) %}
+            {% assign q_key = 'faq_question_' | append: i %}
+            {% assign a_key = 'faq_answer_' | append: i %}
+            {% assign mf_question = product.metafields.kluck_ai[q_key] %}
+            {% assign mf_answer = product.metafields.kluck_ai[a_key] %}
+
+            {% if mf_question != blank and mf_answer != blank %}
+              <div class="faq-item">
+                <button class="faq-trigger" aria-expanded="false" type="button">
+                  <span class="faq-question-text">{{ mf_question }}</span>
+                  <span class="faq-icon"></span>
+                </button>
+
+                <div class="faq-content">
+                  <div class="faq-content-inner">
+                    {{ mf_answer | metafield_tag }}
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+
+        {% else %}
+
+          {% comment %} STANDARD BLOCK RENDERING {% endcomment %}
+          {% for block in section.blocks %}
+            {% case block.type %}
+              {% when 'faq' %}
+                <div class="faq-item" {{ block.shopify_attributes }}>
+                  <button class="faq-trigger" aria-expanded="false" type="button">
+                    <span class="faq-question-text">{{ block.settings.question }}</span>
+                    <span class="faq-icon"></span>
+                  </button>
+
+                  <div class="faq-content">
+                    <div class="faq-content-inner">
+                      {{ block.settings.answer }}
+                    </div>
+                  </div>
+                </div>
+              {% when '@app' %}
+                {% render block %}
+            {% endcase %}
+          {% endfor %}
+
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+
+{% endif %}
+
+<!-- 3. CSS STYLES & VARIABLES -->
+<style>
+  .kluck-faq-section-{{ section.id }} {
+    /* --- Layout & Background Variables --- */
+    --bg-color: {{ main_bg_color }};
+    --bg-opacity: {{ main_bg_opacity }};
+    --container-width: {{ section.settings.container_max_width }}px;
+    
+    /* --- FAQ Specific Style Variables --- */
+    --item-bg: {{ item_bg_color }};
+    --icon-bg: {{ section.settings.icon_bg }};
+    --icon-color: {{ icon_color_final }};
+    --radius: {{ section.settings.item_radius }}px;
+
+    /* --- FONT FAMILIES --- */
+    --font-heading-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --font-body-family: {{ body_font.family }}, {{ body_font.fallback_families }};
+
+    /* --- TYPOGRAPHY: HEADINGS --- */
+    --h1-size: {{ section.settings.h1_size }}px; --h1-weight: {{ section.settings.h1_weight }};
+    --h2-size: {{ section.settings.h2_size }}px; --h2-weight: {{ section.settings.h2_weight }};
+    --h3-size: {{ section.settings.h3_size }}px; --h3-weight: {{ section.settings.h3_weight }};
+    --h4-size: {{ section.settings.h4_size }}px; --h4-weight: {{ section.settings.h4_weight }};
+    --h5-size: {{ section.settings.h5_size }}px; --h5-weight: {{ section.settings.h5_weight }};
+    --h6-size: {{ section.settings.h6_size }}px; --h6-weight: {{ section.settings.h6_weight }};
+
+    /* --- TYPOGRAPHY: BODY --- */
+    --body-size: {{ section.settings.body_size }}px;
+    --body-weight: {{ section.settings.body_weight }};
+
+    position: relative;
+    width: 100%;
+    font-family: var(--font-body-family);
+    color: inherit;
+    overflow: hidden;
+  }
+
+  /* Overlay for opacity background */
+  .kluck-faq-section-{{ section.id }}::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--bg-color);
+    opacity: var(--bg-opacity);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .inner-container-{{ section.id }} {
+    position: relative;
+    z-index: 1;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  /* Header Styling */
+  .faq-header {
+    text-align: {{ section.settings.text_alignment }};
+    margin-bottom: 40px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .faq-main-title {
+    font-family: var(--font-heading-family);
+    font-size: var(--h2-size);
+    font-weight: var(--h2-weight);
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .faq-main-subtitle {
+    font-size: var(--body-size);
+    font-weight: var(--body-weight);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* FAQ List Styling */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+  }
+
+  .faq-item {
+    background-color: var(--item-bg);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .faq-trigger {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-family: var(--font-body-family);
+    font-size: var(--body-size);
+    font-weight: 500;
+    color: inherit;
+    line-height: 1.4;
+  }
+
+  .faq-question-text {
+    flex: 1;
+    padding-right: 20px;
+    margin: 0;
+    display: block;
+    line-height: 1.4;
+  }
+
+  .faq-icon {
+    width: 32px;
+    height: 32px;
+    background-color: var(--icon-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .faq-icon::before,
+  .faq-icon::after {
+    content: '';
+    position: absolute;
+    background-color: var(--icon-color);
+    border-radius: 2px;
+    transition: transform 0.3s ease;
+  }
+
+  .faq-icon::before { width: 12px; height: 2px; }
+  .faq-icon::after { width: 2px; height: 12px; }
+
+  .faq-item.active .faq-icon::after {
+    transform: rotate(90deg) scale(0);
+  }
+
+  .faq-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .faq-content-inner {
+    padding: 0 25px 25px;
+    line-height: 1.6;
+    font-size: calc(var(--body-size) * 0.95);
+  }
+  
+  /* Rendered Metafield spacing fix */
+  .faq-content-inner p:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 768px) {
+    .inner-container-{{ section.id }} { padding: 20px 10px; }
+    .faq-trigger { padding: 15px 20px; }
+    .faq-main-title { font-size: calc(var(--h2-size) * 0.8); }
+  }
+</style>
+
+<script>
+(function () {
+  const initFaq = () => {
+    const section = document.getElementById('FAQ-{{ section.id }}');
+    if (!section) return;
+
+    const items = section.querySelectorAll('.faq-item');
+    items.forEach(item => {
+      const trigger = item.querySelector('.faq-trigger');
+      const content = item.querySelector('.faq-content');
+
+      trigger.addEventListener('click', () => {
+        const isOpen = item.classList.contains('active');
+
+        // Close others
+        items.forEach(i => {
+          i.classList.remove('active');
+          i.querySelector('.faq-trigger').setAttribute('aria-expanded', 'false');
+          i.querySelector('.faq-content').style.maxHeight = null;
+        });
+
+        if (!isOpen) {
+          item.classList.add('active');
+          trigger.setAttribute('aria-expanded', 'true');
+          content.style.maxHeight = content.scrollHeight + 'px';
+        }
+      });
+    });
+  };
+
+  document.addEventListener('DOMContentLoaded', initFaq);
+  if (Shopify.designMode) {
+    document.addEventListener('shopify:section:load', initFaq);
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Kluck AI - FAQ Section",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background & Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true,
+      "info": "Uses 'faq_question_1-3' & 'faq_answer_1-3'. Sets BG to white and Item BG to 10% Kluck color."
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Manual background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "background_opacity",
+      "label": "Background opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "container_max_width",
+      "min": 600,
+      "max": 1800,
+      "step": 50,
+      "unit": "px",
+      "label": "Container Max Width",
+      "default": 900
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Description",
+      "default": "Our support team is here to assist with any inquiries."
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Header Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "FAQ Item Style"
+    },
+    {
+      "type": "color",
+      "id": "item_bg",
+      "label": "Item Background",
+      "default": "#F7F7F7",
+      "info": "Overridden if Metafields are active"
+    },
+    {
+      "type": "range",
+      "id": "item_radius",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Border Radius",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Icon Style"
+    },
+    {
+      "type": "color",
+      "id": "icon_bg",
+      "label": "Icon Background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon Symbol Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Fonts"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font_family",
+      "label": "Heading Font Family",
+      "default": "abel_n4"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font_family",
+      "label": "Body Font Family",
+      "default": "abel_n4"
+    },
+    {
+      "type": "header",
+      "content": "Body"
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "min": 10, "max": 60, "step": 1, "unit": "px",
+      "label": "Font Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "body_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "Font Weight",
+      "default": 400
+    },
+    {
+      "type": "header",
+      "content": "Heading 1 (H1)"
+    },
+    {
+      "type": "range",
+      "id": "h1_size",
+      "min": 10, "max": 100, "step": 1, "unit": "px",
+      "label": "H1 Font Size",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "h1_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "H1 Font Weight",
+      "default": 700
+    },
+    {
+      "type": "header",
+      "content": "Heading 2 (H2)"
+    },
+    {
+      "type": "range",
+      "id": "h2_size",
+      "min": 10, "max": 100, "step": 1, "unit": "px",
+      "label": "H2 Font Size",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "h2_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "H2 Font Weight",
+      "default": 700
+    },
+    {
+      "type": "header",
+      "content": "Heading 3 (H3)"
+    },
+    {
+      "type": "range",
+      "id": "h3_size",
+      "min": 10, "max": 100, "step": 1, "unit": "px",
+      "label": "H3 Font Size",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "h3_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "H3 Font Weight",
+      "default": 600
+    },
+    {
+      "type": "header",
+      "content": "Heading 4 (H4)"
+    },
+    {
+      "type": "range",
+      "id": "h4_size",
+      "min": 10, "max": 100, "step": 1, "unit": "px",
+      "label": "H4 Font Size",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "h4_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "H4 Font Weight",
+      "default": 600
+    },
+    {
+      "type": "header",
+      "content": "Heading 5 (H5)"
+    },
+    {
+      "type": "range",
+      "id": "h5_size",
+      "min": 10, "max": 100, "step": 1, "unit": "px",
+      "label": "H5 Font Size",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "h5_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "H5 Font Weight",
+      "default": 500
+    },
+    {
+      "type": "header",
+      "content": "Heading 6 (H6)"
+    },
+    {
+      "type": "range",
+      "id": "h6_size",
+      "min": 10, "max": 100, "step": 1, "unit": "px",
+      "label": "H6 Font Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "h6_weight",
+      "min": 100, "max": 900, "step": 100,
+      "label": "H6 Font Weight",
+      "default": 500
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "When will my order ship?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>We process orders quickly to ensure timely shipping. Once your order is dispatched, you'll receive a confirmation email with tracking details.</p>"
+        }
+      ]
+    },
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kluck AI - FAQ Section",
+      "blocks": [
+        { "type": "faq" },
+        { "type": "faq" },
+        { "type": "faq" }
+      ]
+    }
+  ]
+}
+{% endschema %}

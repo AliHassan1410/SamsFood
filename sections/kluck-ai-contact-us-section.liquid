@@ -1,0 +1,588 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top_mobile }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+  }
+
+  @media screen and (min-width: 769px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+    }
+  }
+
+  .section-{{ section.id }} {
+    --container-width: {{ section.settings.container_width }}px;
+    --section-radius: {{ section.settings.section_radius }}px;
+    --panel-bg: {{ section.settings.form_bg_color }};
+    
+    /* Image Panel Variables */
+    --img-text-color: {{ section.settings.img_text_color }};
+    --overlay-color: {{ section.settings.overlay_color }};
+    --overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    --btn-1-bg: {{ section.settings.btn_1_bg }};
+    --btn-1-text: {{ section.settings.btn_1_text }};
+    
+    /* Form Panel Variables */
+    --form-text: {{ section.settings.form_text_color }};
+    --input-bg: {{ section.settings.input_bg }};
+    --input-border: {{ section.settings.input_border }};
+    --input-focus: {{ section.settings.input_focus }};
+    --input-radius: {{ section.settings.input_radius }}px;
+    --btn-2-bg: {{ section.settings.btn_2_bg }};
+    --btn-2-text: {{ section.settings.btn_2_text }};
+  }
+
+  /* Main Container */
+  .modern-contact-wrapper {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+    .modern-contact__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    border-radius: var(--section-radius);
+    overflow: hidden;
+    background-color: {{ settings.color_scheme | color_modify: 'alpha', settings.section_opacity }};
+    }
+
+  @media screen and (min-width: 900px) {
+    .modern-contact__inner {
+      grid-template-columns: 1fr 1fr;
+    }
+    {% if section.settings.image_position == 'right' %}
+      .modern-contact__image-panel {
+        order: 2;
+      }
+      .modern-contact__form-panel {
+        order: 1;
+      }
+    {% endif %}
+  }
+
+  /* --- LEFT PANEL (Image & Info) --- */
+  .modern-contact__image-panel {
+    position: relative;
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 40px;
+    overflow: hidden;
+    group;
+  }
+
+  .modern-contact__bg-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .modern-contact__image-panel:hover .modern-contact__bg-image {
+    transform: scale(1.05);
+  }
+
+  .modern-contact__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, var(--overlay-color) 0%, transparent 70%);
+    opacity: var(--overlay-opacity);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .modern-contact__info-content {
+    position: relative;
+    z-index: 2;
+    color: var(--img-text-color);
+  }
+
+  .modern-contact__info-title {
+    font-size: {{ section.settings.img_heading_size }}px;
+    margin: 0 0 20px 0;
+    color: var(--img-text-color);
+    font-weight: 500;
+  }
+
+  .modern-contact__info-text {
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0 0 12px 0;
+    opacity: 0.9;
+  }
+
+  .modern-contact__btn-directions {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--btn-1-bg);
+    color: var(--btn-1-text);
+    text-decoration: none;
+    padding: 14px 28px;
+    border-radius: 99px;
+    font-weight: 500;
+    margin-top: 16px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .modern-contact__btn-directions:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+
+  /* --- RIGHT PANEL (Form) --- */
+  .modern-contact__form-panel {
+    padding: 60px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  @media screen and (min-width: 900px) {
+    .modern-contact__form-panel {
+      padding: 80px 60px;
+    }
+  }
+
+  .modern-contact__form-title {
+    text-align: center;
+    font-size: {{ section.settings.form_heading_size }}px;
+    color: var(--form-text);
+    margin: 0 0 40px 0;
+    font-weight: 500;
+  }
+
+  .modern-contact__form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  @media screen and (min-width: 600px) {
+    .form-row-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .modern-contact__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .modern-contact__field label {
+    font-size: 14px;
+    color: var(--form-text);
+    font-weight: 400;
+    margin-left: 4px;
+  }
+
+  .modern-contact__input {
+    width: 100%;
+    border: 1px solid var(--input-border);
+    color: var(--form-text);
+    border-radius: var(--input-radius);
+    padding: 16px 20px;
+    font-family: inherit;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    outline: none;
+  }
+
+  .modern-contact__input::placeholder {
+    color: var(--form-text);
+    opacity: 0.5;
+  }
+
+  .modern-contact__input:focus {
+    border-color: var(--input-focus);
+    box-shadow: 0 0 0 4px rgba(0,0,0,0.03);
+    transform: translateY(-1px);
+  }
+
+  textarea.modern-contact__input {
+    resize: vertical;
+    min-height: 140px;
+    border-radius: calc(var(--input-radius) / 2); /* Textareas look better with slightly less rounded corners */
+  }
+
+  .modern-contact__submit-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  .modern-contact__btn-submit {
+    background-color: {{ settings.color_scheme | color_modify: 'alpha', settings.button_opacity }};
+    color:white;
+    border: none;
+    padding: 16px 40px;
+    border-radius: 99px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .modern-contact__btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+  }
+
+  .form-success {
+    background: #d4edda;
+    color: #155724;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .form-error {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+{%- endstyle -%}
+
+
+{%- assign kluck_feature_image = shop.metafields.kluck_ai.highlight_image.value -%}
+
+<div class="section-{{ section.id }} section-{{ section.id }}-padding">
+  <div class="modern-contact-wrapper">
+    <div class="modern-contact__inner">
+      
+      <!-- LEFT PANEL -->
+      <div class="modern-contact__image-panel">
+        {%- if kluck_feature_image != blank -%}
+        <img 
+            src="{{ kluck_feature_image | image_url: width: 1200 }}" 
+            alt="Highlight" 
+            class="modern-contact__bg-image"
+            loading="lazy"
+        >
+
+        {%- elsif section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'modern-contact__bg-image', loading: 'lazy' }}
+
+        {%- else -%}
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'modern-contact__bg-image' }}
+        {%- endif -%}
+                
+        <div class="modern-contact__overlay"></div>
+
+        <div class="modern-contact__info-content">
+          {%- if section.settings.img_heading != blank -%}
+            <h2 class="modern-contact__info-title">{{ section.settings.img_heading }}</h2>
+          {%- endif -%}
+
+          {%- if section.settings.address != blank -%}
+            <p class="modern-contact__info-text">{{ section.settings.address }}</p>
+          {%- endif -%}
+          
+          {%- if section.settings.phone != blank -%}
+            <p class="modern-contact__info-text">{{ section.settings.phone }}</p>
+          {%- endif -%}
+
+          {%- if section.settings.hours != blank -%}
+            <p class="modern-contact__info-text">{{ section.settings.hours }}</p>
+          {%- endif -%}
+
+          {%- if section.settings.btn_1_label != blank -%}
+            <a href="{{ section.settings.btn_1_link | default: '#' }}" class="modern-contact__btn-directions">
+              {{ section.settings.btn_1_label }}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL (FORM) -->
+      <div class="modern-contact__form-panel">
+        {%- if section.settings.form_heading != blank -%}
+          <h2 class="modern-contact__form-title">{{ section.settings.form_heading }}</h2>
+        {%- endif -%}
+
+        {%- form 'contact', id: 'ModernContactForm', class: 'modern-contact__form' -%}
+          {%- if form.posted_successfully? -%}
+            <div class="form-success">
+              {{ 'templates.contact.form.post_success' | t | default: 'Thanks for contacting us! We will get back to you soon.' }}
+            </div>
+          {%- elsif form.errors -%}
+            <div class="form-error">
+              {{ form.errors | default_errors }}
+            </div>
+          {%- endif -%}
+
+          <div class="form-row-2">
+            <div class="modern-contact__field">
+              <label for="ContactForm-name">Name</label>
+              <input type="text" id="ContactForm-name" name="contact[name]" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}" class="modern-contact__input" placeholder="Name" required>
+            </div>
+            <div class="modern-contact__field">
+              <label for="ContactForm-email">Email *</label>
+              <input type="email" id="ContactForm-email" name="contact[email]" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" class="modern-contact__input" placeholder="Email" required>
+            </div>
+          </div>
+
+          <div class="modern-contact__field">
+            <label for="ContactForm-phone">Phone</label>
+            <input type="tel" id="ContactForm-phone" name="contact[phone]" value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}" class="modern-contact__input" placeholder="Phone">
+          </div>
+
+          <div class="modern-contact__field">
+            <label for="ContactForm-body">Your message</label>
+            <textarea id="ContactForm-body" name="contact[body]" class="modern-contact__input" placeholder="Your message" required>{%- if form.body -%}{{ form.body }}{%- endif -%}</textarea>
+          </div>
+
+          <div class="modern-contact__submit-wrapper">
+            <button type="submit" class="modern-contact__btn-submit">
+              {{ section.settings.btn_2_label | default: 'Submit Now' }}
+            </button>
+          </div>
+        {%- endform -%}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Modern Contact Form",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 800, "max": 1800, "step": 50, "unit": "px",
+      "label": "Max Container Width",
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "section_radius",
+      "min": 0, "max": 40, "step": 2, "unit": "px",
+      "label": "Outer Corner Radius",
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Desktop Image Position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Left Panel: Image & Info"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background Image"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Gradient Overlay Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0, "max": 100, "step": 5, "unit": "%",
+      "label": "Gradient Opacity",
+      "default": 70
+    },
+    {
+      "type": "text",
+      "id": "img_heading",
+      "label": "Heading",
+      "default": "New York"
+    },
+    {
+      "type": "range",
+      "id": "img_heading_size",
+      "min": 20, "max": 80, "step": 2, "unit": "px",
+      "label": "Heading Size",
+      "default": 48
+    },
+    {
+      "type": "color",
+      "id": "img_text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "address",
+      "label": "Address Text",
+      "default": "4b/39 James St, Fortitude Valley QLD 4006"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone Text",
+      "default": "+391 (0)35 2568"
+    },
+    {
+      "type": "text",
+      "id": "hours",
+      "label": "Hours Text",
+      "default": "Mon-Sat: 10am-8pm"
+    },
+    {
+      "type": "text",
+      "id": "btn_1_label",
+      "label": "Button Label",
+      "default": "Get Directions"
+    },
+    {
+      "type": "url",
+      "id": "btn_1_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "color",
+      "id": "btn_1_bg",
+      "label": "Button Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "btn_1_text",
+      "label": "Button Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Right Panel: Contact Form"
+    },
+    {
+      "type": "color",
+      "id": "form_bg_color",
+      "label": "Panel Background",
+      "default": "#F6F4F1"
+    },
+    {
+      "type": "text",
+      "id": "form_heading",
+      "label": "Form Heading",
+      "default": "Get in Touch"
+    },
+    {
+      "type": "range",
+      "id": "form_heading_size",
+      "min": 20, "max": 80, "step": 2, "unit": "px",
+      "label": "Heading Size",
+      "default": 42
+    },
+    {
+      "type": "color",
+      "id": "form_text_color",
+      "label": "Text/Label Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "input_bg",
+      "label": "Input Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "input_border",
+      "label": "Input Border Color",
+      "default": "transparent"
+    },
+    {
+      "type": "color",
+      "id": "input_focus",
+      "label": "Input Focus Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "input_radius",
+      "min": 0, "max": 40, "step": 2, "unit": "px",
+      "label": "Input Corner Radius",
+      "default": 30
+    },
+    {
+      "type": "text",
+      "id": "btn_2_label",
+      "label": "Submit Button Label",
+      "default": "Submit Now"
+    },
+    {
+      "type": "color",
+      "id": "btn_2_bg",
+      "label": "Submit Button Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "btn_2_text",
+      "label": "Submit Button Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0, "max": 120, "step": 5, "unit": "px",
+      "label": "Top Padding (Desktop)",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0, "max": 120, "step": 5, "unit": "px",
+      "label": "Bottom Padding (Desktop)",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0, "max": 100, "step": 5, "unit": "px",
+      "label": "Top Padding (Mobile)",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0, "max": 100, "step": 5, "unit": "px",
+      "label": "Bottom Padding (Mobile)",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "Modern Contact Form"
+    }
+  ]
+}
+{% endschema %}

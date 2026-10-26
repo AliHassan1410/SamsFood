@@ -1,0 +1,110 @@
+{% comment %}
+  Sam's Food collection SEO text (Lumenook layout port).
+  Shows an empty state when there are no products, then the collection description after its
+  first paragraph, collapsed after a few lines with a native details/summary "Read more".
+{% endcomment %}
+{%- liquid
+  assign parts = collection.description | split: '</p>'
+  assign intro = parts | first | append: '</p>'
+  assign seo_text = collection.description | remove_first: intro | strip
+-%}
+{%- if collection.products_count == 0 -%}
+  <section class="sams-collection-seo sams-collection-seo--empty">
+    <div class="page-width">
+      <p class="sams-collection-seo__empty-title">No products in this collection yet.</p>
+      <a class="button sams-collection-seo__empty-link" href="{{ routes.collections_url }}">Browse all collections</a>
+    </div>
+  </section>
+{%- endif -%}
+{%- if seo_text != blank -%}
+  <section class="sams-collection-seo">
+    <div class="page-width">
+      <details class="sams-collection-seo__details">
+        <div class="sams-collection-seo__body rte">{{ seo_text }}</div>
+        <summary class="sams-collection-seo__summary">
+          <span class="sams-collection-seo__more">Read more</span>
+          <span class="sams-collection-seo__less">Read less</span>
+        </summary>
+      </details>
+    </div>
+  </section>
+{%- endif -%}
+
+{% stylesheet %}
+  .sams-collection-seo {
+    padding-block: clamp(48px, 6vw, 80px);
+    font-family: var(--font-clean);
+    color: var(--espresso);
+  }
+
+  .sams-collection-seo__details {
+    max-inline-size: 760px;
+  }
+
+  .sams-collection-seo__body {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    overflow: hidden;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .sams-collection-seo__details[open] .sams-collection-seo__body {
+    display: block;
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+  }
+
+  .sams-collection-seo__summary {
+    display: inline-block;
+    margin-block-start: 12px;
+    min-block-size: 44px;
+    padding-inline: 0;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--espresso);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .sams-collection-seo__summary:focus-visible {
+    outline: 2px solid var(--espresso);
+    outline-offset: 3px;
+  }
+
+  .sams-collection-seo__less {
+    display: none;
+  }
+
+  .sams-collection-seo__details[open] .sams-collection-seo__more {
+    display: none;
+  }
+
+  .sams-collection-seo__details[open] .sams-collection-seo__less {
+    display: inline;
+  }
+
+  .sams-collection-seo--empty {
+    padding-block: clamp(48px, 6vw, 80px);
+    text-align: center;
+  }
+
+  .sams-collection-seo__empty-title {
+    font-family: var(--font-editorial);
+    font-size: 1.4rem;
+    margin: 0 0 16px;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Sam's collection SEO text",
+  "settings": [],
+  "enabled_on": { "templates": ["collection"] },
+  "presets": [{ "name": "Sam's collection SEO text" }]
+}
+{% endschema %}

@@ -1,0 +1,358 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "sams_hero": {
+      "type": "sams-hero",
+      "settings": {
+        "eyebrow": "SLOW-GROUND IN LAHORE",
+        "heading": "The <em>Middle Eastern</em> pantry, made with care.",
+        "subheading": "Silky tahina, glossy pomegranate molasses, golden falafel and stone-ground flour — made in our Lahore kitchen and delivered to your door.",
+        "button_1_label": "Shop the Pantry",
+        "button_1_link": "/collections/all",
+        "button_2_label": "Build a Mezze Box",
+        "button_2_link": "#sams-build-box",
+        "floating_note_1": "100% Halal",
+        "floating_note_2": "PFA Licensed Kitchen",
+        "pad_top": 84,
+        "pad_bottom": 84
+      }
+    },
+    "sams_trust_strip": {
+      "type": "sams-trust-strip",
+      "blocks": {
+        "trust_1": {
+          "type": "trust_item",
+          "settings": {
+            "icon": "halal",
+            "title": "Halal Certified",
+            "subtitle": "100% Pure & Handcrafted"
+          }
+        },
+        "trust_2": {
+          "type": "trust_item",
+          "settings": {
+            "icon": "license",
+            "title": "PFA Licensed",
+            "subtitle": "Lahore Kitchen: LHR/R-C/48356291"
+          }
+        },
+        "trust_3": {
+          "type": "trust_item",
+          "settings": {
+            "icon": "cod",
+            "title": "Cash On Delivery",
+            "subtitle": "Pay conveniently at your door"
+          }
+        },
+        "trust_4": {
+          "type": "trust_item",
+          "settings": {
+            "icon": "delivery",
+            "title": "Nationwide Delivery",
+            "subtitle": "Express safe delivery across Pakistan"
+          }
+        }
+      },
+      "block_order": [
+        "trust_1",
+        "trust_2",
+        "trust_3",
+        "trust_4"
+      ],
+      "settings": {
+        "bg_color": "#FBF6EE"
+      }
+    },
+    "sams_category_tiles": {
+      "type": "sams-category-tiles",
+      "blocks": {
+        "cat_1": {
+          "type": "category_tile",
+          "settings": {
+            "title": "Spreads & Sauces",
+            "description": "Slow-roasted tahina & tangy pomegranate molasses.",
+            "badge": "Nationwide",
+            "link": "/collections/tahina-spreads",
+            "button_text": "Shop Spreads"
+          }
+        },
+        "cat_2": {
+          "type": "category_tile",
+          "settings": {
+            "title": "Wholesome Flour",
+            "description": "Nine grains & seeds stone-ground for nourishing parathas, rotis & breads.",
+            "badge": "Stone Ground",
+            "link": "/collections/wholesome-flours",
+            "button_text": "Shop Flours"
+          }
+        },
+        "cat_3": {
+          "type": "category_tile",
+          "settings": {
+            "title": "Mezze Ready",
+            "description": "Velvety fresh hummus and herb-packed crispy falafels ready to fry or bake.",
+            "badge": "Lahore Chilled/Frozen",
+            "link": "/collections/mezze-ready",
+            "button_text": "Shop Mezze"
+          }
+        },
+        "cat_4": {
+          "type": "category_tile",
+          "settings": {
+            "title": "Bundles",
+            "description": "Thoughtfully curated mezze boxes and pantry pairings with exclusive savings.",
+            "badge": "Save up to Rs 500",
+            "link": "/pages/bundles",
+            "button_text": "View Bundles"
+          }
+        },
+        "cat_5": {
+          "type": "category_tile",
+          "settings": {
+            "title": "Bulk & Commercial",
+            "description": "Commercial 3kg & 14kg tahina buckets and wholesale flour for dining kitchens.",
+            "badge": "Trade Pricing",
+            "link": "/collections/bulk-wholesale",
+            "button_text": "Wholesale Packs"
+          }
+        }
+      },
+      "block_order": [
+        "cat_1",
+        "cat_2",
+        "cat_3",
+        "cat_4",
+        "cat_5"
+      ],
+      "settings": {
+        "eyebrow": "CURATED COLLECTIONS",
+        "heading": "Shop by Category",
+        "subheading": "Explore our small-batch tahina, stone-ground flours, authentic mezze, and bulk wholesale offerings.",
+        "bg_color": "#FBF6EE",
+        "pad_top": 64,
+        "pad_bottom": 64
+      }
+    },
+    "sams_bestsellers": {
+      "type": "sams-product-grid",
+      "settings": {
+        "eyebrow": "LAHORI KITCHEN FAVORITES",
+        "heading": "Bestsellers",
+        "subheading": "Our most loved artisan Middle Eastern pantry staples.",
+        "collection": "all",
+        "products_to_show": 4,
+        "view_all_label": "View All Pantry",
+        "view_all_link": "/collections/all",
+        "bg_color": "#FFFFFF",
+        "pad_top": 64,
+        "pad_bottom": 64
+      }
+    },
+    "sams_bundles": {
+      "type": "sams-bundles",
+      "blocks": {
+        "bundle_1": {
+          "type": "bundle",
+          "settings": {
+            "title": "Mezze Night",
+            "subtitle": "Complete dinner spread with ready-to-scoop sides",
+            "badge": "Lahore Delivery Only",
+            "savings_text": "Save Rs 200",
+            "included_items": "Sam's Hummus 250g, Sam's Falafel (16 pcs box), Pure Roasted Tahina 600g",
+            "original_price": "Rs 2,250",
+            "bundle_price": "Rs 2,050",
+            "link": "/pages/bundles#mezze-night"
+          }
+        },
+        "bundle_2": {
+          "type": "bundle",
+          "settings": {
+            "title": "Healthy Pantry",
+            "subtitle": "Nourishing stone-ground goodness & breakfast staples",
+            "badge": "Nationwide Delivery",
+            "savings_text": "Save Rs 350",
+            "included_items": "Multigrain Flour 5kg, Pure Tahina 600g, Pomegranate Molasses 1000g",
+            "original_price": "Rs 5,990",
+            "bundle_price": "Rs 5,640",
+            "link": "/pages/bundles#healthy-pantry"
+          }
+        },
+        "bundle_3": {
+          "type": "bundle",
+          "settings": {
+            "title": "Chef's Middle Eastern Box",
+            "subtitle": "The ultimate master pantry collection",
+            "badge": "Lahore Special",
+            "savings_text": "Save Rs 500",
+            "included_items": "Pure Tahina 600g, Pomegranate Molasses 1000g, Sam's Hummus, Sam's Falafel",
+            "original_price": "Rs 5,050",
+            "bundle_price": "Rs 4,550",
+            "link": "/pages/bundles#chefs-middle-eastern-box"
+          }
+        }
+      },
+      "block_order": [
+        "bundle_1",
+        "bundle_2",
+        "bundle_3"
+      ],
+      "settings": {
+        "eyebrow": "CURATED PAIRINGS",
+        "heading": "Mezze Bundles & Pantry Boxes",
+        "subheading": "Everything you need for an authentic Middle Eastern table, bundled with exclusive savings.",
+        "bg_color": "#F4E9DA",
+        "pad_top": 64,
+        "pad_bottom": 64
+      }
+    },
+    "sams_story": {
+      "type": "sams-story",
+      "settings": {
+        "eyebrow": "FROM FARM TO MARKET",
+        "heading": "Slow-ground in our Lahore kitchen with pure care.",
+        "content": "<p>At Sam's Food, we believe authentic Middle Eastern staples should never be compromised with artificial thickeners, additives, or industrial shortcuts.</p><p>From select roasted sesame seeds ground slowly to velvety perfection, to hearty stone-ground flours containing nine whole grains, every batch is prepared fresh in our kitchen in Lahore under Punjab Food Authority standards.</p>",
+        "button_label": "Shop All Pantry",
+        "button_link": "/collections/all",
+        "bg_color": "#F4E9DA",
+        "pad_top": 64,
+        "pad_bottom": 64
+      }
+    },
+    "sams_recipes": {
+      "type": "sams-recipes",
+      "blocks": {
+        "rec_1": {
+          "type": "recipe",
+          "settings": {
+            "category": "Mezze Dip",
+            "title": "Classic Velvety Hummus",
+            "description": "Blend Sam's roasted tahina with chickpeas, lemon and iced water for the creamiest swirl.",
+            "prep_time": "10 Mins",
+            "pantry_item": "Sam's Tahina"
+          }
+        },
+        "rec_2": {
+          "type": "recipe",
+          "settings": {
+            "category": "Main Wrap",
+            "title": "Golden Falafel Pita Wrap",
+            "description": "Air-fry crispy falafels and layer in warm pita bread with shredded pickles and garlicky tahini sauce.",
+            "prep_time": "15 Mins",
+            "pantry_item": "Sam's Falafel"
+          }
+        },
+        "rec_3": {
+          "type": "recipe",
+          "settings": {
+            "category": "Fresh Salad",
+            "title": "Fattoush Salad with Tangy Molasses",
+            "description": "Crisp romaine, radishes and toasted pita chips tossed in glossy, tart pomegranate molasses dressing.",
+            "prep_time": "12 Mins",
+            "pantry_item": "Pomegranate Molasses"
+          }
+        },
+        "rec_4": {
+          "type": "recipe",
+          "settings": {
+            "category": "Artisan Bread",
+            "title": "Wholesome 9-Grain Paratha",
+            "description": "Flaky, nutty multi-grain flatbread prepared with stone-ground flour and ghee, bursting with natural fiber.",
+            "prep_time": "20 Mins",
+            "pantry_item": "Multigrain Flour"
+          }
+        }
+      },
+      "block_order": [
+        "rec_1",
+        "rec_2",
+        "rec_3",
+        "rec_4"
+      ],
+      "settings": {
+        "eyebrow": "FROM OUR LAHORE TABLE",
+        "heading": "Recipes to Inspire Your Table",
+        "subheading": "Simple, soulful Middle Eastern meals cooked with our pantry ingredients.",
+        "bg_color": "#FBF6EE",
+        "pad_top": 64,
+        "pad_bottom": 64
+      }
+    },
+    "sams_steps": {
+      "type": "sams-steps",
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "title": "1. Choose Your Pantry",
+            "text": "Browse authentic tahina, multi-grain flours, or complete mezze dinner boxes."
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "title": "2. We Pack It Fresh",
+            "text": "Freshly prepared, sealed and chilled in our kitchen in Lahore under strict PFA food standards."
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "title": "3. Delivered to Your Door",
+            "text": "Same-day/next-day cold-chain in Lahore, and fast insured nationwide courier with Cash On Delivery."
+          }
+        }
+      },
+      "block_order": [
+        "step_1",
+        "step_2",
+        "step_3"
+      ],
+      "settings": {
+        "eyebrow": "SIMPLE & RELIABLE",
+        "heading": "How Sam's Food Works",
+        "subheading": "From our artisanal kitchen in Lahore directly to your dining table.",
+        "bg_color": "#F4E9DA",
+        "pad_top": 64,
+        "pad_bottom": 64
+      }
+    },
+    "sams_wholesale_banner": {
+      "type": "sams-banner",
+      "settings": {
+        "eyebrow": "COMMERCIAL & FOODSERVICE",
+        "heading": "Cafés & restaurants: bulk tahina and flour at trade prices.",
+        "subheading": "Consistent quality for kitchens, bakeries, and caterers across Lahore and Pakistan. Custom bucket packaging (3kg & 14kg) with priority dispatch.",
+        "button_label": "Chat on WhatsApp for Trade Rates",
+        "bg_color": "#FBF6EE",
+        "card_color": "#EEDFCA",
+        "text_color": "#2B160E",
+        "pad_top": 40,
+        "pad_bottom": 56
+      }
+    },
+    "sams_reviews": {
+      "type": "sams-reviews",
+      "settings": {}
+    }
+  },
+  "order": [
+    "sams_hero",
+    "sams_trust_strip",
+    "sams_category_tiles",
+    "sams_bestsellers",
+    "sams_bundles",
+    "sams_story",
+    "sams_recipes",
+    "sams_steps",
+    "sams_wholesale_banner",
+    "sams_reviews"
+  ]
+}

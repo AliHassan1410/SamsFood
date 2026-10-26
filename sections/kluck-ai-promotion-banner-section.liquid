@@ -1,0 +1,233 @@
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+
+{% if shop.metafields.app.block_control.value %}
+
+{% style %}
+  #promo-{{ section.id }} {
+    /* --- SECTION SIZING --- */
+    --section-radius: {{ section.settings.section_radius }}px;
+    --padding-y-d: {{ section.settings.padding_y_d }}px;
+    --padding-x-d: {{ section.settings.padding_x_d }}px;
+    --padding-y-m: {{ section.settings.padding_y_m }}px;
+
+    /* --- TEXT SIZING --- */
+    --text-size-d: {{ section.settings.text_size_d }}px;
+    --text-size-m: {{ section.settings.text_size_m }}px;
+    
+    --badge-size-d: {{ section.settings.badge_size_d }}px;
+    --badge-size-m: {{ section.settings.badge_size_m }}px;
+
+    /* --- BUTTON SIZING (Desktop) --- */
+    --btn-radius: {{ section.settings.btn_radius }}px;
+    --btn-font-d: {{ section.settings.btn_font_d }}px;
+    --btn-pad-x-d: {{ section.settings.btn_pad_x_d }}px;
+    --btn-pad-y-d: {{ section.settings.btn_pad_y_d }}px;
+
+    /* --- BUTTON SIZING (Mobile) --- */
+    --btn-font-m: {{ section.settings.btn_font_m }}px;
+    --btn-pad-x-m: {{ section.settings.btn_pad_x_m }}px;
+    --btn-pad-y-m: {{ section.settings.btn_pad_y_m }}px;
+  }
+{% endstyle %}
+
+<style>
+  /* --- MAIN CONTAINER --- */
+  #promo-{{ section.id }} .cpb-section {
+    width: 100%;
+    overflow: hidden;
+    padding: var(--padding-y-d) var(--padding-x-d);
+    background-color: {{ settings.color_scheme | color_modify: 'alpha', 0.8 }} !important;
+    
+    {% if section.settings.full_width == false %}
+      max-width: {{ section.settings.max_width }}px;
+      margin: 0 auto;
+      border-radius: var(--section-radius);
+    {% endif %}
+  }
+
+  /* --- FLEX LAYOUT --- */
+  #promo-{{ section.id }} .cpb-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* --- 1. BADGE (RIBBON) --- */
+  #promo-{{ section.id }} .cpb-badge {
+    background-color: white;
+    color: #484B4F;
+    font-size: var(--badge-size-d);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    white-space: nowrap;
+    
+    /* Center alignment for text */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Padding accommodates the sharp points */
+    padding: 8px 35px; 
+    
+    /* THE HEXAGON SHAPE (< TEXT >) */
+    /* THE RIBBON SHAPE (> TEXT <) */
+    {% if section.settings.ribbon_effect %}
+      clip-path: polygon(
+        0 0,                        /* Top Left */
+        100% 0,                     /* Top Right */
+        calc(100% - 15px) 50%,      /* Right Inward Cut */
+        100% 100%,                  /* Bottom Right */
+        0 100%,                     /* Bottom Left */
+        15px 50%                    /* Left Inward Cut */
+      );
+    {% else %}
+      border-radius: 4px;
+    {% endif %}
+  }
+
+  /* --- 2. MAIN TEXT --- */
+  #promo-{{ section.id }} .cpb-text h4 {
+    font-size: var(--text-size-d);
+    font-weight:600;
+    color: white;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 0;
+  }
+  
+  /* --- 3. BUTTON --- */
+  #promo-{{ section.id }} .cpb-btn {
+    background-color:white;
+    color: {{ settings.color_scheme | color_modify: 'alpha', 0.6 }} !important;
+    display: inline-block;
+    text-decoration: none;
+    border-radius: 50px;
+    padding: 10px 25px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    
+    /* Desktop Sizing */
+    font-size: var(--btn-font-d);
+    padding: var(--btn-pad-y-d) var(--btn-pad-x-d);
+  }
+  
+  #promo-{{ section.id }} .cpb-btn:hover {
+
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+
+  /* --- MOBILE RESPONSIVE --- */
+  @media (max-width: 900px) {
+    #promo-{{ section.id }} .cpb-section {
+      padding: var(--padding-y-m) 20px;
+      {% if section.settings.full_width == false %}
+        border-radius: 0; 
+      {% endif %}
+    }
+
+    #promo-{{ section.id }} .cpb-container {
+      flex-direction: column;
+      gap: 15px;
+      text-align: center;
+    }
+
+    #promo-{{ section.id }} .cpb-badge {
+      font-size: var(--badge-size-m);
+      padding: 6px 30px; /* Slightly smaller padding on mobile */
+    }
+
+    #promo-{{ section.id }} .cpb-text {
+      font-size: var(--text-size-m);
+      max-width: 95%;
+    }
+
+    #promo-{{ section.id }} .cpb-btn {
+      width: auto;
+      /* Mobile Sizing */
+      font-size: var(--btn-font-m);
+      padding: var(--btn-pad-y-m) var(--btn-pad-x-m);
+    }
+  }
+</style>
+
+<div id="promo-{{ section.id }}" >
+  <!-- Standard color-scheme class added below -->
+  <div class="cpb-section color-{{ section.settings.color_scheme }} gradient">
+    <div class="cpb-container">
+      
+      {% if section.settings.badge_text != blank %}
+        <div class="cpb-badge">
+          {{ section.settings.badge_text }}
+        </div>
+      {% endif %}
+
+      {% if section.settings.main_text != blank %}
+        <div class="cpb-text">
+          <h4>{{ section.settings.main_text }}</h4>
+        </div>
+      {% endif %}
+
+      {% if section.settings.btn_label != blank %}
+        <a href="{{ routes.all_products_collection_url }}" class="cpb-btn">
+          {{ section.settings.btn_label }}
+        </a>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Kluck AI - Promotion",
+  "settings": [
+    { "type": "header", "content": "Layout & Styling" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color Scheme", "default": "scheme-2" },
+    { "type": "checkbox", "id": "full_width", "label": "Full Screen Width", "default": true },
+    { "type": "number", "id": "max_width", "label": "Max Width (if not full)", "default": 1400 },
+    { "type": "range", "id": "section_radius", "label": "Bar Corner Radius", "min": 0, "max": 40, "default": 0 },
+    
+    { "type": "range", "id": "padding_y_d", "label": "Desktop Vertical Padding", "min": 10, "max": 60, "default": 25 },
+    { "type": "range", "id": "padding_x_d", "label": "Desktop Side Padding", "min": 0, "max": 60, "default": 20 },
+    { "type": "range", "id": "padding_y_m", "label": "Mobile Vertical Padding", "min": 10, "max": 50, "default": 30 },
+
+    { "type": "header", "content": "Badge (Ribbon)" },
+    { "type": "text", "id": "badge_text", "label": "Badge Text", "default": "Exclusive Deal" },
+    { "type": "checkbox", "id": "ribbon_effect", "label": "Enable Ribbon Shape", "default": true },
+    { "type": "range", "id": "badge_size_d", "label": "Badge Font Size (Desktop)", "min": 10, "max": 24, "default": 14 },
+    { "type": "range", "id": "badge_size_m", "label": "Badge Font Size (Mobile)", "min": 10, "max": 20, "default": 12 },
+
+    { "type": "header", "content": "Main Text" },
+    { "type": "textarea", "id": "main_text", "label": "Announcement Text", "default": "Get at insane low price" },
+    { "type": "range", "id": "text_size_d", "label": "Text Font Size (Desktop)", "min": 16, "max": 60, "default": 38 },
+    { "type": "range", "id": "text_size_m", "label": "Text Font Size (Mobile)", "min": 16, "max": 40, "default": 28 },
+
+    { "type": "header", "content": "Button Sizing" },
+    { "type": "text", "id": "btn_label", "label": "Button Label", "default": "SHOP NOW" },
+    { "type": "url", "id": "btn_link", "label": "Button Link" },
+    { "type": "range", "id": "btn_radius", "label": "Button Radius", "min": 0, "max": 40, "default": 30 },
+
+    { "type": "paragraph", "content": "Desktop Sizing" },
+    { "type": "range", "id": "btn_font_d", "label": "Font Size", "min": 10, "max": 30, "default": 14 },
+    { "type": "range", "id": "btn_pad_x_d", "label": "Horizontal Padding", "min": 10, "max": 60, "default": 30 },
+    { "type": "range", "id": "btn_pad_y_d", "label": "Vertical Padding", "min": 5, "max": 30, "default": 12 },
+
+    { "type": "paragraph", "content": "Mobile Sizing" },
+    { "type": "range", "id": "btn_font_m", "label": "Font Size", "min": 10, "max": 30, "default": 14 },
+    { "type": "range", "id": "btn_pad_x_m", "label": "Horizontal Padding", "min": 10, "max": 60, "default": 40 },
+    { "type": "range", "id": "btn_pad_y_m", "label": "Vertical Padding", "min": 5, "max": 30, "default": 10 }
+  ],
+  "presets": [
+    {
+      "name": "Kluck AI - Promotion"
+    }
+  ]
+}
+{% endschema %}

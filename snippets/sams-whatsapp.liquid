@@ -1,0 +1,65 @@
+{%- doc -%}
+  Floating WhatsApp button
+
+  Fixed bottom-right link to the Sam's Food WhatsApp line. Rendered once from layout/theme.liquid.
+
+  Colors: uses the theme's own color tokens so it follows the merchant palette.
+
+  @example
+  {% render 'sams-whatsapp' %}
+{%- enddoc -%}
+
+{% stylesheet %}
+  .sams-whatsapp {
+    position: fixed;
+    inset-block-end: max(16px, env(safe-area-inset-bottom));
+    inset-inline-end: 16px;
+    z-index: 20;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--color-foreground);
+    color: var(--color-background);
+    box-shadow: 0 8px 24px rgb(var(--color-foreground-rgb) / 0.22);
+    transition: transform 300ms ease, box-shadow 300ms ease;
+  }
+
+  .sams-whatsapp:hover {
+    transform: scale(1.04);
+  }
+
+  .sams-whatsapp:focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 3px;
+  }
+
+  .sams-whatsapp svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sams-whatsapp {
+      transition: none;
+    }
+
+    .sams-whatsapp:hover {
+      transform: none;
+    }
+  }
+{% endstylesheet %}
+
+<a
+  class="sams-whatsapp"
+  href="https://wa.me/923454788888"
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Chat with Sam's Food on WhatsApp"
+>
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+    <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.8 14.13c-.25.7-1.45 1.34-2 1.43-.52.08-1.18.11-1.9-.12-.44-.14-1-.32-1.73-.64-3.04-1.31-5.03-4.37-5.18-4.57-.15-.2-1.24-1.65-1.24-3.15 0-1.5.78-2.23 1.06-2.54.28-.31.6-.38.8-.38.2 0 .4 0 .58.01.19.01.44-.07.69.53.25.6.85 2.08.93 2.23.07.15.12.33.02.53-.1.2-.15.32-.3.5-.15.17-.31.39-.45.52-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.03 1.12 1 2.07 1.31 2.36 1.46.3.15.47.13.64-.08.17-.2.74-.86.94-1.16.2-.3.4-.25.67-.15.27.1 1.73.82 2.02.97.3.15.5.22.57.35.08.12.08.72-.17 1.42z"/>
+  </svg>
+</a>

@@ -1,0 +1,33 @@
+{%- doc -%}
+  City delivery toggle (Lahore | Nationwide)
+  Allows shoppers to select their delivery area and tailors product availability / warnings accordingly.
+  Stored in localStorage.
+{%- enddoc -%}
+
+<div class="sams-city-toggle" role="group" aria-label="Select delivery destination">
+  <button
+    type="button"
+    class="sams-city-btn active"
+    data-city="lahore"
+    aria-pressed="true"
+  >
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+      <circle cx="12" cy="10" r="3"></circle>
+    </svg>
+    <span>Lahore</span>
+  </button>
+  <button
+    type="button"
+    class="sams-city-btn"
+    data-city="nationwide"
+    aria-pressed="false"
+  >
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="2" y1="12" x2="22" y2="12"></line>
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+    </svg>
+    <span>Nationwide</span>
+  </button>
+</div>

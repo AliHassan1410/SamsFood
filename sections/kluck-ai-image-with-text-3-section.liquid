@@ -1,0 +1,281 @@
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+
+{% if shop.metafields.app.block_control.value %}
+
+{% style %}
+  #sb-{{ section.id }} {
+    /* LAYOUT */
+    --text-width: {{ section.settings.text_column_width }}%;
+    --section-max-width: {{ section.settings.section_width }}px;
+    
+    /* TEXT SIZES */
+    --h-size: {{ section.settings.heading_size }}px;
+    --p-size: {{ section.settings.body_size }}px;
+    --e-size: {{ section.settings.eyebrow_size }}px;
+    
+    /* SPACING */
+    --pt: {{ section.settings.padding_top }}px;
+    --pb: {{ section.settings.padding_bottom }}px;
+    --radius: {{ section.settings.border_radius }}px;
+  }
+{% endstyle %}
+
+<style>
+  #sb-{{ section.id }} .sb-section {
+    background-color: var(--color-background);
+    color: #484B4F;
+    padding-top: var(--pt);
+    padding-bottom: var(--pb);
+    padding-left: 20px;
+    padding-right: 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+  #sb-{{ section.id }} .sb-container {
+    width: 100%;
+    max-width: var(--section-max-width);
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    min-height: 500px;
+    position: relative;
+  }
+
+  /* --- TEXT COLUMN --- */
+  #sb-{{ section.id }} .sb-content {
+    flex: 0 0 var(--text-width);
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 2;
+  }
+
+  #sb-{{ section.id }} .sb-eyebrow {
+    font-size: var(--e-size);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    color: #484B4F;
+    opacity: 0.8;
+  }
+
+  #sb-{{ section.id }} h2 {
+    font-size: var(--h-size);
+    line-height: 1.1;
+    color: #484B4F;
+    margin: 0 0 20px 0;
+    max-width: 480px;
+  }
+
+  #sb-{{ section.id }} p {
+    font-size: var(--p-size);
+    line-height: 1.6;
+    color: #484B4F;
+    opacity:0.8;
+    margin: 0 0 30px 0;
+    max-width: 420px;
+  }
+
+  /* --- BUTTON (Untouched) --- */
+  #sb-{{ section.id }} .kluck-button {
+    display: inline-block;
+    text-decoration: none;
+    border-radius: 50px;
+    padding: 15px 30px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  #sb-{{ section.id }} .kluck-button:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+
+  /* --- IMAGE COLUMN --- */
+  #sb-{{ section.id }} .sb-image-wrap {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    min-height: 400px;
+  }
+
+  #sb-{{ section.id }} .sb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* --- WATERMARK --- */
+  #sb-{{ section.id }} .sb-watermark {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 150px;
+    line-height: 0.8;
+    color: {{ section.settings.watermark_color }};
+    opacity: 0.9;
+    z-index: 2;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  /* --- INTELLIGENCE OVERRIDES (Text Only) --- */
+.sb-light-bg h2, .sb-light-bg p, .sb-light-bg .sb-eyebrow, .sb-light-bg .kluck-button { color: #484B4F !important; }
+  .sb-dark-bg h2, .sb-dark-bg p, .sb-dark-bg .sb-eyebrow, .sb-dark-bg .kluck-button { color: #ffffff !important; }
+
+  /* --- MOBILE RESPONSIVE --- */
+  @media (max-width: 900px) {
+    #sb-{{ section.id }} .sb-container {
+      flex-direction: column-reverse;
+      height: auto;
+    }
+    #sb-{{ section.id }} .sb-content {
+      flex: auto; width: 100%; padding: 40px 20px;
+    }
+    #sb-{{ section.id }} .sb-image-wrap {
+      flex: auto; width: 100%; height: 350px;
+    }
+    #sb-{{ section.id }} h2 { font-size: calc(var(--h-size) * 0.75); }
+    #sb-{{ section.id }} .sb-watermark { font-size: 90px; top: 5%; }
+  }
+</style>
+
+<div id="sb-{{ section.id }}" class="color-{{ section.settings.color_scheme }}">
+  <div class="sb-section">
+    <div class="sb-container color-{{ section.settings.card_color_scheme }}">
+      
+      <div class="sb-content">
+        {% if section.settings.eyebrow != blank %}
+          <span class="sb-eyebrow">{{ section.settings.eyebrow }}</span>
+        {% endif %}
+        
+        {% assign kluck_h = store_gen.home_page.text.highlight_banner_section_heading %}
+        <h2>
+          {% if section.settings.use_kluck_ai_metafields and kluck_h != blank %}{{ kluck_h }}{% else %}{{ section.settings.heading }}{% endif %}
+        </h2>
+        
+        {% assign kluck_d = store_gen.home_page.text.highlight_banner_section_description %}
+        <p>
+          {% if section.settings.use_kluck_ai_metafields and kluck_d != blank %}{{ kluck_d }}{% else %}{{ section.settings.text }}{% endif %}
+        </p>
+        
+          {% if section.settings.btn_label != blank %}
+            <a href="{{ routes.all_products_collection_url }}" class="kluck-button">
+              {{ section.settings.btn_label }}
+            </a>
+          {% endif %}
+      </div>
+
+      <div class="sb-image-wrap">
+        {% if section.settings.watermark_text != blank %}
+          <div class="sb-watermark">{{ section.settings.watermark_text }}</div>
+        {% endif %}
+
+        {% assign kluck_img = shop.metafields.kluck_ai.highlight_image.value %}
+        {% if section.settings.image != blank %}
+          <img src="{{ section.settings.image | img_url: '1200x' }}" alt="{{ section.settings.heading }}" class="sb-img" loading="lazy">
+        {% elsif section.settings.use_kluck_ai_metafields and kluck_img != blank %}
+          <img src="{{ kluck_img | image_url: width: 1200 }}" alt="Banner Image" class="sb-img" loading="lazy">
+        {% else %}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'sb-img' }}
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const applySmartContrast = () => {
+      const container = document.querySelector('#sb-{{ section.id }} .sb-container');
+      if (!container) return;
+
+      const style = window.getComputedStyle(container);
+      const bgColor = style.backgroundColor;
+
+      const rgb = bgColor.match(/\d+/g);
+      if (rgb && rgb.length >= 3) {
+        const r = parseInt(rgb[0], 10);
+        const g = parseInt(rgb[1], 10);
+        const b = parseInt(rgb[2], 10);
+        const alpha = rgb.length >= 4 ? parseFloat(rgb[3]) : 1;
+
+        // Transparent / missing scheme bg reads as rgba(0,0,0,0) → do not treat as dark
+        // (that previously forced white text on a vanished cream panel).
+        if (!Number.isFinite(alpha) || alpha < 0.15) {
+          container.classList.add('sb-light-bg');
+          container.classList.remove('sb-dark-bg');
+          return;
+        }
+
+        // YIQ Brightness Formula
+        const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+
+        if (yiq >= 128) {
+          container.classList.add('sb-light-bg');
+          container.classList.remove('sb-dark-bg');
+        } else {
+          container.classList.add('sb-dark-bg');
+          container.classList.remove('sb-light-bg');
+        }
+      }
+    };
+
+    applySmartContrast();
+    if (Shopify.designMode) {
+      document.addEventListener('shopify:section:load', applySmartContrast);
+    }
+  });
+</script>
+
+{% endif %}
+
+{% schema %}
+{
+  "name": "Split Feature Banner",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "use_kluck_ai_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true
+    },
+    { "type": "header", "content": "Section Layout" },
+    { "type": "range", "id": "section_width", "label": "Container Max Width", "min": 800, "max": 1800, "step": 50, "default": 1400, "unit": "px" },
+    { "type": "range", "id": "text_column_width", "label": "Text Split Ratio", "min": 30, "max": 70, "step": 1, "default": 50, "unit": "%" },
+    { "type": "range", "id": "border_radius", "min": 0, "max": 60, "default": 20, "label": "Corner Radius" },
+    { "type": "header", "content": "Color Schemes" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Outer Section Scheme", "default": "scheme-1" },
+    { "type": "color_scheme", "id": "card_color_scheme", "label": "Inner Card Scheme", "default": "scheme-2" },
+    { "type": "header", "content": "Text Customization" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Gentle And Safe" },
+    { "type": "textarea", "id": "heading", "label": "Heading", "default": "Made for sensitive skin" },
+    { "type": "textarea", "id": "text", "label": "Body Copy", "default": "We create safe products that really work." },
+    { "type": "range", "id": "heading_size", "label": "Heading Font Size", "min": 24, "max": 80, "default": 42 },
+    { "type": "range", "id": "body_size", "label": "Body Font Size", "min": 12, "max": 24, "default": 16 },
+    { "type": "range", "id": "eyebrow_size", "label": "Eyebrow Font Size", "min": 10, "max": 20, "default": 14 },
+    { "type": "header", "content": "Watermark Feature" },
+    { "type": "text", "id": "watermark_text", "label": "Watermark Text", "default": "glossy" },
+    { "type": "color", "id": "watermark_color", "label": "Watermark Color", "default": "#ffffff" },
+    { "type": "header", "content": "Button Settings" },
+    { "type": "text", "id": "btn_label", "label": "Label", "default": "Shop Now" },
+    { "type": "url", "id": "btn_link", "label": "Link" },
+    { "type": "header", "content": "Media" },
+    { "type": "image_picker", "id": "image", "label": "Feature Image" },
+    { "type": "header", "content": "Spacing" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "default": 60, "label": "Top Padding" },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "default": 60, "label": "Bottom Padding" }
+  ],
+  "presets": [
+    { "name": "Split Feature Banner" }
+  ]
+}
+{% endschema %}

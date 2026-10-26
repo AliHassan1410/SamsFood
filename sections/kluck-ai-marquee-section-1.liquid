@@ -1,0 +1,366 @@
+{% comment %}
+  Section: Kluck AI - Marquee Banner
+  - Purpose: Horizontal scrolling strip with "Kluck AI" global controls.
+  - Logic: Metafields for color, max-width container, and full typography suite.
+  - Updates: White text, Product Image priority, Dynamic Text Metafields (marquee_text_x).
+{% endcomment %}
+
+{%- assign heading_font = section.settings.heading_font_family -%}
+{%- assign body_font = section.settings.body_font_family -%}
+
+{% comment %} 1. LOAD FONTS {% endcomment %}
+<style>
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ body_font | font_face: font_display: 'swap' }}
+</style>
+
+{% comment %} 2. MAIN CONTENT WRAPPER {% endcomment %}
+{% if shop.metafields.app.block_control.value %}
+
+  {% assign use_metafields = section.settings.use_metafields %}
+  {% assign opacity = section.settings.background_opacity | divided_by: 100.0 %}
+  {% assign bg_color = section.settings.background_color %}
+
+  {% comment %} Background Color Metafield Logic {% endcomment %}
+  {% if use_metafields
+    and product != blank
+    and product.metafields.kluck_ai.color_schema != blank
+  %}
+    {% assign bg_color = product.metafields.kluck_ai.color_schema %}
+  {% endif %}
+
+  {%- liquid
+    assign text_color = '#FFFFFF'
+    assign bg_hex = bg_color | append: ''
+    if opacity < 0.5
+      assign text_color = '#2B160E'
+    elsif bg_hex != blank
+      assign bg_brightness = bg_hex | color_brightness
+      if bg_brightness > 150
+        assign text_color = '#2B160E'
+      endif
+    endif
+  -%}
+
+  <div id="KluckMarquee-{{ section.id }}" class="kluck-marquee-wrapper-{{ section.id }}">
+    <div class="inner-container-{{ section.id }}">
+      <div class="mq-section">
+        <div class="mq-track">
+          
+          {% comment %} Repeat 4 times for seamless infinite scroll on wide screens {% endcomment %}
+          {% for i in (1..4) %}
+            <div class="mq-group">
+              
+              {% comment %} Reset text counter for each group iteration to map metafields correctly {% endcomment %}
+              {% assign text_count = 0 %}
+
+              {%- for block in section.blocks -%}
+                <div class="mq-item" {{ block.shopify_attributes }}>
+                  {% case block.type %}
+                    
+                    {% when 'text' %}
+                      {% assign text_count = text_count | plus: 1 %}
+                      {% assign final_text = block.settings.text %}
+                      
+                      {% comment %} Logic: Check metafields marquee_text_1, 2, or 3 {% endcomment %}
+                      {% if use_metafields and section.settings.use_metafield_text and product != blank %}
+                        {% assign meta_key = 'marquee_text_' | append: text_count %}
+                        {% assign meta_value = product.metafields.kluck_ai[meta_key] %}
+
+                        {% if meta_value != blank %}
+                          {% assign final_text = meta_value %}
+                        {% endif %}
+                      {% endif %}
+
+                      {%- liquid
+                        if product != blank
+                          assign final_text = final_text | replace: '[product]', product.title
+                        else
+                          assign final_text = final_text | replace: '[product]', shop.name
+                        endif
+                      -%}
+
+                      <span class="mq-text">{{ final_text }}</span>
+
+                    {% when 'image' %}
+                      {% assign final_image = block.settings.image %}
+                      
+                      {% comment %} Logic: Always use first product image if on product page {% endcomment %}
+                      {% if use_metafields and product != blank and product.featured_image != blank %}
+                        {% assign final_image = product.featured_image %}
+                      {% endif %}
+
+                      <div class="mq-img-wrap">
+                        {% if final_image != blank %}
+                          <img src="{{ final_image | img_url: '400x' }}" class="mq-img" alt="{{ final_image.alt }}" loading="lazy">
+                        {% else %}
+                          {{ 'image' | placeholder_svg_tag: 'mq-img' }}
+                        {% endif %}
+                      </div>
+
+                  {% endcase %}
+                </div>
+              {%- endfor -%}
+            </div>
+          {% endfor %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endif %}
+
+<!-- 3. CSS STYLES & VARIABLES -->
+<!-- 3. CSS STYLES & VARIABLES -->
+<style>
+  .kluck-marquee-wrapper-{{ section.id }} {
+    /* --- Layout & Background Variables --- */
+    --bg-color: {{ bg_color }};
+    --bg-opacity: {{ opacity }};
+    --mq-text-color: {{ text_color }};
+    --container-width: {{ section.settings.container_max_width }}px;
+
+    /* --- Animation Variables --- */
+    --speed-d: {{ section.settings.speed_d }}s;
+    --speed-m: {{ section.settings.speed_m }}s;
+    --rotation: {{ section.settings.rotation }}deg;
+    --mask-width: {{ section.settings.mask_width }}px;
+    --gap-d: {{ section.settings.gap_d }}px;
+    --gap-m: {{ section.settings.gap_m }}px;
+
+    /* --- FONT FAMILIES --- */
+    --font-heading-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --font-body-family: {{ body_font.family }}, {{ body_font.fallback_families }};
+
+    /* --- TYPOGRAPHY --- */
+    --h1-size: {{ section.settings.h1_size }}px; --h1-weight: {{ section.settings.h1_weight }};
+    --h2-size: {{ section.settings.h2_size }}px; --h2-weight: {{ section.settings.h2_weight }};
+    --h3-size: {{ section.settings.h3_size }}px; --h3-weight: {{ section.settings.h3_weight }};
+    --h4-size: {{ section.settings.h4_size }}px; --h4-weight: {{ section.settings.h4_weight }};
+    --h5-size: {{ section.settings.h5_size }}px; --h5-weight: {{ section.settings.h5_weight }};
+    --h6-size: {{ section.settings.h6_size }}px; --h6-weight: {{ section.settings.h6_weight }};
+    --body-size: {{ section.settings.body_size }}px; --body-weight: {{ section.settings.body_weight }};
+
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding: {{ section.settings.padding_v }}px 0;
+    transform: rotate(var(--rotation));
+    transform-origin: center;
+  }
+
+  /* Background Layer */
+  .kluck-marquee-wrapper-{{ section.id }}::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--bg-color);
+    opacity: var(--bg-opacity);
+    z-index: 0;
+  }
+
+  .inner-container-{{ section.id }} {
+    position: relative;
+    z-index: 1;
+    max-width: var(--container-width);
+    margin: 0 auto;
+  }
+
+  .mq-section {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    /* Edge Fade Mask */
+    -webkit-mask-image: linear-gradient(to right, transparent, black var(--mask-width), black calc(100% - var(--mask-width)), transparent);
+    mask-image: linear-gradient(to right, transparent, black var(--mask-width), black calc(100% - var(--mask-width)), transparent);
+  }
+
+  .mq-track {
+    display: flex;
+    align-items: center; /* FIXED: Ensures groups align centrally */
+    white-space: nowrap;
+    width: max-content;
+  }
+
+  .mq-group {
+    display: flex;
+    align-items: center; /* FIXED: Ensures items inside group align centrally */
+    flex-shrink: 0; 
+    will-change: transform; 
+    animation: mq-scroll-{{ section.id }} var(--speed-d) linear infinite;
+    {% if section.settings.direction == 'right' %}
+      animation-direction: reverse;
+    {% endif %}
+  }
+
+  {% if section.settings.pause_hover %}
+    .mq-section:hover .mq-group { animation-play-state: paused; }
+  {% endif %}
+
+  .mq-item {
+    display: inline-flex;
+    align-items: center; /* FIXED: Centers content vertically within the item */
+    justify-content: center;
+    margin-right: var(--gap-d);
+    flex-shrink: 0;
+    height: 100%; /* Ensures it fills available vertical space for alignment */
+  }
+
+  /* Using H2 settings for the scrolling text */
+  .mq-text {
+    display: block; /* FIXED: Removes inline baseline inconsistencies */
+    font-family: var(--font-heading-family);
+    font-size: var(--h2-size);
+    font-weight: var(--h2-weight);
+
+    margin: 0;
+    text-transform: uppercase;
+    color: var(--mq-text-color, #ffffff);
+    {% comment %} padding-top: 3px; /* FIXED: Optical adjustment for uppercase text */ {% endcomment %}
+  }
+
+  .mq-img-wrap {
+    height: {{ section.settings.img_height_d }}px;
+    display: flex;
+    align-items: center;
+  }
+  .mq-img {
+    height: 100%;
+    width: auto;
+    object-fit: cover;
+    border-radius: {{ section.settings.img_radius }}px;
+  }
+
+  @keyframes mq-scroll-{{ section.id }} {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-100%, 0, 0); }
+  }
+
+  @media (max-width: 768px) {
+    .mq-group { animation-duration: var(--speed-m); }
+    .mq-item { margin-right: var(--gap-m); }
+    .mq-text { font-size: calc(var(--h2-size) * 0.7); } 
+    .mq-img-wrap { height: {{ section.settings.img_height_m }}px; }
+  }
+</style>
+{% schema %}
+{
+  "name": "Kluck AI - Marquee",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background & Layout"
+    },
+    { "type": "checkbox", "id": "use_metafields", "label": "Use Kluck AI metafields", "default": true },
+    { "type": "checkbox", "id": "use_metafield_text", "label": "Use Kluck AI metafield text", "info": "Turn off to always show the text blocks below.", "default": true },
+    { "type": "color", "id": "background_color", "label": "Manual background color", "default": "#ffffff" },
+    { "type": "range", "id": "background_opacity", "label": "Background opacity", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "container_max_width", "min": 800, "max": 2000, "step": 50, "unit": "px", "label": "Container Max Width", "default": 2000 },
+    { "type": "range", "id": "padding_v", "min": 0, "max": 100, "step": 5, "unit": "px", "label": "Vertical Padding", "default": 20 },
+    
+    {
+      "type": "header",
+      "content": "Marquee Logic"
+    },
+    { "type": "select", "id": "direction", "label": "Direction", "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "right", "label": "Right"}
+      ], "default": "left"
+    },
+    { "type": "range", "id": "speed_d", "label": "Desktop Speed", "min": 5, "max": 100, "step": 1, "default": 30, "unit": "s" },
+    { "type": "range", "id": "speed_m", "label": "Mobile Speed", "min": 5, "max": 60, "step": 1, "default": 15, "unit": "s" },
+    { "type": "range", "id": "rotation", "label": "Tilt (Rotation)", "min": -10, "max": 10, "step": 1, "default": 0, "unit": "deg" },
+    { "type": "range", "id": "mask_width", "label": "Edge Fade Width", "min": 0, "max": 200, "step": 10, "default": 50, "unit": "px" },
+    { "type": "checkbox", "id": "pause_hover", "label": "Pause on Hover", "default": false },
+    { "type": "range", "id": "gap_d", "label": "Desktop Gap", "min": 10, "max": 200, "step": 5, "default": 60, "unit": "px" },
+    { "type": "range", "id": "gap_m", "label": "Mobile Gap", "min": 0, "max": 100, "step": 5, "default": 30, "unit": "px" },
+
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    { "type": "range", "id": "img_height_d", "label": "Desktop Image Height", "min": 20, "max": 200, "step": 5, "default": 60, "unit": "px" },
+    { "type": "range", "id": "img_height_m", "label": "Mobile Image Height", "min": 20, "max": 100, "step": 5, "default": 40, "unit": "px" },
+    { "type": "range", "id": "img_radius", "label": "Image Roundness", "min": 0, "max": 100, "default": 10, "unit": "px" },
+
+    {
+      "type": "header",
+      "content": "Fonts"
+    },
+    { "type": "font_picker", "id": "heading_font_family", "label": "Heading Font Family", "default": "abel_n4" },
+    { "type": "font_picker", "id": "body_font_family", "label": "Body Font Family", "default": "abel_n4" },
+    {
+      "type": "header",
+      "content": "Body"
+    },
+    { "type": "range", "id": "body_size", "min": 10, "max": 60, "step": 1, "unit": "px", "label": "Size", "default": 18 },
+    { "type": "range", "id": "body_weight", "min": 100, "max": 900, "step": 100, "label": "Weight", "default": 400 },
+    {
+      "type": "header",
+      "content": "Heading 1 (H1)"
+    },
+    { "type": "range", "id": "h1_size", "min": 10, "max": 100, "step": 1, "unit": "px", "label": "H1 Size", "default": 48 },
+    { "type": "range", "id": "h1_weight", "min": 100, "max": 900, "step": 100, "label": "H1 Weight", "default": 700 },
+    {
+      "type": "header",
+      "content": "Heading 2 (H2 - Primary Marquee Text)"
+    },
+    { "type": "range", "id": "h2_size", "min": 20, "max": 120, "step": 1, "unit": "px", "label": "H2 Size", "default": 64 },
+    { "type": "range", "id": "h2_weight", "min": 100, "max": 900, "step": 100, "label": "H2 Weight", "default": 500 },
+    {
+      "type": "header",
+      "content": "Heading 3 (H3)"
+    },
+    { "type": "range", "id": "h3_size", "min": 10, "max": 100, "step": 1, "unit": "px", "label": "H3 Size", "default": 30 },
+    { "type": "range", "id": "h3_weight", "min": 100, "max": 900, "step": 100, "label": "H3 Weight", "default": 600 },
+    {
+      "type": "header",
+      "content": "Heading 4 (H4)"
+    },
+    { "type": "range", "id": "h4_size", "min": 10, "max": 100, "step": 1, "unit": "px", "label": "H4 Size", "default": 24 },
+    { "type": "range", "id": "h4_weight", "min": 100, "max": 900, "step": 100, "label": "H4 Weight", "default": 600 },
+    {
+      "type": "header",
+      "content": "Heading 5 (H5)"
+    },
+    { "type": "range", "id": "h5_size", "min": 10, "max": 100, "step": 1, "unit": "px", "label": "H5 Size", "default": 20 },
+    { "type": "range", "id": "h5_weight", "min": 100, "max": 900, "step": 100, "label": "H5 Weight", "default": 500 },
+    {
+      "type": "header",
+      "content": "Heading 6 (H6)"
+    },
+    { "type": "range", "id": "h6_size", "min": 10, "max": 100, "step": 1, "unit": "px", "label": "H6 Size", "default": 16 },
+    { "type": "range", "id": "h6_weight", "min": 100, "max": 900, "step": 100, "label": "H6 Weight", "default": 500 }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Content (Fallback)", "info": "Use [product] to insert the product name.", "default": "Kluck AI Quality" }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image (Fallback)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kluck AI - Marquee",
+      "blocks": [
+        { "type": "text" },
+        { "type": "image" },
+        { "type": "text" },
+        { "type": "image" }
+      ]
+    }
+  ]
+}
+{% endschema %}

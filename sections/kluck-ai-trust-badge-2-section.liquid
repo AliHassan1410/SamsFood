@@ -1,0 +1,355 @@
+{% comment %}
+  Trust Badges / Guarantee Bar - Pro Version
+  - Desktop: Standard Grid/Flex Layout.
+  - Mobile: Optional Infinite Marquee Scroll.
+  - Features: Typography Inheritance, Color Schemes, Smart Hover/Borders.
+{% endcomment %}
+
+{% style %}
+  /* --- FORCE LOAD GLOBAL FONTS --- */
+  {{ settings.type_heading_font | font_face: font_display: 'swap' }}
+  {{ settings.type_body_font | font_face: font_display: 'swap' }}
+  {{ settings.type_accent_font | font_face: font_display: 'swap' }}
+
+  #tb-{{ section.id }} {
+    /* --- FONTS (Inherited from Global Settings) --- */
+    --font-h: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    --font-b: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    --font-a: {{ settings.type_accent_font.family | default: settings.type_heading_font.family }}, sans-serif;
+    
+    --font-weight: {{ section.settings.font_weight }};
+
+    /* --- DESKTOP VARIABLES --- */
+    --pt-d: {{ section.settings.pt_d }}px;
+    --pb-d: {{ section.settings.pb_d }}px;
+    --gap-d: {{ section.settings.gap_d }}px;
+    --font-size-d: {{ section.settings.font_size_d }}px;
+    --item-pad-y-d: {{ section.settings.item_pad_y_d }}px;
+    --item-pad-x-d: {{ section.settings.item_pad_x_d }}px;
+    --icon-size-d: {{ section.settings.icon_size_d }}px;
+
+    /* --- MOBILE VARIABLES --- */
+    --pt-m: {{ section.settings.pt_m }}px;
+    --pb-m: {{ section.settings.pb_m }}px;
+    --gap-m: {{ section.settings.gap_m }}px;
+    --font-size-m: {{ section.settings.font_size_m }}px;
+    --item-pad-y-m: {{ section.settings.item_pad_y_m }}px;
+    --item-pad-x-m: {{ section.settings.item_pad_x_m }}px;
+    --icon-size-m: {{ section.settings.icon_size_m }}px;
+    
+    /* --- BORDER --- */
+    --radius: {{ section.settings.border_radius }}px;
+    --border-width: {{ section.settings.border_width }}px;
+
+    /* --- SCROLL SPEED --- */
+    --scroll-speed: {{ section.settings.scroll_speed }}s;
+  }
+{% endstyle %}
+
+<style>
+  /* --- SECTION (OUTER SCHEME) --- */
+  #tb-{{ section.id }} .tb-section {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    padding-top: var(--pt-d);
+    padding-bottom: var(--pb-d);
+    overflow: hidden;
+  }
+
+  /* CONTAINER */
+  #tb-{{ section.id }} .tb-container {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+    width: 100%;
+  }
+
+  /* TRACK */
+  #tb-{{ section.id }} .tb-track {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: {{ section.settings.alignment }};
+    gap: var(--gap-d);
+    width: 100%;
+  }
+
+  /* ITEM STYLES (INNER SCHEME) */
+  #tb-{{ section.id }} .tb-item {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    border-radius: var(--radius);
+    padding: var(--item-pad-y-d) var(--item-pad-x-d);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    cursor: default;
+    white-space: nowrap;
+    box-sizing: border-box;
+    z-index: 1;
+  }
+
+  /* Smart Border (Adapts to Text Color) */
+  #tb-{{ section.id }} .tb-item::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    border: 1px solid {{settings.color_scheme }};
+    opacity: 0.15;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+  }
+  
+  /* Smart Hover (Inverts Colors) */
+  #tb-{{ section.id }} .tb-item:hover {
+    {% comment %} background-color: var(--color-foreground); {% endcomment %}
+    {% comment %} color: var(--color-background); {% endcomment %}
+    transform: translateY(-2px);
+  }
+  
+  #tb-{{ section.id }} .tb-item:hover::after {
+    opacity: 1;
+  }
+
+  /* CLONED ITEMS (Hidden on Desktop to prevent duplicate rows) */
+  #tb-{{ section.id }} .tb-item.tb-cloned {
+    display: none; 
+  }
+
+  /* ICON */
+  #tb-{{ section.id }} .tb-icon-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: var(--icon-size-d);
+    height: var(--icon-size-d);
+    margin-right: 12px;
+    flex-shrink: 0;
+    color:{{ settings.color_scheme }};
+    z-index: 3;
+    transition: color 0.3s ease;
+  }
+
+  /* Smart Icon Background (10% opacity of Text Color) */
+  #tb-{{ section.id }} .tb-icon-wrap::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background-color: currentColor;
+    opacity: 0.1;
+    z-index: -1;
+    transition: background-color 0.3s ease;
+  }
+
+  #tb-{{ section.id }} .tb-icon-svg {
+    width: 60%;
+    height: 60%;
+    fill: currentColor;
+  }
+  
+  #tb-{{ section.id }} .tb-custom-img {
+    width: 100%; 
+    height: 100%; 
+    object-fit: contain; 
+    border-radius: 50%;
+  }
+
+  /* TEXT */
+  #tb-{{ section.id }} .tb-text {
+    font-family: var(--font-{% if section.settings.font_family == 'accent' %}a{% elsif section.settings.font_family == 'body' %}b{% else %}h{% endif %});
+    font-weight: var(--font-weight);
+    font-size: var(--font-size-d);
+    line-height: 1.2;
+    z-index: 3;
+  }
+
+  /* --- MOBILE RESPONSIVE --- */
+  @media (max-width: 768px) {
+    #tb-{{ section.id }} .tb-section {
+      padding-top: var(--pt-m);
+      padding-bottom: var(--pb-m);
+    }
+    
+    #tb-{{ section.id }} .tb-item {
+      padding: var(--item-pad-y-m) var(--item-pad-x-m);
+    }
+    #tb-{{ section.id }} .tb-text { font-size: var(--font-size-m); }
+    #tb-{{ section.id }} .tb-icon-wrap { width: var(--icon-size-m); height: var(--icon-size-m); margin-right: 8px; }
+
+    /* --- MOBILE MARQUEE LOGIC --- */
+    {% if section.settings.mobile_auto_scroll %}
+      
+      /* 1. Container constrains the overflow */
+      #tb-{{ section.id }} .tb-container {
+        padding: 0;
+        max-width: 100vw; 
+        overflow: hidden; 
+        /* Fade Effect on edges */
+        mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+        -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+      }
+
+      /* 2. Track becomes the moving strip */
+      #tb-{{ section.id }} .tb-track {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: var(--gap-m);
+        width: max-content; 
+        animation: tb-scroll var(--scroll-speed) linear infinite;
+        will-change: transform;
+      }
+      
+      /* 3. Reveal Cloned Items ONLY on Mobile */
+      #tb-{{ section.id }} .tb-item.tb-cloned {
+        display: inline-flex;
+      }
+
+      /* Animation: Move 50% left (width of one full set) then reset */
+      @keyframes tb-scroll {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(calc(-50% - (var(--gap-m) / 2))); }
+      }
+
+    {% else %}
+      /* Standard Horizontal Scroll (If Auto-Scroll is OFF) */
+      #tb-{{ section.id }} .tb-container {
+        padding-right: 20px; 
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      #tb-{{ section.id }} .tb-container::-webkit-scrollbar { display: none; }
+      
+      #tb-{{ section.id }} .tb-track {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: var(--gap-m);
+      }
+    {% endif %}
+  }
+</style>
+
+<div id="tb-{{ section.id }}" class="color-{{ section.settings.color_scheme }}">
+  <div class="tb-section">
+    <div class="tb-container">
+      <div class="tb-track">
+        
+        {% comment %} --- SET 1: Always Visible --- {% endcomment %}
+        {% for block in section.blocks %}
+          <div class="tb-item color-{{ section.settings.badge_color_scheme }}" {{ block.shopify_attributes }}>
+            <div class="tb-icon-wrap">
+              {% if block.settings.custom_icon != blank %}
+                <img src="{{ block.settings.custom_icon | img_url: '60x' }}" class="tb-custom-img" alt="{{ block.settings.text }}">
+              {% else %}
+                <svg class="tb-icon-svg" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path></svg>
+              {% endif %}
+            </div>
+            <span class="tb-text">{{ block.settings.text }}</span>
+          </div>
+        {% endfor %}
+
+        {% comment %} --- SET 2: CLONED (Hidden on Desktop, Visible on Mobile via CSS) --- {% endcomment %}
+        {% if section.settings.mobile_auto_scroll %}
+          {% for block in section.blocks %}
+            <div class="tb-item tb-cloned color-{{ section.settings.badge_color_scheme }}" aria-hidden="true">
+              <div class="tb-icon-wrap">
+                {% if block.settings.custom_icon != blank %}
+                  <img src="{{ block.settings.custom_icon | img_url: '60x' }}" class="tb-custom-img" alt="{{ block.settings.text }}">
+                {% else %}
+                  <svg class="tb-icon-svg" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path></svg>
+                {% endif %}
+              </div>
+              <span class="tb-text">{{ block.settings.text }}</span>
+            </div>
+          {% endfor %}
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Trust Badges / Features",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "number", "id": "max_width", "label": "Max Container Width (px)", "default": 1400 },
+    { "type": "select", "id": "alignment", "label": "Desktop Alignment", "options": [
+      {"value": "flex-start", "label": "Left"},
+      {"value": "center", "label": "Center"},
+      {"value": "flex-end", "label": "Right"},
+      {"value": "space-between", "label": "Space Between"}
+    ], "default": "center" },
+
+    { "type": "header", "content": "Color Schemes" },
+    { "type": "header", "content": "Mobile Auto-Scroll" },
+    { "type": "checkbox", "id": "mobile_auto_scroll", "label": "Enable Infinite Scroll", "default": true },
+    { "type": "range", "id": "scroll_speed", "min": 5, "max": 60, "step": 1, "default": 20, "label": "Scroll Duration (Seconds)", "info": "Lower is faster" },
+
+    { "type": "header", "content": "Badge Styling" },
+    { "type": "range", "id": "border_width", "min": 0, "max": 5, "default": 1, "label": "Border Width (px)" },
+    { "type": "range", "id": "border_radius", "min": 0, "max": 50, "default": 50, "label": "Border Radius (px)" },
+
+    { "type": "header", "content": "Typography" },
+    {
+      "type": "select",
+      "id": "font_family",
+      "label": "Font Family",
+      "options": [
+        { "value": "heading", "label": "Heading Font" },
+        { "value": "body", "label": "Body Font" },
+        { "value": "accent", "label": "Accent Font" }
+      ],
+      "default": "body"
+    },
+    { "type": "range", "id": "font_weight", "min": 100, "max": 900, "step": 100, "default": 400, "label": "Font Weight" },
+
+    { "type": "header", "content": "Desktop Settings" },
+    { "type": "range", "id": "pt_d", "min": 0, "max": 100, "default": 40, "label": "Padding Top" },
+    { "type": "range", "id": "pb_d", "min": 0, "max": 100, "default": 40, "label": "Padding Bottom" },
+    { "type": "range", "id": "gap_d", "min": 0, "max": 100, "default": 20, "label": "Gap Between Items" },
+    { "type": "range", "id": "font_size_d", "min": 10, "max": 40, "default": 16, "label": "Font Size" },
+    { "type": "range", "id": "icon_size_d", "min": 10, "max": 60, "default": 32, "label": "Icon Circle Size" },
+    { "type": "range", "id": "item_pad_x_d", "min": 0, "max": 60, "default": 20, "label": "Item Padding Sides" },
+    { "type": "range", "id": "item_pad_y_d", "min": 0, "max": 60, "default": 10, "label": "Item Padding Vertical" },
+
+    { "type": "header", "content": "Mobile Settings" },
+    { "type": "range", "id": "pt_m", "min": 0, "max": 100, "default": 30, "label": "Padding Top" },
+    { "type": "range", "id": "pb_m", "min": 0, "max": 100, "default": 30, "label": "Padding Bottom" },
+    { "type": "range", "id": "gap_m", "min": 0, "max": 50, "default": 12, "label": "Gap Between Items" },
+    { "type": "range", "id": "font_size_m", "min": 10, "max": 30, "default": 14, "label": "Font Size" },
+    { "type": "range", "id": "icon_size_m", "min": 10, "max": 50, "default": 28, "label": "Icon Circle Size" },
+    { "type": "range", "id": "item_pad_x_m", "min": 0, "max": 40, "default": 15, "label": "Item Padding Sides" },
+    { "type": "range", "id": "item_pad_y_m", "min": 0, "max": 40, "default": 8, "label": "Item Padding Vertical" }
+  ],
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Badge",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "Free Shipping" },
+        { "type": "image_picker", "id": "custom_icon", "label": "Custom Icon (Optional)", "info": "Upload a PNG or SVG. Leave empty for checkmark." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust Badges / Features",
+      "blocks": [
+        { "type": "badge", "settings": { "text": "Free Shipping" } },
+        { "type": "badge", "settings": { "text": "Money Guarantee" } },
+        { "type": "badge", "settings": { "text": "Flexible Payment" } },
+        { "type": "badge", "settings": { "text": "Online Support" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

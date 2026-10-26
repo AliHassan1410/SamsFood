@@ -1,0 +1,101 @@
+{%- comment -%}
+  Sam's Food - Luxury Collection Hero Section with Filter Chips & Zone Alert
+{%- endcomment -%}
+
+{%- liquid
+  assign is_mezze = false
+  assign is_bulk = false
+  if collection.handle contains 'mezze' or collection.title contains 'Mezze'
+    assign is_mezze = true
+  elsif collection.handle contains 'bulk' or collection.title contains 'Bulk' or collection.title contains 'Restaurant'
+    assign is_bulk = true
+  endif
+-%}
+
+<section
+  class="sams-collection-hero"
+  style="background: linear-gradient(180deg, var(--ivory) 0%, var(--sesame) 100%); border-bottom: 1px solid var(--line); padding-block-start: 48px; padding-block-end: 40px;"
+>
+  <div class="page-width" style="max-width: 1240px; margin: 0 auto; padding-inline: 20px;">
+    <!-- Breadcrumbs -->
+    <div style="font-size: 13px; color: var(--muted); margin-bottom: 20px;">
+      <a href="/" style="color: var(--muted); text-decoration: none;">Home</a>
+      <span style="margin: 0 8px; color: var(--gold);">/</span>
+      <span style="color: var(--espresso); font-weight: 500;">{{ collection.title | default: 'The Pantry' }}</span>
+    </div>
+
+    <!-- Hero Content -->
+    <div style="max-width: 780px;">
+      <span class="sams-eyebrow">
+        {{ collection.metafields.custom.eyebrow | default: "Sam's Food · Lahore" }}
+      </span>
+
+      <h1 style="font-size: clamp(2.2rem, 4vw, 3.2rem); margin: 0 0 12px; color: var(--espresso); font-family: var(--font-editorial);">
+        {{ collection.title | default: 'Our Middle Eastern Pantry' }}
+      </h1>
+
+      <p style="font-family: var(--font-clean); font-size: 1.1rem; line-height: 1.6; color: var(--muted); margin: 0 0 24px;">
+        {{ collection.description | default: "Slow-roasted tahina, nine-grain flours, freshly rolled falafel and chilled authentic mezze made in our Lahore kitchen." }}
+      </p>
+    </div>
+
+    <!-- Alert Note Bar for Mezze Ready -->
+    {%- if is_mezze -%}
+      <div style="background: rgba(217, 115, 26, 0.1); border: 1px solid rgba(217, 115, 26, 0.3); border-radius: 14px; padding: 12px 18px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; color: var(--espresso);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--saffron-deep)" stroke-width="2"><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        <span style="font-size: 13px;">
+          <strong>Lahore Delivery Only:</strong> Fresh hummus and frozen falafel require cold-chain delivery and are available exclusively within Lahore.
+        </span>
+      </div>
+    {%- endif -%}
+
+    <!-- Bulk Wholesale Alert -->
+    {%- if is_bulk -%}
+      <div style="background: var(--espresso); color: var(--ivory); border-radius: 14px; padding: 14px 20px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <span style="font-size: 14px;">
+          <strong>Commercial Foodservice:</strong> Are you a restaurant or bakery? We provide custom deliveries and trade accounts.
+        </span>
+        <a href="https://wa.me/923454788888?text=Wholesale%20bulk%20inquiry" target="_blank" class="sams-btn-primary" style="padding: 8px 18px; font-size: 12px;">
+          WhatsApp Trade Line
+        </a>
+      </div>
+    {%- endif -%}
+
+    <!-- Filter Chips -->
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding-top: 10px;">
+      <span style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold); margin-right: 6px;">
+        Categories:
+      </span>
+      <a href="/collections/all" class="sams-city-btn {% if collection.handle == 'all' or collection.handle == 'all-products' %}active{% endif %}">
+        All
+      </a>
+      <a href="/collections/tahina-spreads" class="sams-city-btn {% if collection.handle == 'tahina-spreads' %}active{% endif %}">
+        Spreads & Sauces
+      </a>
+      <a href="/collections/wholesome-flours" class="sams-city-btn {% if collection.handle == 'wholesome-flours' %}active{% endif %}">
+        Wholesome Flour
+      </a>
+      <a href="/collections/mezze-ready" class="sams-city-btn {% if collection.handle == 'mezze-ready' %}active{% endif %}">
+        Mezze Ready
+      </a>
+      <a href="/pages/bundles" class="sams-city-btn">
+        Bundles
+      </a>
+      <a href="/collections/bulk-wholesale" class="sams-city-btn {% if collection.handle == 'bulk-wholesale' %}active{% endif %}">
+        Commercial & Bulk
+      </a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Sams Collection Hero",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Sams Collection Hero"
+    }
+  ]
+}
+{% endschema %}

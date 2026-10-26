@@ -1,0 +1,297 @@
+{%- comment -%}
+  Sam's Food - Bundles & Mezze Gift Boxes Scroller
+  Curated bundle packages with highlighted savings and luxury styling
+{%- endcomment -%}
+
+<section
+  class="sams-bundles-section"
+  style="padding-block-start: min({{ section.settings.pad_top }}px, 11vw); padding-block-end: min({{ section.settings.pad_bottom }}px, 11vw); background: {{ section.settings.bg_color }};"
+>
+  <div class="page-width" style="max-width: 1240px; margin: 0 auto; padding-inline: 20px;">
+    <!-- Section Header -->
+    <div style="text-align: center; margin-bottom: clamp(24px, 5vw, 44px);" class="sams-fade-up">
+      <span class="sams-eyebrow">{{ section.settings.eyebrow }}</span>
+      <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 0 0 10px; color: var(--espresso); font-family: var(--font-editorial);">
+        {{ section.settings.heading }}
+      </h2>
+      <div class="sams-gold-divider"></div>
+      <p style="font-size: 1.05rem; color: var(--muted); margin: 0 auto; max-width: 580px; font-family: var(--font-clean);">
+        {{ section.settings.subheading }}
+      </p>
+    </div>
+
+    <!-- Bundles Horizontal Scroller -->
+    <div
+      class="sams-bundles-scroller"
+      style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 28px;"
+    >
+      {%- for block in section.blocks -%}
+        <div
+          id="{{ block.settings.title | handleize }}"
+          class="sams-card sams-fade-up"
+          style="display: flex; flex-direction: column; background: #FFFFFF; border: 1.5px solid var(--line); border-radius: var(--radius-card); overflow: hidden; position: relative;"
+          {{ block.shopify_attributes }}
+        >
+          <!-- Bundle Image -->
+          <div style="position: relative; aspect-ratio: 16/10; overflow: hidden; background: var(--sesame);">
+            {%- if block.settings.image != blank -%}
+              {{
+                block.settings.image
+                | image_url: width: 600
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '300, 450, 600',
+                  alt: block.settings.title,
+                  style: 'width: 100%; height: 100%; object-fit: cover;'
+              }}
+            {%- else -%}
+              {%- assign bundle_img = 'sams-bundle-mezze.jpg' -%}
+              {%- if block.settings.title contains 'Healthy' -%}
+                {%- assign bundle_img = 'sams-flour-5kg-field.jpg' -%}
+              {%- elsif block.settings.title contains 'Chef' -%}
+                {%- assign bundle_img = 'sams-bundle-chef.jpg' -%}
+              {%- endif -%}
+              <img
+                src="{{ bundle_img | asset_url }}"
+                alt="{{ block.settings.title }}"
+                loading="lazy"
+                decoding="async"
+                width="600"
+                height="375"
+                style="width: 100%; height: 100%; object-fit: cover; display: block;"
+              >
+            {%- endif -%}
+
+            {%- if block.settings.savings_text != blank -%}
+              <span style="position: absolute; top: 12px; inset-inline-end: 12px; font-size: 11px; font-weight: 700; color: #FFFFFF; background: var(--saffron-deep); padding: 5px 12px; border-radius: var(--radius-pill); text-transform: uppercase; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                {{ block.settings.savings_text }}
+              </span>
+            {%- endif -%}
+          </div>
+
+          <!-- Top Badge & Header -->
+          <div style="background: var(--sesame); padding: 20px 24px 16px; border-bottom: 1px solid var(--line);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+              <span class="sams-badge sams-badge--olive">
+                {{ block.settings.badge }}
+              </span>
+            </div>
+
+            <h3 style="font-family: var(--font-editorial); font-size: 1.45rem; margin: 0 0 6px; color: var(--espresso);">
+              {{ block.settings.title }}
+            </h3>
+
+            <p style="font-size: 0.9rem; color: var(--muted); margin: 0; font-family: var(--font-clean);">
+              {{ block.settings.subtitle }}
+            </p>
+          </div>
+
+          <!-- Included Products Items -->
+          <div style="padding: 24px; display: flex; flex-direction: column; flex-grow: 1;">
+            <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); margin-bottom: 12px;">
+              What's Inside:
+            </div>
+
+            <ul style="list-style: none; padding: 0; margin: 0 0 24px; display: flex; flex-direction: column; gap: 10px;">
+              {%- assign items = block.settings.included_items | split: ',' -%}
+              {%- for item in items -%}
+                <li style="display: flex; align-items: center; gap: 10px; font-size: 0.95rem; color: var(--espresso);">
+                  <span style="width: 18px; height: 18px; border-radius: 50%; background: var(--olive-light); color: var(--olive); display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0;">✓</span>
+                  <span>{{ item | strip }}</span>
+                </li>
+              {%- endfor -%}
+            </ul>
+
+            <!-- Pricing & Action -->
+            <div style="margin-top: auto; padding-top: 16px; border-top: 1px dashed var(--line); display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px;">
+              <div>
+                <span style="font-size: 0.85rem; color: var(--muted); text-decoration: line-through; margin-right: 6px;">
+                  {{ block.settings.original_price }}
+                </span>
+                <span style="font-family: var(--font-clean); font-size: 1.35rem; font-weight: 700; color: var(--espresso);">
+                  {{ block.settings.bundle_price }}
+                </span>
+              </div>
+              <span style="font-size: 0.8rem; font-weight: 600; color: var(--olive);">
+                Free Packaging
+              </span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 8px;">
+              <a
+                href="{{ block.settings.link | default: '/collections/all' }}"
+                class="sams-btn-primary"
+                style="width: 100%; font-size: 13px; padding: 12px;"
+              >
+                Order This Bundle
+              </a>
+              {%- assign wa_msg = "Hi Sam's Food! I would like to order the " | append: block.settings.title -%}
+              <a
+                href="https://wa.me/923454788888?text={{ wa_msg | url_encode }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="sams-btn-whatsapp"
+                style="width: 100%; font-size: 12px; padding: 10px;"
+              >
+                Order via WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Sams Bundles Scroller",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "CURATED PAIRINGS"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Mezze Bundles & Pantry Boxes"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Everything you need for an authentic Middle Eastern table, bundled with exclusive savings."
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#F4E9DA"
+    },
+    {
+      "type": "range",
+      "id": "pad_top",
+      "label": "Padding Top",
+      "min": 40,
+      "max": 140,
+      "step": 4,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "pad_bottom",
+      "label": "Padding Bottom",
+      "min": 40,
+      "max": 140,
+      "step": 4,
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "bundle",
+      "name": "Bundle Box",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Mezze Night"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "Ideal for 3-4 people Friday mezze dinner"
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "City Badge",
+          "default": "Lahore Chilled/Frozen"
+        },
+        {
+          "type": "text",
+          "id": "savings_text",
+          "label": "Savings Text",
+          "default": "Save Rs 200"
+        },
+        {
+          "type": "textarea",
+          "id": "included_items",
+          "label": "Included Items (comma separated)",
+          "default": "Fresh Sam's Hummus (chilled), Sam's Crispy Falafel 16pcs, Pure Tahina 600g Jar"
+        },
+        {
+          "type": "text",
+          "id": "original_price",
+          "label": "Original Price",
+          "default": "Rs 2,250"
+        },
+        {
+          "type": "text",
+          "id": "bundle_price",
+          "label": "Bundle Price",
+          "default": "Rs 2,050"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Bundle Link"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Bundle Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sams Bundles Scroller",
+      "blocks": [
+        {
+          "type": "bundle",
+          "settings": {
+            "title": "Mezze Night",
+            "subtitle": "Complete dinner spread with ready-to-scoop sides",
+            "badge": "Lahore Delivery Only",
+            "savings_text": "Save Rs 200",
+            "included_items": "Sam's Hummus 250g, Sam's Falafel (16 pcs box), Pure Roasted Tahina 600g",
+            "original_price": "Rs 2,250",
+            "bundle_price": "Rs 2,050"
+          }
+        },
+        {
+          "type": "bundle",
+          "settings": {
+            "title": "Healthy Pantry",
+            "subtitle": "Nourishing stone-ground goodness & breakfast staples",
+            "badge": "Nationwide Delivery",
+            "savings_text": "Save Rs 350",
+            "included_items": "Multigrain Flour 5kg, Pure Tahina 600g, Pomegranate Molasses 1000g",
+            "original_price": "Rs 5,990",
+            "bundle_price": "Rs 5,640"
+          }
+        },
+        {
+          "type": "bundle",
+          "settings": {
+            "title": "Chef's Middle Eastern Box",
+            "subtitle": "The ultimate master pantry collection",
+            "badge": "Lahore Special",
+            "savings_text": "Save Rs 500",
+            "included_items": "Pure Tahina 600g, Pomegranate Molasses 1000g, Sam's Hummus, Sam's Falafel",
+            "original_price": "Rs 5,050",
+            "bundle_price": "Rs 4,550"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

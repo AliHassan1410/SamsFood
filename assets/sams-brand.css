@@ -1,0 +1,418 @@
+/* ==========================================================================
+   SAM'S FOOD — LUXURY MIDDLE EASTERN PANTRY DESIGN SYSTEM
+   Brand Colors, Typography, Refined Components & Motion Tokens
+   ========================================================================== */
+
+:root {
+  /* Brand Color Palette */
+  --espresso: #2B160E;
+  --espresso-rgb: 43 22 14;
+  --saffron: #D9731A;
+  --saffron-deep: #B35A0E;
+  --gold: #A87B32;
+  --gold-light: #C9A25D;
+  --gold-subtle: rgba(168, 123, 50, 0.09);
+  --olive: #2F5D3A;
+  --olive-light: #EBF3EC;
+  --ivory: #FBF6EE;
+  --ivory-rgb: 251 246 238;
+  --sesame: #F4E9DA;
+  --line: #E5D6C2;
+  --muted: #7A6457;
+
+  /* Typography */
+  --font-editorial: 'Fraunces', Georgia, serif;
+  --font-clean: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Radii & Shadows */
+  --radius-card: 20px;
+  --radius-pill: 9999px;
+  --radius-inner: 14px;
+  --shadow-subtle: 0 4px 20px rgba(43, 22, 14, 0.04);
+  --shadow-card: 0 12px 32px rgba(43, 22, 14, 0.07);
+  --shadow-hover: 0 20px 48px rgba(43, 22, 14, 0.12);
+
+  /* Section Spacing */
+  --section-pad-y: 96px;
+  --section-pad-y-mobile: 60px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --section-pad-y: 112px;
+  }
+}
+
+/* Global Typography & Smoothing */
+body {
+  background-color: var(--ivory);
+  color: var(--espresso);
+  font-family: var(--font-clean);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, .sams-heading-editorial {
+  font-family: var(--font-editorial);
+  font-feature-settings: "liga" 1, "kern" 1;
+  letter-spacing: -0.02em;
+  color: var(--espresso);
+  font-weight: 600;
+}
+
+h1 em, h2 em, h3 em, .sams-heading-editorial em {
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold);
+}
+
+/* Eyebrow Label */
+.sams-eyebrow {
+  display: inline-block;
+  font-family: var(--font-clean);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+/* Luxury Gold-Outline Badges */
+.sams-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  font-family: var(--font-clean);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  background: var(--gold-subtle);
+  line-height: 1;
+}
+
+.sams-badge--olive {
+  border-color: var(--olive);
+  color: var(--olive);
+  background: var(--olive-light);
+}
+
+.sams-badge--outline {
+  border: 1px solid var(--line);
+  color: var(--muted);
+  background: transparent;
+}
+
+.sams-badge--delivery {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.sams-badge--nationwide {
+  background: rgba(47, 93, 58, 0.08);
+  border: 1px solid rgba(47, 93, 58, 0.25);
+  color: var(--olive);
+}
+
+.sams-badge--lahore-only {
+  background: rgba(217, 115, 26, 0.08);
+  border: 1px solid rgba(217, 115, 26, 0.3);
+  color: var(--saffron-deep);
+}
+
+/* Pill Buttons */
+.sams-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: var(--radius-pill);
+  background-color: var(--saffron);
+  color: #FFFFFF !important;
+  font-family: var(--font-clean);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid transparent;
+  box-shadow: 0 4px 16px rgba(217, 115, 26, 0.28);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sams-btn-primary:hover {
+  background-color: var(--saffron-deep);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(179, 90, 14, 0.35);
+  color: #FFFFFF !important;
+}
+
+.sams-btn-primary:active {
+  transform: translateY(0);
+}
+
+.sams-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--espresso) !important;
+  font-family: var(--font-clean);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--espresso);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sams-btn-secondary:hover {
+  background: var(--espresso);
+  color: var(--ivory) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+
+.sams-btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
+  background: var(--gold-subtle);
+  color: var(--gold) !important;
+  font-family: var(--font-clean);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--gold);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sams-btn-gold:hover {
+  background: var(--gold);
+  color: #FFFFFF !important;
+  transform: translateY(-2px);
+}
+
+.sams-btn-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 26px;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--olive) !important;
+  font-family: var(--font-clean);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  border: 1.5px solid var(--olive);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sams-btn-whatsapp:hover {
+  background: var(--olive);
+  color: #FFFFFF !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(47, 93, 58, 0.25);
+}
+
+/* Card Styling */
+.sams-card {
+  background: #FFFFFF;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-subtle);
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+}
+
+.sams-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card);
+  border-color: var(--gold-light);
+}
+
+.sams-card--sesame {
+  background: var(--sesame);
+  border-color: rgba(229, 214, 194, 0.8);
+}
+
+/* Image Zoom Hover */
+.sams-media-zoom {
+  overflow: hidden;
+}
+
+.sams-media-zoom img {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sams-card:hover .sams-media-zoom img,
+.sams-media-zoom:hover img {
+  transform: scale(1.04);
+}
+
+/* Dividers */
+.sams-gold-divider {
+  width: 48px;
+  height: 2px;
+  background: var(--gold);
+  margin: 16px auto;
+  border-radius: 2px;
+}
+
+.sams-gold-divider--left {
+  margin-inline-start: 0;
+  margin-inline-end: auto;
+}
+
+/* Homepage: skip style/layout/paint for sections below the first two (hero, trust strip)
+   until they approach the viewport. `auto` in contain-intrinsic-size remembers the real
+   height once rendered, so scrolling back doesn't shift the page. */
+[data-template="index"] > .shopify-section:nth-child(n + 3) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 640px;
+}
+
+/* Animations */
+.sams-fade-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sams-fade-up.sams-in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sams-fade-up {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .sams-media-zoom img,
+  .sams-card,
+  .sams-btn-primary,
+  .sams-btn-secondary {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* Header & Sticky Restyling */
+.header-wrapper,
+#header-component {
+  background-color: var(--ivory) !important;
+  border-bottom: 1px solid var(--line) !important;
+  transition: background-color 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
+}
+
+#header-component.is-sticky,
+.header-wrapper.is-sticky {
+  background-color: rgba(251, 246, 238, 0.92) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  box-shadow: 0 4px 20px rgba(43, 22, 14, 0.05);
+}
+
+/* City Toggle Pill */
+.sams-city-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: var(--sesame);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  padding: 3px;
+  font-family: var(--font-clean);
+  font-size: 12px;
+  font-weight: 500;
+  user-select: none;
+}
+
+.sams-city-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.sams-city-btn.active {
+  background: #FFFFFF;
+  color: var(--espresso);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(43, 22, 14, 0.08);
+}
+
+/* Free Delivery Bar */
+.sams-free-shipping-bar {
+  background: var(--sesame);
+  border-radius: var(--radius-pill);
+  height: 8px;
+  overflow: hidden;
+  position: relative;
+  margin: 12px 0 6px;
+}
+
+.sams-free-shipping-progress {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold) 0%, var(--saffron) 100%);
+  border-radius: var(--radius-pill);
+  transition: width 0.4s ease;
+}
+
+/* Kluck AI bundle block (app CSS): the "Most Popular" badge overlaps the tier price */
+.bundle-option:has(.bundle-most-popular-badge) {
+  padding-block-start: 28px;
+}
+
+@media screen and (max-width: 749px) {
+  .bundle-option .bundle-most-popular-badge {
+    top: -13px;
+    height: 26px;
+    padding: 5px 12px;
+    font-size: 13px;
+  }
+
+  .bundle-option:has(.bundle-most-popular-badge) {
+    padding-block-start: 24px;
+  }
+}
+
+/* Kluck AI "Feature Highlights" block (app CSS): its 2x2 mobile grid is too narrow for the headings */
+@media (max-width: 900px) {
+  .cfr-wrapper.cfr-mobile-cards-grid.cfr-mobile-layout-cards .cfr-mobile-cards-wrap {
+    grid-template-columns: 1fr;
+  }
+}

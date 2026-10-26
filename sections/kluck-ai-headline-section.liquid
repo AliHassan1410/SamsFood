@@ -1,0 +1,409 @@
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+
+{% if shop.metafields.app.block_control.value %}
+{% comment %}
+  Inline Image Headline - Scroll Reveal Pro
+  - Logic: JavaScript splits text into individual characters.
+  - Animation: Characters light up one by one based on scroll position.
+  - Colors/Fonts: Inherited from global theme settings and color schemes.
+{% endcomment %}
+
+{% style %}
+  /* --- FORCE LOAD GLOBAL FONTS --- */
+  {{ settings.type_heading_font | font_face: font_display: 'swap' }}
+  {{ settings.type_body_font | font_face: font_display: 'swap' }}
+  {{ settings.type_accent_font | font_face: font_display: 'swap' }}
+
+  #ih-{{ section.id }} {
+    /* FONTS (Inherited from Global Settings) */
+    --font-h: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    --font-b: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    --font-a: {{ settings.type_accent_font.family | default: settings.type_heading_font.family }}, sans-serif;
+    
+    /* SIZING */
+    --font-size-d: {{ section.settings.size_desktop }}px;
+    --font-size-m: {{ section.settings.size_mobile }}px;
+    --line-height: {{ section.settings.line_height }};
+    
+
+    --max-w: {{ section.settings.max_width }}px;
+  }
+{% endstyle %}
+
+<style>
+  /* --- SECTION (SCHEME DRIVEN) --- */
+  #ih-{{ section.id }} .ih-section {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    padding: 60px 0;
+    padding-left: 15px;
+    padding-right: 15px;
+    text-align: center;
+    overflow: hidden; 
+  }
+
+  #ih-{{ section.id }} .ih-container {
+    max-width: var(--max-w);
+    margin: 0 auto;
+  }
+
+  /* --- THE HEADLINE WRAPPER --- */
+  #ih-{{ section.id }} .ih-headline {
+    display: inline; /* Keeps flow natural */
+    color: #484B4F;
+    font-size: var(--font-size-d);
+    line-height: var(--line-height); /* Controls spacing between lines */
+    margin: 0;
+  }
+
+  /* --- TEXT SEGMENTS --- */
+  #ih-{{ section.id }} .ih-text {
+    display: inline;
+    position: relative;
+  }
+
+  /* --- INDIVIDUAL CHARACTERS (Animation) --- */
+  /* Smart Opacity Trick: Adapts to whatever color scheme is chosen! */
+  #ih-{{ section.id }} .ih-char {
+    color: currentColor;
+    opacity: 0.15; 
+    transition: opacity 0.4s ease-out; 
+  }
+
+  #ih-{{ section.id }} .ih-char.is-active {
+    opacity: 1;
+  }
+
+  /* --- IMAGE SEGMENTS --- */
+  #ih-{{ section.id }} .ih-image-wrap {
+    display: inline-flex;
+    vertical-align: middle; /* Aligns with text center */
+    margin: 0 0.15em; /* Spacing relative to font size */
+    text-decoration: none;
+    position: relative;
+    
+    /* KEY CHANGE: Height is relative to font size */
+    height: 1.1em; 
+    
+    /* Fix for alignment to ensure it doesn't push the line too high */
+    transform: translateY(-0.05em); 
+  }
+
+  #ih-{{ section.id }} .ih-img {
+    height: 100%;
+    width: auto;
+    
+    /* FORCE PILL SHAPE */
+    aspect-ratio: 16 / 9; /* Makes it wide like a pill */
+    object-fit: cover;
+    border-radius: 999px; /* Perfect pill rounded corners */
+    
+    transform: scale(1);
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.2, 1), opacity 0.5s ease;
+    will-change: transform;
+    display: block;
+    opacity: 0.2; 
+  }
+  
+  #ih-{{ section.id }} .ih-img.is-active { opacity: 1; }
+  #ih-{{ section.id }} .ih-image-wrap:hover .ih-img {
+    transform: scale(1.12);
+    opacity: 1 !important;
+  }
+
+  /* --- LINE BREAK BLOCK --- */
+  #ih-{{ section.id }} .ih-break {
+    display: block;
+    height: 0;
+    width: 100%;
+    /* Controls gap between broken lines */
+    margin-bottom: 0.2em; 
+  }
+
+  /* --- MOBILE RESPONSIVE --- */
+  @media (max-width: 768px) {
+    #ih-{{ section.id }} .ih-headline {
+      font-size: var(--font-size-m);
+      /* Ensure line height is comfortable on mobile */
+      line-height: 1.6; 
+    }
+      /* --- SECTION (SCHEME DRIVEN) --- */
+    #ih-{{ section.id }} .ih-section {
+      padding: 30px 0 !important;
+
+    }
+    /* On mobile, images scale automatically because we used 'em' units above */
+  }
+</style>
+
+<div id="ih-{{ section.id }}" class="color-{{ section.settings.color_scheme }}">
+  <div class="ih-section" id="ih-trigger-{{ section.id }}">
+    <div class="ih-container">
+      
+      <h2 class="ih-headline">
+        {% if section.settings.use_kluck_ai_metafields %}
+          {% assign kluck_headline = store_gen.home_page.text.punchy_poetic_headline %}
+          
+          {% comment %} Remove old # markers if they still exist, then split by spaces {% endcomment %}
+          {% assign kluck_headline_clean = kluck_headline | replace: '#', '' %}
+          {% assign kluck_words = kluck_headline_clean | split: ' ' %}
+          
+          {% assign part_1 = "" %}
+          {% assign part_2 = "" %}
+          {% assign part_3 = "" %}
+
+          {% comment %} Sort words into groups based on their count {% endcomment %}
+          {% for word in kluck_words %}
+            {% if forloop.index <= 4 %}
+              {% assign part_1 = part_1 | append: word | append: ' ' %}
+            {% elsif forloop.index <= 7 %}
+              {% assign part_2 = part_2 | append: word | append: ' ' %}
+            {% else %}
+              {% assign part_3 = part_3 | append: word | append: ' ' %}
+            {% endif %}
+          {% endfor %}
+
+          {% assign kluck_feature_image = shop.metafields.kluck_ai.product_image_1.value %}
+          {% assign kluck_creative_image = shop.metafields.kluck_ai.product_image_2.value %}
+          {% assign kluck_product_highlight_image = shop.metafields.kluck_ai.product_image_3.value %}
+
+          {% comment %} Output Part 1 (Words 1-4) and Image 1 {% endcomment %}
+          {% if part_1 != blank %}
+            <span class="ih-text">{{ part_1 | strip }}</span>
+          {% endif %}
+
+          {% if kluck_feature_image != blank %}
+            <span class="ih-image-wrap ih-anim-item">
+              <img src="{{ kluck_feature_image | image_url: width: 600 }}" alt="Feature image" class="ih-img">
+            </span>
+          {% endif %}
+
+          {% comment %} Output Part 2 (Words 5-7) and Image 2 {% endcomment %}
+          {% if part_2 != blank %}
+            <span class="ih-text">{{ part_2 | strip }}</span>
+          {% endif %}
+
+          {% if kluck_creative_image != blank %}
+            <span class="ih-image-wrap ih-anim-item">
+              <img src="{{ kluck_creative_image | image_url: width: 600 }}" alt="Creative image" class="ih-img">
+            </span>
+          {% endif %}
+
+          {% comment %} Output Part 3 (Word 8 onwards) and Image 3 {% endcomment %}
+          {% if part_3 != blank %}
+            <span class="ih-text">{{ part_3 | strip }}</span>
+          {% endif %}
+
+          {% if kluck_product_highlight_image != blank %}
+            <span class="ih-image-wrap ih-anim-item">
+              <img src="{{ kluck_product_highlight_image | image_url: width: 600 }}" alt="Product highlight image" class="ih-img">
+            </span>
+          {% endif %}
+        {% else %}
+          {% for block in section.blocks %}
+            
+            {% case block.type %}
+              
+              {% when 'text_segment' %}
+                {% style %}
+                  #ih-{{ section.id }} .ih-text-{{ block.id }} {
+                    font-family: var(--font-{% if block.settings.font_family == 'accent' %}a{% elsif block.settings.font_family == 'body' %}b{% else %}h{% endif %});
+                    {% if block.settings.italic %}font-style: italic;{% endif %}
+                    {% if block.settings.text_scale != 100 %}
+                      font-size: {{ block.settings.text_scale }}%;
+                    {% endif %}
+                  }
+                {% endstyle %}
+                <!-- Raw text output, JS will wrap chars -->
+                <span class="ih-text ih-text-{{ block.id }}" {{ block.shopify_attributes }}>{{ block.settings.text }}</span>
+
+              {% when 'image_pill' %}
+                {% if block.settings.link != blank %}
+                  <a href="{{ block.settings.link }}" class="ih-image-wrap ih-anim-item" {{ block.shopify_attributes }}>
+                    {% if block.settings.image != blank %}
+                      <img src="{{ block.settings.image | img_url: '600x' }}" alt="{{ block.settings.image.alt }}" class="ih-img">
+                    {% else %}
+                      {{ 'image' | placeholder_svg_tag: 'ih-img' }}
+                    {% endif %}
+                  </a>
+                {% else %}
+                  <span class="ih-image-wrap ih-anim-item" {{ block.shopify_attributes }}>
+                    {% if block.settings.image != blank %}
+                      <img src="{{ block.settings.image | img_url: '600x' }}" alt="{{ block.settings.image.alt }}" class="ih-img">
+                    {% else %}
+                      {{ 'image' | placeholder_svg_tag: 'ih-img' }}
+                    {% endif %}
+                  </span>
+                {% endif %}
+
+              {% when 'line_break' %}
+                <span class="ih-break" {{ block.shopify_attributes }}></span>
+
+            {% endcase %}
+            
+          {% endfor %}
+        {% endif %}
+      </h2>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const container = document.getElementById('ih-trigger-{{ section.id }}');
+    const textSegments = container.querySelectorAll('.ih-text');
+    
+    // 1. SPLIT TEXT INTO CHARACTERS
+    textSegments.forEach(segment => {
+      const text = segment.innerText;
+      // Split by character but preserve spaces
+      const chars = text.split('').map(char => {
+        // If it's a space, strictly preserve it, otherwise wrap in span
+        return `<span class="ih-char ih-anim-item">${char}</span>`;
+      }).join('');
+      segment.innerHTML = chars;
+    });
+
+    // 2. GATHER ALL ANIMATABLE ITEMS (Chars + Images) in order
+    // Querying by common class ensures they are in DOM order (reading flow)
+    const allItems = container.querySelectorAll('.ih-anim-item, .ih-img'); 
+    const totalItems = allItems.length;
+
+    // 3. SCROLL LISTENER
+    function onScroll() {
+      const rect = container.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      
+      // Calculate how far the section has moved through the viewport
+      // Start Delay: 0.75 waits until the text is higher up the screen (approx 25% up)
+      const startOffset = windowHeight * 0.75; 
+      // End Quicker: 0.65 finishes the animation closer to the center of the screen
+      const endOffset = windowHeight * 0.7;
+      
+      const elementTop = rect.top;
+      const elementHeight = rect.height;
+      
+      // Math to map scroll position to 0 - 1 range
+      let progress = (windowHeight - elementTop - (windowHeight - startOffset)) / (startOffset - endOffset + elementHeight);
+      
+      // Clamp between 0 and 1
+      if (progress < 0) progress = 0;
+      if (progress > 1) progress = 1;
+
+      // Determine how many items should be active based on progress
+      const activeCount = Math.floor(progress * totalItems);
+
+      allItems.forEach((item, index) => {
+        if (index < activeCount) {
+          item.classList.add('is-active');
+        } else {
+          item.classList.remove('is-active');
+        }
+      });
+    }
+
+    // Optimization: Request Animation Frame
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          onScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+    
+    // Initial call in case loaded in view
+    onScroll();
+  });
+</script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Inline Image Headline",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "use_kluck_ai_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true
+    },
+    { "type": "header", "content": "Layout & Colors" },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Section Color Scheme",
+      "default": "scheme-1",
+      "info": "Inactive text adapts automatically by reducing opacity."
+    },
+    
+    { "type": "header", "content": "Typography Settings" },
+    { "type": "range", "id": "size_desktop", "label": "Text Size (Desktop)", "min": 20, "max": 120, "default": 80 },
+    { "type": "range", "id": "size_mobile", "label": "Text Size (Mobile)", "min": 16, "max": 60, "default": 40 },
+    
+    { "type": "paragraph", "content": "Line Height must be loose (e.g., 1.5) to fit images." },
+    { "type": "range", "id": "line_height", "label": "Line Height", "min": 1.0, "max": 2.5, "step": 0.1, "default": 1.6 },
+    
+    { "type": "range", "id": "max_width", "label": "Content Max Width", "min": 600, "max": 1600, "step": 50, "default": 1000 },
+
+    { "type": "header", "content": "Spacing" },
+  ],
+  "blocks": [
+    {
+      "type": "text_segment",
+      "name": "Text Phrase",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "Make you look " },
+        { "type": "header", "content": "Custom Style" },
+        { "type": "checkbox", "id": "italic", "label": "Italicize", "default": false },
+        {
+          "type": "select",
+          "id": "font_family",
+          "label": "Font Family Override",
+          "options": [
+            { "value": "heading", "label": "Heading Font (Default)" },
+            { "value": "body", "label": "Body Font" },
+            { "value": "accent", "label": "Accent Font" }
+          ],
+          "default": "heading",
+          "info": "Inherits directly from your global theme typography settings."
+        },
+        { "type": "range", "id": "text_scale", "label": "Text Scale (%)", "min": 80, "max": 150, "step": 5, "default": 100, "info": "Resize this specific phrase relative to the main font size." }
+      ]
+    },
+    {
+      "type": "image_pill",
+      "name": "Image Pill",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "url", "id": "link", "label": "Image Link (Optional)" }
+      ]
+    },
+    {
+      "type": "line_break",
+      "name": "Line Break",
+      "settings": []
+    }
+  ],
+  "presets": [
+    {
+      "name": "Inline Image Headline",
+      "blocks": [
+        { "type": "text_segment", "settings": { "text": "Be your " } },
+        { "type": "image_pill" },
+        { "type": "text_segment", "settings": { "text": "own eurus", "italic": true, "font_family": "accent" } },
+        { "type": "text_segment", "settings": { "text": ". Feeling" } },
+        { "type": "line_break" },
+        { "type": "text_segment", "settings": { "text": "confident " } },
+        { "type": "image_pill" },
+        { "type": "text_segment", "settings": { "text": " in the skin " } },
+        { "type": "image_pill" },
+        { "type": "text_segment", "settings": { "text": " you are in." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

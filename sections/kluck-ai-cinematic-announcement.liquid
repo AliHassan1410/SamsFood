@@ -1,0 +1,127 @@
+{%- assign section_scheme = section.settings.color_scheme | default: 'scheme-1' -%}
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+{% assign home = store_gen.home_page %}
+{% assign ht = home.text %}
+{% assign use_mf = section.settings.use_kluck_ai_metafields %}
+{% assign homeData = section.settings.homeData %}
+{% if ht == blank and homeData.text != blank %}{% assign ht = homeData.text %}{% endif %}
+
+{% assign announcement_1 = section.settings.announcement_1 %}
+{% assign announcement_2 = section.settings.announcement_2 %}
+{% assign announcement_3 = section.settings.announcement_3 %}
+{% assign announcement_4 = section.settings.announcement_4 %}
+{% assign announcement_5 = section.settings.announcement_5 %}
+{% if use_mf %}
+  {% if ht.announcement_1 != blank %}{% assign announcement_1 = ht.announcement_1 %}{% endif %}
+  {% if ht.announcement_2 != blank %}{% assign announcement_2 = ht.announcement_2 %}{% endif %}
+  {% if ht.announcement_3 != blank %}{% assign announcement_3 = ht.announcement_3 %}{% endif %}
+  {% if ht.announcement_4 != blank %}{% assign announcement_4 = ht.announcement_4 %}{% endif %}
+  {% if ht.announcement_5 != blank %}{% assign announcement_5 = ht.announcement_5 %}{% endif %}
+{% endif %}
+
+{% if shop.metafields.app.block_control.value %}
+<style>
+  #shopify-section-{{ section.id }} {
+    width: 100%;
+    max-width: none;
+  }
+    #ca-{{ section.id }} {
+  --c-ink: var(--color-on-accent, #fff);
+  --c-ink-muted: var(--color-on-accent-muted, rgba(255,255,255,0.55));
+  --c-surface: var(--color-accent, var(--color-primary-button-background, #111));
+  --c-accent: var(--color-accent, var(--color-primary-button-background, currentColor));
+  --c-accent-soft: var(--color-accent-soft, rgba(255,255,255,0.2));
+  --c-on-accent: var(--color-on-accent, #fff);
+  --c-border: color-mix(in srgb, var(--c-on-accent) 20%, transparent);
+  --c-heading-font: var(--section-heading-font, Georgia, 'Times New Roman', serif);
+  --c-body-font: var(--section-body-font, system-ui, sans-serif);
+    
+    background: var(--c-surface); color: var(--c-ink); overflow: hidden; position: relative; z-index: 50;
+  }
+  #ca-{{ section.id }} .ca-track {
+    display: flex; width: max-content; animation: ca-marquee-{{ section.id }} 28s linear infinite; padding: 10px 0;
+  }
+  #ca-{{ section.id }} .ca-item {
+    display: flex; align-items: center; padding: 0 24px; font-size: 11px; font-weight: 500;
+    letter-spacing: 0.22em; text-transform: uppercase; white-space: nowrap;
+  }
+  #ca-{{ section.id }} .ca-dot {
+    width: 4px; height: 4px; border-radius: 50%; background: var(--c-on-accent); margin-right: 24px; flex-shrink: 0;
+  }
+  @keyframes ca-marquee-{{ section.id }} { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { #ca-{{ section.id }} .ca-track { animation: none; } }
+</style>
+<div id="ca-{{ section.id }}" class="color-{{ section_scheme }}">
+  <div class="ca-track" aria-hidden="true">
+    {% for pass in (1..2) %}
+      {% for i in (1..5) %}
+        {% case i %}
+          {% when 1 %}{% assign phrase = announcement_1 %}
+          {% when 2 %}{% assign phrase = announcement_2 %}
+          {% when 3 %}{% assign phrase = announcement_3 %}
+          {% when 4 %}{% assign phrase = announcement_4 %}
+          {% when 5 %}{% assign phrase = announcement_5 %}
+        {% endcase %}
+        {% if phrase != blank %}
+          <span class="ca-item"><span class="ca-dot"></span>{{ phrase }}</span>
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Kluck AI - Cin Announce",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_kluck_ai_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "announcement_1",
+      "label": "Phrase 1",
+      "default": "Free shipping on every order"
+    },
+    {
+      "type": "text",
+      "id": "announcement_2",
+      "label": "Phrase 2",
+      "default": "Up to 30% off your first pair"
+    },
+    {
+      "type": "text",
+      "id": "announcement_3",
+      "label": "Phrase 3",
+      "default": "Easy 30-day returns"
+    },
+    {
+      "type": "text",
+      "id": "announcement_4",
+      "label": "Phrase 4",
+      "default": "Secure checkout"
+    },
+    {
+      "type": "text",
+      "id": "announcement_5",
+      "label": "Phrase 5",
+      "default": "Same-day dispatch before 2pm"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kluck AI - Cin Announce"
+    }
+  ]
+}
+{% endschema %}

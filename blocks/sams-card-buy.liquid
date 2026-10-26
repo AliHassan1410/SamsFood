@@ -1,0 +1,217 @@
+{% doc %}
+  Purchase row for collection product cards: Add to cart and Buy it now side by side (quantity 1).
+  Uses the theme's product-form-component, so adding opens the cart drawer as usual.
+  "Buy it now" adds the item (assets/sams.js) and goes to checkout. Products with several
+  variants get a "Choose options" link to the product page instead, so the wrong variant is
+  never added. Sold-out products show a disabled button.
+{% enddoc %}
+
+{%- liquid
+  assign product = closest.product
+  assign variant = product.selected_or_first_available_variant
+  assign form_id = 'SamsCardBuy-' | append: section.id | append: '-' | append: product.id
+-%}
+<div class="sams-card-buy" {{ block.shopify_attributes }}>
+  {%- if product.available == false -%}
+    <button type="button" class="button sams-card-buy__full" disabled>Sold out</button>
+  {%- elsif product.has_only_default_variant == false -%}
+    <a class="button sams-card-buy__full" href="{{ product.url }}">Choose options</a>
+  {%- else -%}
+    <product-form-component
+      data-section-id="{{ section.id }}"
+      data-product-id="{{ product.id }}"
+      data-quantity-default="1"
+      on:submit="/handleSubmit"
+      class="sams-card-buy__form"
+    >
+      <div class="visually-hidden" aria-live="assertive" role="status" aria-atomic="true" ref="liveRegion"></div>
+      {%- form 'product', product, id: form_id, novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+        <input type="hidden" name="id" ref="variantId" value="{{ variant.id }}">
+        <div class="sams-card-buy__row">
+          {%- render 'add-to-cart-button',
+            add_to_cart_text: 'Add to cart',
+            class: 'sams-card-buy__add add-to-cart-button',
+            can_add_to_cart: variant.available,
+            show_icon: false,
+            product: product
+          -%}
+          <div class="sams-card-buy__now">
+            <button type="button" class="button sams-card-buy__now-btn" data-sams-buy-now data-variant-id="{{ variant.id }}">
+              Buy it now
+            </button>
+          </div>
+        </div>
+      {%- endform -%}
+    </product-form-component>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  /* Card layout: type label on top, title and price on one row, purchase row at the bottom */
+  .product-grid-container .product-grid__item .quick-add {
+    display: none;
+  }
+
+  /* Fill the card's height so the purchase row sits at the bottom whatever the title length */
+  .product-grid-container .product-grid__item .product-card__content > .group-block:has(.sams-card-buy) {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Rows: type label, title, price, then a 1fr row that holds the purchase row (title and price share a row on desktop) */
+  .product-grid-container .product-grid__item .group-block:has(.sams-card-buy) > .group-block-content {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto 1fr;
+    row-gap: 4px;
+    align-items: baseline;
+
+    @media screen and (min-width: 750px) {
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-rows: auto auto 1fr;
+      column-gap: 12px;
+      row-gap: 2px;
+    }
+  }
+
+  .product-grid-container .product-grid__item .group-block-content > .sams-card-buy {
+    grid-column: 1 / -1;
+    grid-row: -2 / -1;
+    order: 1;
+    align-self: end;
+  }
+
+  .product-grid-container .product-grid__item .group-block:has(.sams-card-buy) .group-block-content > product-price {
+    inline-size: auto;
+    white-space: nowrap;
+
+    @media screen and (min-width: 750px) {
+      justify-self: end;
+    }
+  }
+
+  .product-grid-container .product-grid__item .group-block:has(.sams-card-buy) .group-block-content > product-swatches {
+    display: none;
+  }
+
+  .product-grid-container .product-grid__item .group-block:has(.sams-card-buy) .product-title,
+  .product-grid-container .product-grid__item .group-block:has(.sams-card-buy) .product-title a {
+    font-family: var(--font-editorial);
+    font-size: 19px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-inline-size: 0;
+    margin: 0;
+  }
+
+  .sams-card-buy {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    gap: 8px;
+    margin-block-start: 10px;
+  }
+
+  .sams-card-buy__form form {
+    display: grid;
+    gap: 8px;
+  }
+
+  .sams-card-buy__row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+
+    @media screen and (max-width: 749px) {
+      gap: 6px;
+    }
+  }
+
+  .sams-card-buy__now {
+    min-inline-size: 0;
+  }
+
+  .sams-card-buy :is(.sams-card-buy__add, .sams-card-buy__full, .sams-card-buy__now-btn) {
+    inline-size: 100%;
+    min-block-size: 40px;
+    block-size: 40px;
+    padding: 0 8px;
+    border-radius: 2px;
+    font-family: var(--font-clean);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: none;
+    cursor: pointer;
+    transition: background-color 200ms ease, color 200ms ease;
+
+    @media screen and (max-width: 749px) {
+      block-size: auto;
+      padding: 6px 4px;
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+      text-align: center;
+      white-space: normal;
+      overflow: visible;
+    }
+  }
+
+  .sams-card-buy :is(.sams-card-buy__add, .sams-card-buy__full) {
+    background: var(--line);
+    color: var(--espresso);
+    border: 0;
+  }
+
+  .sams-card-buy :is(.sams-card-buy__add, .sams-card-buy__full):not([disabled]):hover {
+    background: var(--espresso);
+    color: var(--ivory);
+  }
+
+  .sams-card-buy .sams-card-buy__now-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    background: transparent;
+    color: var(--espresso);
+    box-shadow: inset 0 0 0 1px var(--gold);
+  }
+
+  .sams-card-buy .sams-card-buy__now-btn::after {
+    content: '\2192';
+
+    @media screen and (max-width: 749px) {
+      content: none;
+    }
+  }
+
+  .sams-card-buy .sams-card-buy__now-btn:hover:not([disabled]) {
+    background: var(--espresso);
+    color: var(--ivory);
+    box-shadow: inset 0 0 0 1px var(--espresso);
+  }
+
+  .sams-card-buy :is(button[disabled], .sams-card-buy__full[disabled]) {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Sam's card buy row",
+  "tag": null,
+  "settings": [],
+  "presets": [{ "name": "Sam's card buy row" }]
+}
+{% endschema %}

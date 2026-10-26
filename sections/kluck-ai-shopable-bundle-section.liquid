@@ -1,0 +1,648 @@
+{%- style -%}
+  /* --- FORCE LOAD FONTS --- */
+  {{ settings.type_heading_font | font_face: font_display: 'swap' }}
+  {{ settings.type_body_font | font_face: font_display: 'swap' }}
+  {{ settings.type_subheading_font | font_face: font_display: 'swap' }}
+  {{ settings.type_accent_font | font_face: font_display: 'swap' }}
+
+  #Bundle-{{ section.id }} {
+    /* --- FONTS (Inherited from Global Settings) --- */
+    --font-h: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    --font-b: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    --font-sub: {{ settings.type_subheading_font.family | default: settings.type_heading_font.family }}, sans-serif;
+    --font-btn: {{ settings.type_accent_font.family | default: settings.type_body_font.family }}, sans-serif;
+  }
+
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top_mobile }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  @media screen and (min-width: 768px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  /* Core Layout */
+  .shoppable-bundle-wrapper {
+    max-width: var(--page-width, 1400px);
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  @media screen and (min-width: 990px) {
+    .shoppable-bundle-wrapper {
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .shoppable-bundle-wrapper.image-right {
+      grid-template-columns: 1fr 1fr;
+    }
+    .shoppable-bundle-wrapper.image-right .bundle-image-container {
+      order: 2;
+    }
+  }
+
+  /* Image & Hotspots */
+  .bundle-image-container {
+    position: relative;
+    width: 100%;
+    border-radius: {{ section.settings.image_radius }}px;
+    overflow: hidden;
+  }
+  
+  .bundle-image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  .hotspot-pin {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    background-color: {{ section.settings.pin_bg_color }};
+    color: {{ section.settings.pin_text_color }};
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-b);
+    font-weight: bold;
+    font-size: 14px;
+    transform: translate(-50%, -50%); /* Centers pin exactly on coordinate */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    z-index: 2;
+    transition: transform 0.2s ease;
+  }
+
+  .hotspot-pin:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  /* Content Side */
+  .bundle-content-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bundle-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .bundle-subtitle {
+    font-family: var(--font-sub);
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--color-foreground);
+    opacity: 0.8;
+  }
+
+  .bundle-title {
+    font-family: var(--font-h);
+    font-size: calc({{ section.settings.heading_size }}px * 0.7);
+    margin: 0;
+    line-height: 1.2;
+    color: var(--color-foreground-heading);
+  }
+
+  @media screen and (min-width: 768px) {
+    .bundle-title {
+      font-size: {{ section.settings.heading_size }}px;
+    }
+  }
+
+  /* Product List */
+  .bundle-product-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  .bundle-product-item {
+    display: grid;
+    grid-template-columns: auto 80px 1fr;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .bundle-product-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .item-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-b);
+    font-size: 14px;
+    color: var(--color-foreground);
+  }
+
+  .item-image {
+    width: 80px;
+    height: 80px;
+    background: rgb(from var(--color-foreground) r g b / 5%);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .item-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .item-title {
+    font-family: var(--font-h);
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--color-foreground-heading);
+  }
+
+  .item-price {
+    font-family: var(--font-b);
+    font-weight: 600;
+    font-size: 16px;
+    text-align: right;
+  }
+
+  .price-regular { color: var(--color-foreground); }
+  .price-sale { color: {{ section.settings.sale_color }}; }
+  .price-compare { 
+    color: var(--color-foreground); 
+    opacity: 0.6;
+    text-decoration: line-through; 
+    font-size: 14px;
+    font-weight: 400;
+    display: block;
+  }
+
+  .item-variant-select {
+    font-family: var(--font-b);
+    width: fit-content;
+    padding: 5px 25px 5px 0;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    color: var(--color-foreground);
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2210%22%20height%3D%226%22%20viewBox%3D%220%200%2010%206%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M5%206L0%200h10z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: 10px;
+    opacity: 0.9;
+  }
+
+  /* Button */
+  .bundle-add-button {
+    font-family: var(--font-btn);
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    background-color: var(--color-primary-button-background);
+    color: var(--color-primary-button-text);
+    border: 1px solid var(--color-primary-button-border);
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .bundle-add-button:hover {
+    background-color: var(--color-primary-button-hover-background);
+    color: var(--color-primary-button-hover-text);
+    border-color: var(--color-primary-button-hover-border);
+  }
+
+  .bundle-add-button.loading {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+{%- endstyle -%}
+
+<div class="section-{{ section.id }}-padding color-{{ section.settings.color_scheme }}" id="Bundle-{{ section.id }}">
+  <div class="shoppable-bundle-wrapper {% if section.settings.desktop_layout == 'right' %}image-right{% endif %}">
+    
+    <!-- Left: Image & Hotspots -->
+    <div class="bundle-image-container">
+      {% if section.settings.main_image != blank %}
+        {{ section.settings.main_image | image_url: width: 1200 | image_tag: loading: 'lazy' }}
+      {% else %}
+        {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {% endif %}
+
+      {% for block in section.blocks %}
+        {% if block.settings.product != blank %}
+          <div class="hotspot-pin" style="top: {{ block.settings.pos_y }}%; left: {{ block.settings.pos_x }}%;">
+            {{ forloop.index }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <!-- Right: Content & Product List -->
+    <div class="bundle-content-container">
+      <div class="bundle-header">
+        {% if section.settings.subtitle != blank %}
+          <span class="bundle-subtitle">{{ section.settings.subtitle }}</span>
+        {% endif %}
+        {% if section.settings.title != blank %}
+          <h2 class="bundle-title">{{ section.settings.title }}</h2>
+        {% endif %}
+      </div>
+
+      <div class="bundle-product-list" id="BundleItems-{{ section.id }}">
+        {% for block in section.blocks %}
+          {% assign prod = block.settings.product %}
+          {% if prod != blank %}
+            <div class="bundle-product-item" {{ block.shopify_attributes }}>
+              
+              <!-- Number -->
+              <div class="item-number">{{ forloop.index }}</div>
+
+              <!-- Thumbnail -->
+              <div class="item-image">
+                {% if prod.featured_image != blank %}
+                  {{ prod.featured_image | image_url: width: 150 | image_tag: loading: 'lazy' }}
+                {% else %}
+                  {{ 'product-1' | placeholder_svg_tag }}
+                {% endif %}
+              </div>
+
+              <!-- Details -->
+              <div class="item-details">
+                <div class="item-title-row">
+                  <h4 class="item-title">{{ prod.title }}</h4>
+                  <div class="item-price">
+                    {% if prod.compare_at_price > prod.price %}
+                      <span class="price-sale">{{ prod.price | money }}</span>
+                      <span class="price-compare">{{ prod.compare_at_price | money }}</span>
+                    {% else %}
+                      <span class="price-regular">{{ prod.price | money }}</span>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <!-- Variant Selector -->
+                {% unless prod.has_only_default_variant %}
+                  <select class="item-variant-select bundle-variant-select" data-product-id="{{ prod.id }}">
+                    {% for variant in prod.variants %}
+                      <option value="{{ variant.id }}" {% unless variant.available %}disabled{% endunless %}>
+                        {{ variant.title }} {% unless variant.available %} - Sold Out{% endunless %}
+                      </option>
+                    {% endfor %}
+                  </select>
+                {% else %}
+                  <!-- Hidden input for single variant products so JS still catches it -->
+                  <input type="hidden" class="bundle-variant-select" value="{{ prod.variants.first.id }}">
+                {% endunless %}
+                
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <button type="button" class="bundle-add-button" id="AddBundle-{{ section.id }}">
+        {{ section.settings.button_label }}
+      </button>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const addButton = document.getElementById('AddBundle-{{ section.id }}');
+    const container = document.getElementById('BundleItems-{{ section.id }}');
+
+    if (!addButton || !container) return;
+
+    addButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // 1. Visual Loading State
+      addButton.classList.add('loading');
+      const originalText = addButton.innerText;
+      addButton.innerText = 'Adding...';
+
+      // 2. Gather selected variants
+      const selectElements = container.querySelectorAll('.bundle-variant-select');
+      let itemsToAdd = [];
+
+      selectElements.forEach(function(select) {
+        if(select.value) {
+          itemsToAdd.push({
+            id: select.value,
+            quantity: 1
+          });
+        }
+      });
+
+      if (itemsToAdd.length === 0) {
+        alert("No products available to add.");
+        addButton.classList.remove('loading');
+        addButton.innerText = originalText;
+        return;
+      }
+
+      // 3. Add to Cart (API)
+      fetch(window.Shopify.routes.root + 'cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: itemsToAdd })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status) {
+          alert("Error: " + data.description);
+          return;
+        }
+
+        // 4. Background Fetch to get Fresh HTML
+        return fetch(window.location.href);
+      })
+      .then(response => response.text())
+      .then(html => {
+        const parser = new DOMParser();
+        const newDoc = parser.parseFromString(html, 'text/html');
+
+        const currentDrawer = document.querySelector('cart-drawer-component');
+        const newDrawer = newDoc.querySelector('cart-drawer-component');
+
+        if (currentDrawer && newDrawer) {
+          currentDrawer.innerHTML = newDrawer.innerHTML;
+          currentDrawer.classList.remove('cart-drawer--empty');
+          
+          setTimeout(() => {
+            if (typeof currentDrawer.open === 'function') {
+               currentDrawer.open();
+            } else {
+               const dialog = currentDrawer.querySelector('dialog');
+               if(dialog) {
+                 dialog.setAttribute('open', '');
+                 dialog.classList.add('active'); 
+               }
+               document.body.classList.add('overflow-hidden'); 
+            }
+          }, 50);
+        }
+
+        const currentIcon = document.querySelector('cart-icon-component');
+        const newIcon = newDoc.querySelector('cart-icon-component');
+        if (currentIcon && newIcon) {
+          currentIcon.innerHTML = newIcon.innerHTML;
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      })
+      .finally(() => {
+        addButton.classList.remove('loading');
+        addButton.innerText = originalText;
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Shoppable Bundle",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image Settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "main_image",
+      "label": "Main Image"
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Image Border Radius",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "desktop_layout",
+      "label": "Desktop Layout",
+      "options": [
+        {
+          "value": "left",
+          "label": "Image Left"
+        },
+        {
+          "value": "right",
+          "label": "Image Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Text Settings"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subheading",
+      "default": "Shop Skincare Set"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Heading",
+      "default": "Level up skincare routine with the bundle"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 24,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "label": "Desktop Heading Size",
+      "default": 42
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "Add All To Cart"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "sale_color",
+      "label": "Sale Price Color",
+      "default": "#D32F2F"
+    },
+    {
+      "type": "color",
+      "id": "pin_bg_color",
+      "label": "Pin Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "pin_text_color",
+      "label": "Pin Number Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding (Desktop)",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding (Desktop)",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding (Mobile)",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding (Mobile)",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product Hotspot",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Select Product"
+        },
+        {
+          "type": "header",
+          "content": "Hotspot Position"
+        },
+        {
+          "type": "range",
+          "id": "pos_x",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Horizontal Position (Left to Right)",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "pos_y",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Vertical Position (Top to Bottom)",
+          "default": 50
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shoppable Bundle",
+      "blocks": [
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" }
+      ]
+    }
+  ]
+}
+{% endschema %}

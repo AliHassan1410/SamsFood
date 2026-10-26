@@ -1,0 +1,157 @@
+{%- assign section_scheme = section.settings.color_scheme | default: 'scheme-1' -%}
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+{% assign home = store_gen.home_page %}
+{% assign ht = home.text %}
+{% assign hi = home.images %}
+{% assign use_mf = section.settings.use_kluck_ai_metafields %}
+{% assign homeData = section.settings.homeData %}
+{% if ht == blank and homeData.text != blank %}{% assign ht = homeData.text %}{% endif %}
+{% if hi == blank and homeData.images != blank %}{% assign hi = homeData.images %}{% endif %}
+
+{% assign product_story_eyebrow = section.settings.product_story_eyebrow %}
+{% assign product_story_heading = section.settings.product_story_heading %}
+{% assign product_story_body = section.settings.product_story_body %}
+{% assign product_story_cta = section.settings.product_story_cta %}
+{% assign product_story_image = section.settings.product_story_image %}
+{% if use_mf %}
+  {% if ht.product_story_eyebrow != blank %}{% assign product_story_eyebrow = ht.product_story_eyebrow %}{% endif %}
+  {% if ht.product_story_heading != blank %}{% assign product_story_heading = ht.product_story_heading %}{% endif %}
+  {% if ht.product_story_body != blank %}{% assign product_story_body = ht.product_story_body %}{% endif %}
+  {% if ht.product_story_cta != blank %}{% assign product_story_cta = ht.product_story_cta %}{% endif %}
+  {% if shop.metafields.kluck_ai.product_story_image.value != blank %}
+    {% assign product_story_image = shop.metafields.kluck_ai.product_story_image.value %}
+  {% elsif hi.product_story_image != blank %}
+    {% assign product_story_image = hi.product_story_image %}
+  {% endif %}
+{% endif %}
+
+{% if shop.metafields.app.block_control.value %}
+<style>
+  #shopify-section-{{ section.id }} {
+    width: 100%;
+    max-width: none;
+  }
+    #cps-{{ section.id }} {
+  --c-ink: var(--color-foreground-heading, #111);
+  --c-ink-muted: var(--color-foreground-muted, rgba(0,0,0,0.55));
+  --c-surface: var(--color-background, #fff);
+  --c-accent: var(--color-accent, var(--color-primary-button-background, currentColor));
+  --c-accent-soft: var(--color-accent-soft, var(--color-background, #f5f5f5));
+  --c-on-accent: var(--color-on-accent, #fff);
+  --c-border: var(--color-border, rgba(0,0,0,0.08));
+  --c-heading-font: var(--section-heading-font, Georgia, 'Times New Roman', serif);
+  --c-body-font: var(--section-body-font, system-ui, sans-serif);  background: var(--c-surface); }
+  #cps-{{ section.id }} .cps-inner { max-width: 1400px; margin: 0 auto; padding: 24px 20px 64px; }
+  #cps-{{ section.id }} .cps-card {
+    overflow: hidden; border-radius: 28px; border: 1px solid var(--c-border); background: var(--c-accent-soft);
+    box-shadow: 0 24px 60px -28px color-mix(in srgb, var(--c-ink) 35%, transparent); display: grid;
+  }
+  #cps-{{ section.id }} .cps-media { position: relative; aspect-ratio: 1; min-height: 280px; background: var(--c-accent-soft); }
+  #cps-{{ section.id }} .cps-media img, #cps-{{ section.id }} .cps-media svg { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #cps-{{ section.id }} .cps-copy {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 48px 28px;
+  }
+  #cps-{{ section.id }} .cps-eyebrow { margin: 0; font-size: 11px; font-weight: 500; letter-spacing: 0.32em; text-transform: uppercase; color: var(--c-ink-muted); }
+  #cps-{{ section.id }} h2 {
+    margin: 20px 0 0; font-family: var(--c-heading-font); font-size: 2.5rem; line-height: 1.15;
+    color: var(--c-ink); font-weight: 400; white-space: pre-line;
+  }
+  #cps-{{ section.id }} .cps-body { margin: 24px 0 0; max-width: 448px; font-size: 15px; line-height: 2; color: var(--c-ink-muted); }
+  #cps-{{ section.id }} .cps-cta {
+    margin-top: 32px; display: inline-flex; border-radius: 999px; background: color-mix(in srgb, var(--c-accent) 30%, transparent); color: var(--c-ink);
+    padding: 14px 40px; font-size: 15px; text-decoration: none; transition: background .2s;
+  }
+  #cps-{{ section.id }} .cps-cta:hover { background: var(--c-accent); }
+  @media (min-width: 768px) {
+    #cps-{{ section.id }} .cps-inner { padding: 32px 32px 80px; }
+    #cps-{{ section.id }} .cps-card { grid-template-columns: 1fr 1fr; }
+    #cps-{{ section.id }} .cps-media { order: 2; aspect-ratio: auto; min-height: 560px; }
+    #cps-{{ section.id }} .cps-copy { order: 1; padding: 64px 48px; }
+    #cps-{{ section.id }} h2 { font-size: 3rem; }
+  }
+</style>
+<section id="cps-{{ section.id }}" class="color-{{ section_scheme }}">
+  <div class="cps-inner">
+    <div class="cps-card">
+      <div class="cps-media">
+        {% if product_story_image != blank %}
+          {% if product_story_image contains 'http' %}
+            <img src="{{ product_story_image }}" alt="{{ product_story_heading | escape }}" loading="lazy">
+          {% else %}
+            <img src="{{ product_story_image | image_url: width: 1200 }}" alt="{{ product_story_heading | escape }}" loading="lazy">
+          {% endif %}
+        {% else %}
+          {{ 'product-1' | placeholder_svg_tag }}
+        {% endif %}
+      </div>
+      <div class="cps-copy">
+        {% if product_story_eyebrow != blank %}<p class="cps-eyebrow">{{ product_story_eyebrow }}</p>{% endif %}
+        {% if product_story_heading != blank %}<h2>{{ product_story_heading }}</h2>{% endif %}
+        {% if product_story_body != blank %}<p class="cps-body">{{ product_story_body }}</p>{% endif %}
+        {% if product_story_cta != blank %}
+          <a class="cps-cta" href="{% if section.settings.cta_link != blank %}{{ section.settings.cta_link }}{% else %}{{ routes.all_products_collection_url }}{% endif %}">{{ product_story_cta }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Kluck AI - Cin Story",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_kluck_ai_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "product_story_image",
+      "label": "Story image"
+    },
+    {
+      "type": "text",
+      "id": "product_story_eyebrow",
+      "label": "Eyebrow",
+      "default": "Sound that moves with you"
+    },
+    {
+      "type": "textarea",
+      "id": "product_story_heading",
+      "label": "Heading",
+      "default": "Pure Freedom\nEveryday"
+    },
+    {
+      "type": "textarea",
+      "id": "product_story_body",
+      "label": "Body",
+      "default": "Discover our lightweight wireless earbuds and elevate your everyday listening."
+    },
+    {
+      "type": "text",
+      "id": "product_story_cta",
+      "label": "CTA",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kluck AI - Cin Story"
+    }
+  ]
+}
+{% endschema %}

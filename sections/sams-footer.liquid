@@ -1,0 +1,357 @@
+{%- liquid
+  assign wa_digits = section.settings.whatsapp_number | remove: ' ' | remove: '-' | remove: '+'
+  assign wa_first = wa_digits | slice: 0
+  if wa_first == '0'
+    assign wa_digits = wa_digits | remove_first: '0' | prepend: '92'
+  endif
+-%}
+
+<footer class="sams-footer" style="--sams-footer-bg: {{ section.settings.bg_color }};">
+  <div class="sams-footer__inner">
+    <div class="sams-footer__top">
+      <div class="sams-footer__brand">
+        <a href="{{ routes.root_url }}" class="sams-footer__logo" aria-label="{{ section.settings.brand_name | escape }} home">
+          <span class="sams-footer__badge" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 40 40" fill="none">
+              <path d="M8 20 C8 13 32 13 32 20 C32 27 8 27 8 20 Z" fill="#FFFFFF"/>
+              <path d="M12 20.5 C12 24.5 28 24.5 28 20.5 C27 25 24 26 20 26 C16 26 13 25 12 20.5 Z" fill="#2B160E"/>
+            </svg>
+          </span>
+          <span class="sams-footer__wordmark">{{ section.settings.wordmark }}</span>
+        </a>
+
+        {%- if section.settings.tagline != blank -%}
+          <p class="sams-footer__tagline">{{ section.settings.tagline }}</p>
+        {%- endif -%}
+
+        <ul class="sams-footer__contact" role="list">
+          {%- if wa_digits != blank -%}
+            <li>
+              <a href="https://wa.me/{{ wa_digits }}" target="_blank" rel="noopener noreferrer">
+                WhatsApp {{ section.settings.whatsapp_number }}
+              </a>
+            </li>
+          {%- endif -%}
+          {%- if section.settings.email != blank -%}
+            <li><a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a></li>
+          {%- endif -%}
+        </ul>
+      </div>
+
+      {%- for col in (1..3) -%}
+        {%- capture heading_key -%}column_{{ col }}_heading{%- endcapture -%}
+        {%- capture col_str -%}{{ col }}{%- endcapture -%}
+        {%- capture col_links -%}
+          {%- for block in section.blocks -%}
+            {%- if block.settings.column == col_str and block.settings.url != blank -%}
+              <li {{ block.shopify_attributes }}>
+                <a
+                  href="{{ block.settings.url }}"
+                  {% if block.settings.url contains 'http' %}target="_blank" rel="noopener noreferrer"{% endif %}
+                >
+                  {{- block.settings.label | escape -}}
+                </a>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endcapture -%}
+        {%- if col_links != blank -%}
+          <nav class="sams-footer__col" aria-label="{{ section.settings[heading_key] | escape }}">
+            <h2 class="sams-footer__heading">{{ section.settings[heading_key] }}</h2>
+            <ul role="list">{{ col_links }}</ul>
+          </nav>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <div class="sams-footer__bottom">
+    <div class="sams-footer__inner sams-footer__bottom-row">
+      <div class="sams-footer__bottom-start">
+        <p>
+          &copy; {{ 'now' | date: '%Y' }} {{ section.settings.brand_name }}{% if section.settings.bottom_note != blank %}. {{ section.settings.bottom_note }}{% endif %}
+        </p>
+
+        {%- if section.settings.instagram_url != blank or section.settings.facebook_url != blank -%}
+          <ul class="sams-footer__social" role="list">
+            {%- if section.settings.instagram_url != blank -%}
+              <li>
+                <a
+                  href="{{ section.settings.instagram_url }}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="{{ section.settings.brand_name | escape }} on Instagram"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+                    <circle cx="12" cy="12" r="4"></circle>
+                    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle>
+                  </svg>
+                </a>
+              </li>
+            {%- endif -%}
+            {%- if section.settings.facebook_url != blank -%}
+              <li>
+                <a
+                  href="{{ section.settings.facebook_url }}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="{{ section.settings.brand_name | escape }} on Facebook"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.6-1.5h1.5V4.4c-.3 0-1.2-.1-2.2-.1-2.3 0-3.9 1.4-3.9 4v2.2H8V13.5h2.5V21h3z"></path>
+                  </svg>
+                </a>
+              </li>
+            {%- endif -%}
+          </ul>
+        {%- endif -%}
+      </div>
+      <ul class="sams-footer__policies" role="list">
+        {%- if shop.privacy_policy != blank -%}
+          <li><a href="{{ shop.privacy_policy.url }}">{{ shop.privacy_policy.title }}</a></li>
+        {%- endif -%}
+        {%- if shop.refund_policy != blank -%}
+          <li><a href="{{ shop.refund_policy.url }}">{{ shop.refund_policy.title }}</a></li>
+        {%- endif -%}
+        {%- if shop.shipping_policy != blank -%}
+          <li><a href="{{ shop.shipping_policy.url }}">{{ shop.shipping_policy.title }}</a></li>
+        {%- endif -%}
+        {%- if shop.terms_of_service != blank -%}
+          <li><a href="{{ shop.terms_of_service.url }}">{{ shop.terms_of_service.title }}</a></li>
+        {%- endif -%}
+      </ul>
+    </div>
+  </div>
+</footer>
+
+{% stylesheet %}
+  .sams-footer {
+    background: var(--sams-footer-bg, var(--espresso));
+    border-top: 1px solid rgb(201 162 93 / 0.35);
+    color: rgb(var(--ivory-rgb) / 0.72);
+    font-family: var(--font-clean);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .sams-footer a {
+    color: var(--gold-light);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .sams-footer a:hover {
+    color: var(--ivory);
+  }
+
+  .sams-footer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sams-footer__inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-inline: 20px;
+
+    @media screen and (min-width: 750px) {
+      padding-inline: 40px;
+    }
+  }
+
+  .sams-footer__top {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px 24px;
+    padding-block: 56px 48px;
+
+    @media screen and (min-width: 750px) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    @media screen and (min-width: 990px) {
+      grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));
+      padding-block: 72px 64px;
+    }
+  }
+
+  .sams-footer__brand {
+    grid-column: 1 / -1;
+    max-width: 340px;
+
+    @media screen and (min-width: 990px) {
+      grid-column: auto;
+    }
+  }
+
+  .sams-footer .sams-footer__logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .sams-footer__badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #E87722;
+    flex-shrink: 0;
+  }
+
+  .sams-footer__wordmark {
+    font-family: var(--font-editorial);
+    font-style: italic;
+    font-weight: 800;
+    font-size: 28px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--ivory);
+  }
+
+  .sams-footer__tagline {
+    margin: 20px 0 0;
+    font-size: 13px;
+  }
+
+  .sams-footer__contact {
+    margin-top: 16px;
+    display: grid;
+    gap: 6px;
+    font-size: 13px;
+  }
+
+  .sams-footer .sams-footer__heading {
+    margin: 0 0 18px;
+    font-family: var(--font-clean);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ivory);
+  }
+
+  .sams-footer__col ul {
+    display: grid;
+    gap: 14px;
+  }
+
+  .sams-footer__bottom {
+    border-top: 1px solid rgb(var(--ivory-rgb) / 0.1);
+    font-size: 12px;
+  }
+
+  .sams-footer__bottom-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 24px;
+    padding-block: 22px;
+
+    @media screen and (min-width: 750px) {
+      padding-inline-end: 96px;
+    }
+  }
+
+  .sams-footer__bottom-row p {
+    margin: 0;
+  }
+
+  .sams-footer__bottom-start {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 20px;
+  }
+
+  .sams-footer__social {
+    display: flex;
+    gap: 10px;
+  }
+
+  .sams-footer .sams-footer__social a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 36px;
+    block-size: 36px;
+    border: 1px solid rgb(var(--ivory-rgb) / 0.25);
+    border-radius: 50%;
+    color: var(--ivory);
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .sams-footer .sams-footer__social a:hover,
+  .sams-footer .sams-footer__social a:focus-visible {
+    background: var(--gold-light);
+    border-color: var(--gold-light);
+    color: var(--espresso);
+  }
+
+  .sams-footer__policies {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+  }
+
+  .sams-footer .sams-footer__policies a {
+    color: rgb(var(--ivory-rgb) / 0.72);
+  }
+
+  .sams-footer .sams-footer__policies a:hover {
+    color: var(--ivory);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Sam's footer",
+  "tag": "section",
+  "class": "sams-footer-section",
+  "settings": [
+    { "type": "header", "content": "Brand" },
+    { "type": "text", "id": "wordmark", "label": "Logo text", "default": "Sam's" },
+    { "type": "text", "id": "brand_name", "label": "Brand name (copyright)", "default": "Sam's Food" },
+    { "type": "textarea", "id": "tagline", "label": "Tagline", "default": "Middle Eastern pantry staples, made in our Lahore kitchen and delivered across Pakistan." },
+    { "type": "text", "id": "whatsapp_number", "label": "WhatsApp number", "default": "0345-4788888", "info": "Shown as written. A leading 0 is replaced with Pakistan's 92 for the WhatsApp link." },
+    { "type": "text", "id": "email", "label": "Email" },
+    { "type": "header", "content": "Link columns" },
+    { "type": "text", "id": "column_1_heading", "label": "Column 1 heading", "default": "Shop" },
+    { "type": "text", "id": "column_2_heading", "label": "Column 2 heading", "default": "Help" },
+    { "type": "text", "id": "column_3_heading", "label": "Column 3 heading", "default": "Sam's Food" },
+    { "type": "header", "content": "Bottom bar" },
+    { "type": "text", "id": "bottom_note", "label": "Note after copyright", "default": "Cash on delivery nationwide" },
+    { "type": "url", "id": "instagram_url", "label": "Instagram link" },
+    { "type": "url", "id": "facebook_url", "label": "Facebook link" },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#1A0D08" }
+  ],
+  "blocks": [
+    {
+      "type": "link",
+      "name": "Link",
+      "settings": [
+        {
+          "type": "select",
+          "id": "column",
+          "label": "Column",
+          "options": [
+            { "value": "1", "label": "Column 1" },
+            { "value": "2", "label": "Column 2" },
+            { "value": "3", "label": "Column 3" }
+          ],
+          "default": "1"
+        },
+        { "type": "text", "id": "label", "label": "Label", "default": "Link" },
+        { "type": "url", "id": "url", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Sam's footer" }],
+  "enabled_on": { "groups": ["footer"] }
+}
+{% endschema %}

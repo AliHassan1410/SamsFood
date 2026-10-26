@@ -1,0 +1,136 @@
+{%- assign section_scheme = section.settings.color_scheme | default: 'scheme-2' -%}
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+{% assign home = store_gen.home_page %}
+{% assign ht = home.text %}
+{% assign use_mf = section.settings.use_kluck_ai_metafields %}
+{% assign homeData = section.settings.homeData %}
+{% if ht == blank and homeData.text != blank %}{% assign ht = homeData.text %}{% endif %}
+
+{% assign feature_ticker_1 = section.settings.feature_ticker_1 %}
+{% assign feature_ticker_2 = section.settings.feature_ticker_2 %}
+{% assign feature_ticker_3 = section.settings.feature_ticker_3 %}
+{% assign feature_ticker_4 = section.settings.feature_ticker_4 %}
+{% assign feature_ticker_5 = section.settings.feature_ticker_5 %}
+{% assign feature_ticker_6 = section.settings.feature_ticker_6 %}
+{% if use_mf %}
+  {% if ht.feature_ticker_1 != blank %}{% assign feature_ticker_1 = ht.feature_ticker_1 %}{% endif %}
+  {% if ht.feature_ticker_2 != blank %}{% assign feature_ticker_2 = ht.feature_ticker_2 %}{% endif %}
+  {% if ht.feature_ticker_3 != blank %}{% assign feature_ticker_3 = ht.feature_ticker_3 %}{% endif %}
+  {% if ht.feature_ticker_4 != blank %}{% assign feature_ticker_4 = ht.feature_ticker_4 %}{% endif %}
+  {% if ht.feature_ticker_5 != blank %}{% assign feature_ticker_5 = ht.feature_ticker_5 %}{% endif %}
+  {% if ht.feature_ticker_6 != blank %}{% assign feature_ticker_6 = ht.feature_ticker_6 %}{% endif %}
+{% endif %}
+
+{% if shop.metafields.app.block_control.value %}
+<style>
+  #shopify-section-{{ section.id }} {
+    width: 100%;
+    max-width: none;
+  }
+    #cft-{{ section.id }} {
+  --c-ink: var(--color-foreground-heading, #111);
+  --c-ink-muted: var(--color-foreground-muted, rgba(0,0,0,0.55));
+  --c-surface: var(--color-background, #fff);
+  --c-accent: var(--color-accent, var(--color-primary-button-background, currentColor));
+  --c-accent-soft: var(--color-accent-soft, var(--color-background, #f5f5f5));
+  --c-on-accent: var(--color-on-accent, #fff);
+  --c-border: var(--color-border, rgba(0,0,0,0.08));
+  --c-heading-font: var(--section-heading-font, Georgia, 'Times New Roman', serif);
+  --c-body-font: var(--section-body-font, system-ui, sans-serif);
+    
+    overflow: hidden; border-top: 1px solid color-mix(in srgb, var(--c-accent) 25%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--c-accent) 25%, transparent); background: var(--c-accent-soft);
+  }
+  #cft-{{ section.id }} .cft-track {
+    display: flex; width: max-content; animation: cft-marquee-{{ section.id }} 40s linear infinite; padding: 16px 0;
+  }
+  #cft-{{ section.id }} .cft-item {
+    display: flex; align-items: center; padding: 0 28px; font-size: 12px; font-weight: 500;
+    letter-spacing: 0.24em; text-transform: uppercase; color: var(--c-ink); white-space: nowrap;
+  }
+  #cft-{{ section.id }} .cft-diamond {
+    width: 6px; height: 6px; background: var(--c-accent); transform: rotate(45deg); margin-right: 28px; flex-shrink: 0;
+  }
+  @keyframes cft-marquee-{{ section.id }} { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { #cft-{{ section.id }} .cft-track { animation: none; } }
+</style>
+<div id="cft-{{ section.id }}" class="color-{{ section_scheme }}">
+  <div class="cft-track" aria-hidden="true">
+    {% for pass in (1..2) %}
+      {% for i in (1..6) %}
+        {% case i %}
+          {% when 1 %}{% assign phrase = feature_ticker_1 %}
+          {% when 2 %}{% assign phrase = feature_ticker_2 %}
+          {% when 3 %}{% assign phrase = feature_ticker_3 %}
+          {% when 4 %}{% assign phrase = feature_ticker_4 %}
+          {% when 5 %}{% assign phrase = feature_ticker_5 %}
+          {% when 6 %}{% assign phrase = feature_ticker_6 %}
+        {% endcase %}
+        {% if phrase != blank %}
+          <span class="cft-item"><span class="cft-diamond"></span>{{ phrase }}</span>
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Kluck AI - Cin Ticker",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_kluck_ai_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "feature_ticker_1",
+      "label": "Phrase 1",
+      "default": "Rich, layered sound"
+    },
+    {
+      "type": "text",
+      "id": "feature_ticker_2",
+      "label": "Phrase 2",
+      "default": "Featherlight comfort"
+    },
+    {
+      "type": "text",
+      "id": "feature_ticker_3",
+      "label": "Phrase 3",
+      "default": "All-day battery life"
+    },
+    {
+      "type": "text",
+      "id": "feature_ticker_4",
+      "label": "Phrase 4",
+      "default": "Instant pairing"
+    },
+    {
+      "type": "text",
+      "id": "feature_ticker_5",
+      "label": "Phrase 5",
+      "default": "Compact charging case"
+    },
+    {
+      "type": "text",
+      "id": "feature_ticker_6",
+      "label": "Phrase 6",
+      "default": "Work, study, travel, play"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kluck AI - Cin Ticker"
+    }
+  ]
+}
+{% endschema %}

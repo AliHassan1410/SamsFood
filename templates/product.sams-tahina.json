@@ -1,0 +1,731 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "kluck-ai-hero-section": {
+      "type": "kluck-ai-hero-section-1",
+      "blocks": {
+        "kluck_ai_product_details": {
+          "type": "shopify://apps/kluck-ai-store-builder/blocks/product-details/019b183d-746c-7391-a5b6-6ac9f26fa6b4",
+          "settings": {
+            "use_metafields": true,
+            "badge_text": "Sam's Tahina",
+            "badge_shape": "rectangle",
+            "badge_align": "left",
+            "content_align": "left",
+            "show_rating": true,
+            "rating_text": "Slow-ground in Lahore",
+            "rating_text_align": "left",
+            "show_price": true,
+            "price_align": "center",
+            "variants_align": "left",
+            "variants_border_radius": 50,
+            "show_features": true,
+            "icon_set": "home_kitchen",
+            "features_text": "Halal#PFA Licensed#Made in Lahore"
+          }
+        },
+        "kluck_ai_buy_now_button": {
+          "type": "shopify://apps/kluck-ai-store-builder/blocks/buy-now-button/019b183d-746c-7391-a5b6-6ac9f26fa6b4",
+          "settings": {
+            "button_text": "Buy Now",
+            "alignment": "center",
+            "container_width": 100,
+            "button_border_radius": 12,
+            "button_height": 48,
+            "quantity_style": "option3",
+            "quantity_border_radius": 12,
+            "quantity_width": 125
+          }
+        },
+        "kluck_ai_delivery_estimator": {
+          "type": "shopify://apps/kluck-ai-store-builder/blocks/delivery-estimator/019b183d-746c-7391-a5b6-6ac9f26fa6b4",
+          "settings": {
+            "show_delivery_estimator": true,
+            "show_simple_line": true,
+            "processing_days": 2,
+            "delivery_days_after_processing": 3,
+            "show_service_accordion": true,
+            "title_1": "Cash on Delivery",
+            "content_1": "Pay when your order arrives. Check your items before you pay.",
+            "title_2": "Reliable Delivery",
+            "content_2": "Lahore orders are delivered directly from our kitchen in Lahore. Orders outside Lahore are sent by courier. Chilled and frozen items are delivered in Lahore only.",
+            "title_3": "WhatsApp Support",
+            "content_3": "Questions about a product or your order? Message us on WhatsApp at 0345-4788888."
+          }
+        },
+        "kluck_ai_frequently_bought": {
+          "type": "shopify://apps/kluck-ai-store-builder/blocks/frequently-bought/019b183d-746c-7391-a5b6-6ac9f26fa6b4",
+          "settings": {
+            "heading": "Pairs Well Together",
+            "product_list": [
+              "multigrain-flour",
+              "pomegranate-molasses",
+              "sams-hummus"
+            ],
+            "layout_mode": "slider"
+          }
+        }
+      },
+      "block_order": [
+        "kluck_ai_product_details",
+        "kluck_ai_buy_now_button",
+        "kluck_ai_delivery_estimator",
+        "kluck_ai_frequently_bought"
+      ],
+      "name": "Kluck AI - Hero Section",
+      "settings": {
+        "use_metafields": true,
+        "background_color": "#ffffff",
+        "background_opacity": 0,
+        "container_max_width": 1400,
+        "heading_font_family": "merriweather_n4",
+        "body_font_family": "muli_n4",
+        "body_size": 16,
+        "body_weight": 400,
+        "h1_size": 46,
+        "h1_weight": 700,
+        "h2_size": 34,
+        "h2_weight": 700,
+        "h3_size": 38,
+        "h3_weight": 600,
+        "h4_size": 24,
+        "h4_weight": 600,
+        "h5_size": 20,
+        "h5_weight": 500,
+        "h6_size": 16,
+        "h6_weight": 500,
+        "pad_left_x": 20,
+        "pad_left_y": 40,
+        "pad_right_x": 20,
+        "pad_right_y": 40,
+        "show_thumbs": true,
+        "thumbs_count": 5,
+        "thumb_position": "left",
+        "gallery_width": 100,
+        "main_radius": 16,
+        "thumb_radius": 10,
+        "show_faq": true,
+        "faq_margin_top": 20,
+        "faq_bg_color": "#ffffff",
+        "faq_border_color": "#e0e0e0",
+        "faq_color_q": "#000000",
+        "faq_color_a": "#555555",
+        "faq_icon_bg": "#f0f0f0",
+        "faq_icon_color": "#333333",
+        "faq_q1": "Shipping info?",
+        "faq_a1": "Ships in 3 days.",
+        "faq_q2": "Returns?",
+        "faq_a2": "30-day returns.",
+        "faq_q3": "How to Use?",
+        "faq_a3": "Use Easily.",
+        "faq_q4": "",
+        "faq_a4": "",
+        "faq_q5": "",
+        "faq_a5": ""
+      }
+    },
+    "kluck-ai-marquee-section-1-1": {
+      "type": "kluck-ai-marquee-section-1",
+      "blocks": {
+        "text_hHcRTH": {
+          "type": "text",
+          "settings": {
+            "text": "[product]"
+          }
+        },
+        "image_QMjQyV": {
+          "type": "image",
+          "settings": {}
+        },
+        "text_dtkJPV": {
+          "type": "text",
+          "settings": {
+            "text": "Rich & Fruity"
+          }
+        },
+        "image_8fNrM9": {
+          "type": "image",
+          "settings": {}
+        },
+        "text_dPhry9": {
+          "type": "text",
+          "settings": {
+            "text": "Authentic Flavor"
+          }
+        },
+        "image_XMUGaT": {
+          "type": "image",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "text_hHcRTH",
+        "image_QMjQyV",
+        "text_dtkJPV",
+        "image_8fNrM9",
+        "text_dPhry9",
+        "image_XMUGaT"
+      ],
+      "name": "Kluck AI - Marquee",
+      "settings": {
+        "use_metafields": true,
+        "background_color": "#ffffff",
+        "background_opacity": 100,
+        "container_max_width": 2000,
+        "padding_v": 15,
+        "direction": "right",
+        "speed_d": 30,
+        "speed_m": 15,
+        "rotation": 0,
+        "mask_width": 50,
+        "pause_hover": false,
+        "gap_d": 60,
+        "gap_m": 30,
+        "img_height_d": 70,
+        "img_height_m": 50,
+        "img_radius": 10,
+        "heading_font_family": "oswald_n6",
+        "body_font_family": "merriweather_n4",
+        "body_size": 16,
+        "body_weight": 400,
+        "h1_size": 46,
+        "h1_weight": 700,
+        "h2_size": 34,
+        "h2_weight": 700,
+        "h3_size": 38,
+        "h3_weight": 600,
+        "h4_size": 24,
+        "h4_weight": 600,
+        "h5_size": 20,
+        "h5_weight": 500,
+        "h6_size": 16,
+        "h6_weight": 500,
+        "use_metafield_text": false
+      }
+    },
+    "kluck-ai-empty-section-1": {
+      "type": "kluck-ai-empty-section",
+      "blocks": {
+        "kluck_ai_bento_grid": {
+          "type": "shopify://apps/kluck-ai-store-builder/blocks/bento-grid/019b183d-746c-7391-a5b6-6ac9f26fa6b4",
+          "settings": {
+            "border_radius": 12,
+            "panel_gap": 20,
+            "p2_heading": "Made Fresh",
+            "p2_text": "Made in our kitchen in Lahore",
+            "p2_text_align": "left",
+            "p3_heading": "PFA Licensed",
+            "p3_text": "Made under licence LHR/R-C/48356291",
+            "p3_text_align": "left"
+          }
+        }
+      },
+      "block_order": [
+        "kluck_ai_bento_grid"
+      ],
+      "name": "Kluck AI - Bento Grid",
+      "settings": {
+        "use_metafields": true,
+        "background_color": "#ffffff",
+        "background_opacity": 10,
+        "container_max_width": 1400,
+        "padding_vertical_desktop": 10,
+        "padding_horizontal_desktop": 10,
+        "padding_vertical_mobile": 20,
+        "padding_horizontal_mobile": 10,
+        "heading_font_family": "merriweather_n4",
+        "body_font_family": "muli_n4",
+        "body_size": 16,
+        "body_weight": 400,
+        "h1_size": 46,
+        "h1_weight": 700,
+        "h2_size": 34,
+        "h2_weight": 700,
+        "h3_size": 38,
+        "h3_weight": 600,
+        "h4_size": 24,
+        "h4_weight": 600,
+        "h5_size": 20,
+        "h5_weight": 500,
+        "h6_size": 16,
+        "h6_weight": 500
+      }
+    },
+    "kluck-ai-marquee-section-1-2": {
+      "type": "kluck-ai-marquee-section-1",
+      "blocks": {
+        "text_icWw7g": {
+          "type": "text",
+          "settings": {
+            "text": "[product]"
+          }
+        },
+        "text_gKN9Ct": {
+          "type": "text",
+          "settings": {
+            "text": "Rich & Fruity"
+          }
+        },
+        "text_FWJLaL": {
+          "type": "text",
+          "settings": {
+            "text": "Authentic Flavor"
+          }
+        }
+      },
+      "block_order": [
+        "text_icWw7g",
+        "text_gKN9Ct",
+        "text_FWJLaL"
+      ],
+      "name": "Kluck AI - Marquee",
+      "settings": {
+        "use_metafields": true,
+        "background_color": "#ffffff",
+        "background_opacity": 100,
+        "container_max_width": 2000,
+        "padding_v": 15,
+        "direction": "left",
+        "speed_d": 30,
+        "speed_m": 15,
+        "rotation": 0,
+        "mask_width": 50,
+        "pause_hover": false,
+        "gap_d": 60,
+        "gap_m": 30,
+        "img_height_d": 60,
+        "img_height_m": 40,
+        "img_radius": 10,
+        "heading_font_family": "abel_n4",
+        "body_font_family": "merriweather_n4",
+        "body_size": 16,
+        "body_weight": 400,
+        "h1_size": 46,
+        "h1_weight": 700,
+        "h2_size": 34,
+        "h2_weight": 700,
+        "h3_size": 38,
+        "h3_weight": 600,
+        "h4_size": 24,
+        "h4_weight": 600,
+        "h5_size": 20,
+        "h5_weight": 500,
+        "h6_size": 16,
+        "h6_weight": 500,
+        "use_metafield_text": false
+      }
+    },
+    "kluck-ai-empty-section-2": {
+      "type": "kluck-ai-empty-section",
+      "blocks": {
+        "kluck_ai_image_with_text": {
+          "type": "shopify://apps/kluck-ai-store-builder/blocks/image-with-text/019b183d-746c-7391-a5b6-6ac9f26fa6b4",
+          "settings": {
+            "use_metafields": true,
+            "image_position": "right",
+            "container_radius": 20,
+            "container_padding": 0,
+            "heading": "Slow-ground in our Lahore kitchen",
+            "subheading_1": "Pure roasted sesame",
+            "subheading_1_desc": "Roasted sesame seeds, ground slowly until silky and pourable.",
+            "subheading_2": "",
+            "subheading_2_desc": "",
+            "subheading_3": "",
+            "subheading_3_desc": "",
+            "subheading_4": "",
+            "subheading_4_desc": ""
+          }
+        }
+      },
+      "block_order": [
+        "kluck_ai_image_with_text"
+      ],
+      "name": "Kluck AI - Image With Text",
+      "settings": {
+        "use_metafields": true,
+        "background_color": "#ffffff",
+        "background_opacity": 10,
+        "container_max_width": 1400,
+        "padding_vertical_desktop": 10,
+        "padding_horizontal_desktop": 10,
+        "padding_vertical_mobile": 20,
+        "padding_horizontal_mobile": 10,
+        "heading_font_family": "merriweather_n4",
+        "body_font_family": "muli_n4",
+        "body_size": 14,
+        "body_weight": 400,
+        "h1_size": 46,
+        "h1_weight": 700,
+        "h2_size": 34,
+        "h2_weight": 700,
+        "h3_size": 26,
+        "h3_weight": 600,
+        "h4_size": 20,
+        "h4_weight": 600,
+        "h5_size": 20,
+        "h5_weight": 500,
+        "h6_size": 16,
+        "h6_weight": 500
+      }
+    },
+    "kluck-ai-trust-badge-section": {
+      "type": "kluck-ai-trust-badge-section",
+      "blocks": {
+        "badge_G7yKtV": {
+          "type": "badge",
+          "settings": {
+            "text": "Halal Certified"
+          }
+        },
+        "badge_d6DY4b": {
+          "type": "badge",
+          "settings": {
+            "text": "PFA Licensed"
+          }
+        },
+        "badge_EenDwy": {
+          "type": "badge",
+          "settings": {
+            "text": "Cash on Delivery"
+          }
+        },
+        "badge_drcC84": {
+          "type": "badge",
+          "settings": {
+            "text": "WhatsApp Support"
+          }
+        }
+      },
+      "block_order": [
+        "badge_G7yKtV",
+        "badge_d6DY4b",
+        "badge_EenDwy",
+        "badge_drcC84"
+      ],
+      "name": "Kluck AI - Badges",
+      "settings": {
+        "use_metafields": false,
+        "use_metafield_text": true,
+        "background_color": "#000000",
+        "background_opacity": 100,
+        "container_max_width": 1400,
+        "padding_v_d": 40,
+        "padding_v_m": 30,
+        "alignment": "center",
+        "item_bg": "rgba(0,0,0,0)",
+        "item_border": "#e5e5e5",
+        "item_text": "#000000",
+        "badge_radius": 50,
+        "gap_d": 20,
+        "gap_m": 15,
+        "icon_bg": "#e75480",
+        "icon_color": "#ffffff",
+        "icon_size_d": 32,
+        "icon_size_m": 28,
+        "mobile_auto_scroll": true,
+        "scroll_speed": 20,
+        "heading_font_family": "abel_n4",
+        "body_font_family": "muli_n4",
+        "body_size": 16,
+        "body_weight": 400,
+        "h1_size": 46,
+        "h1_weight": 700,
+        "h2_size": 34,
+        "h2_weight": 700
+      }
+    },
+    "kluck-ai-empty-section-3": {
+      "type": "kluck-ai-empty-section",
+      "blocks": {
+        "kluck_ai_four_blocks": {
+          "type": "shopify://apps/kluck-ai-store-builder/blocks/four-blocks/019b183d-746c-7391-a5b6-6ac9f26fa6b4",
+          "settings": {
+            "use_metafields": true,
+            "layout": "layout_1",
+            "text_align": "center",
+            "show_border": true,
+            "image_radius": 50,
+            "heading": "Our Pantry",
+            "subheading": "<p>Everything we make is prepared in one kitchen in Lahore, under a Punjab Food Authority licence.</p>",
+            "block_1_heading": "Halal",
+            "block_1_subheading": "Prepared to halal standards.",
+            "block_2_heading": "PFA Licensed",
+            "block_2_subheading": "Licence LHR/R-C/48356291.",
+            "block_3_heading": "Small-Batch Craft",
+            "block_3_subheading": "Prepared in small batches with authentic recipes and pure ingredients.",
+            "block_4_heading": "Made in Lahore",
+            "block_4_subheading": "From our kitchen in Lahore to your door."
+          }
+        }
+      },
+      "block_order": [
+        "kluck_ai_four_blocks"
+      ],
+      "name": "Kluck AI - Four Block",
+      "settings": {
+        "use_metafields": true,
+        "background_color": "#ffffff",
+        "background_opacity": 10,
+        "container_max_width": 1250,
+        "padding_vertical_desktop": 10,
+        "padding_horizontal_desktop": 10,
+        "padding_vertical_mobile": 20,
+        "padding_horizontal_mobile": 10,
+        "heading_font_family": "abel_n4",
+        "body_font_family": "abel_n4",
+        "body_size": 16,
+        "body_weight": 400,
+        "h1_size": 46,
+        "h1_weight": 700,
+        "h2_size": 34,
+        "h2_weight": 700,
+        "h3_size": 38,
+        "h3_weight": 600,
+        "h4_size": 24,
+        "h4_weight": 600,
+        "h5_size": 20,
+        "h5_weight": 500,
+        "h6_size": 16,
+        "h6_weight": 500
+      }
+    },
+    "kluck-ai-empty-section-4": {
+      "type": "kluck-ai-empty-section",
+      "blocks": {
+        "kluck_ai_circular_feature": {
+          "type": "shopify://apps/kluck-ai-store-builder/blocks/circular-feature-ring/019b183d-746c-7391-a5b6-6ac9f26fa6b4",
+          "settings": {
+            "use_metafields": true,
+            "image_position": "left",
+            "image_border_radius": 8,
+            "mobile_layout": "cards",
+            "mobile_cards_layout": "grid",
+            "heading": "Made the Slow Way",
+            "subheading": "From roasted seed to jar, each batch follows the same steps.",
+            "feature1_title": "Roasted",
+            "feature1_text": "Prepared from quality ingredients.",
+            "feature2_title": "Prepared",
+            "feature2_text": "Made in small batches in Lahore.",
+            "feature3_title": "Checked",
+            "feature3_text": "Checked before it is packed.",
+            "feature4_title": "Delivered",
+            "feature4_text": "Sent from our kitchen to your door."
+          }
+        }
+      },
+      "block_order": [
+        "kluck_ai_circular_feature"
+      ],
+      "name": "Kluck AI - Circular Feature",
+      "settings": {
+        "use_metafields": true,
+        "background_color": "#ffffff",
+        "background_opacity": 10,
+        "container_max_width": 1400,
+        "padding_vertical_desktop": 10,
+        "padding_horizontal_desktop": 10,
+        "padding_vertical_mobile": 20,
+        "padding_horizontal_mobile": 10,
+        "heading_font_family": "merriweather_n4",
+        "body_font_family": "muli_n4",
+        "body_size": 16,
+        "body_weight": 400,
+        "h1_size": 46,
+        "h1_weight": 700,
+        "h2_size": 34,
+        "h2_weight": 700,
+        "h3_size": 38,
+        "h3_weight": 600,
+        "h4_size": 24,
+        "h4_weight": 600,
+        "h5_size": 20,
+        "h5_weight": 500,
+        "h6_size": 16,
+        "h6_weight": 500
+      }
+    },
+    "kluck-ai-pillow-banner-section": {
+      "type": "kluck-ai-pillow-banner-section",
+      "name": "Kluck AI - Pillow Banner",
+      "settings": {
+        "use_metafields": true,
+        "background_color": "#ffffff",
+        "background_opacity": 0,
+        "container_max_width": 1400,
+        "corner_radius": 24,
+        "button_position": "top-right",
+        "scoop_radius": 20,
+        "btn_text": "Buy Now",
+        "btn_bg": "#e75480",
+        "btn_text_color": "#ffffff",
+        "btn_circle_bg": "#ffffff",
+        "btn_arrow_color": "#1b1f52",
+        "heading": "Silky, nutty and ready to use",
+        "subtext": "The base of real hummus, smooth tahini sauce and many Middle Eastern dishes.",
+        "heading_font_family": "merriweather_n4",
+        "body_font_family": "muli_n4",
+        "body_size": 16,
+        "body_weight": 400,
+        "h1_size": 46,
+        "h1_weight": 700,
+        "h2_size": 34,
+        "h2_weight": 700,
+        "h3_size": 38,
+        "h3_weight": 600,
+        "h4_size": 24,
+        "h4_weight": 600,
+        "h5_size": 20,
+        "h5_weight": 500,
+        "h6_size": 16,
+        "h6_weight": 500
+      }
+    },
+    "kluck-ai-empty-section-5": {
+      "type": "kluck-ai-empty-section",
+      "blocks": {
+        "kluck_ai_comparison_table": {
+          "type": "shopify://apps/kluck-ai-store-builder/blocks/comparison-table/019b183d-746c-7391-a5b6-6ac9f26fa6b4",
+          "settings": {
+            "table_position": "right",
+            "text_align": "left",
+            "table_borders": "full",
+            "table_border_color": "#121212",
+            "use_metafields": true,
+            "subheading": "<p>How Sam's Food compares</p>",
+            "show_shop_button": true,
+            "shop_button_label": "Shop now",
+            "shop_button_url": "",
+            "shop_button_radius": 8,
+            "feature_col_label": "Sam's Food",
+            "brand_label": "Us",
+            "show_us_header_image": true,
+            "us_column_bg": "#e75480",
+            "us_column_text": "",
+            "others_label": "Typical shop",
+            "icon_yes_char": "✓",
+            "icon_no_char": "✕",
+            "mark_circle": true,
+            "number_of_rows": 3,
+            "row1_feature": "Halal certified",
+            "row2_feature": "PFA licensed kitchen",
+            "row3_feature": "Made in Lahore",
+            "row4_feature": "Cash on delivery",
+            "row5_feature": "Bulk trade pricing"
+          }
+        }
+      },
+      "block_order": [
+        "kluck_ai_comparison_table"
+      ],
+      "name": "Kluck AI - Comparison Table",
+      "settings": {
+        "use_metafields": true,
+        "background_color": "#ffffff",
+        "background_opacity": 10,
+        "container_max_width": 1400,
+        "padding_vertical_desktop": 10,
+        "padding_horizontal_desktop": 10,
+        "padding_vertical_mobile": 20,
+        "padding_horizontal_mobile": 10,
+        "heading_font_family": "merriweather_n4",
+        "body_font_family": "muli_n4",
+        "body_size": 16,
+        "body_weight": 400,
+        "h1_size": 46,
+        "h1_weight": 700,
+        "h2_size": 34,
+        "h2_weight": 700,
+        "h3_size": 38,
+        "h3_weight": 600,
+        "h4_size": 24,
+        "h4_weight": 600,
+        "h5_size": 20,
+        "h5_weight": 500,
+        "h6_size": 16,
+        "h6_weight": 500
+      }
+    },
+    "kluck-ai-faq-section": {
+      "type": "kluck-ai-faq-section",
+      "blocks": {
+        "faq_kAFRcA": {
+          "type": "faq",
+          "settings": {
+            "question": "How should I store tahina?",
+            "answer": "<p>Store in a cool, dry place. Natural oil separation is normal, so stir well before use.</p>"
+          }
+        },
+        "faq_wTb6EQ": {
+          "type": "faq",
+          "settings": {
+            "question": "Which sizes are available?",
+            "answer": "<p>600g jar, 3kg bucket and 14kg bulk bucket.</p>"
+          }
+        },
+        "faq_4hkFdm": {
+          "type": "faq",
+          "settings": {
+            "question": "Do you supply restaurants and cafés?",
+            "answer": "<p>Yes. Message us on WhatsApp at 0345-4788888 for trade rates.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "faq_kAFRcA",
+        "faq_wTb6EQ",
+        "faq_4hkFdm"
+      ],
+      "name": "Kluck AI - FAQ Section",
+      "settings": {
+        "use_metafields": true,
+        "background_color": "#ffffff",
+        "background_opacity": 100,
+        "container_max_width": 900,
+        "title": "Frequently Asked Questions",
+        "subtitle": "Our support team is here to assist with any inquiries.",
+        "text_alignment": "center",
+        "item_bg": "#ffdde7",
+        "item_radius": 8,
+        "icon_bg": "#ffffff",
+        "icon_color": "#000000",
+        "heading_font_family": "merriweather_n4",
+        "body_font_family": "muli_n4",
+        "body_size": 16,
+        "body_weight": 400,
+        "h1_size": 46,
+        "h1_weight": 700,
+        "h2_size": 34,
+        "h2_weight": 700,
+        "h3_size": 38,
+        "h3_weight": 600,
+        "h4_size": 24,
+        "h4_weight": 600,
+        "h5_size": 20,
+        "h5_weight": 500,
+        "h6_size": 16,
+        "h6_weight": 500
+      }
+    }
+  },
+  "order": [
+    "kluck-ai-hero-section",
+    "kluck-ai-marquee-section-1-1",
+    "kluck-ai-empty-section-1",
+    "kluck-ai-marquee-section-1-2",
+    "kluck-ai-empty-section-2",
+    "kluck-ai-trust-badge-section",
+    "kluck-ai-empty-section-3",
+    "kluck-ai-empty-section-4",
+    "kluck-ai-pillow-banner-section",
+    "kluck-ai-empty-section-5",
+    "kluck-ai-faq-section"
+  ]
+}

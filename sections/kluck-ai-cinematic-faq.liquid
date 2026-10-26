@@ -1,0 +1,217 @@
+{%- assign section_scheme = section.settings.color_scheme | default: 'scheme-2' -%}
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+{% assign home = store_gen.home_page %}
+{% assign ht = home.text %}
+{% assign use_mf = section.settings.use_kluck_ai_metafields %}
+{% assign homeData = section.settings.homeData %}
+{% if ht == blank and homeData.text != blank %}{% assign ht = homeData.text %}{% endif %}
+
+{% assign faq_eyebrow = section.settings.faq_eyebrow %}
+{% assign faq_heading = section.settings.faq_heading %}
+{% assign faq_1_q = section.settings.faq_1_q %}
+{% assign faq_1_a = section.settings.faq_1_a %}
+{% assign faq_2_q = section.settings.faq_2_q %}
+{% assign faq_2_a = section.settings.faq_2_a %}
+{% assign faq_3_q = section.settings.faq_3_q %}
+{% assign faq_3_a = section.settings.faq_3_a %}
+{% assign faq_4_q = section.settings.faq_4_q %}
+{% assign faq_4_a = section.settings.faq_4_a %}
+{% assign faq_5_q = section.settings.faq_5_q %}
+{% assign faq_5_a = section.settings.faq_5_a %}
+{% assign faq_6_q = section.settings.faq_6_q %}
+{% assign faq_6_a = section.settings.faq_6_a %}
+{% if use_mf %}
+  {% if ht.faq_1_q != blank %}{% assign faq_1_q = ht.faq_1_q %}{% endif %}
+  {% if ht.faq_1_a != blank %}{% assign faq_1_a = ht.faq_1_a %}{% endif %}
+  {% if ht.faq_2_q != blank %}{% assign faq_2_q = ht.faq_2_q %}{% endif %}
+  {% if ht.faq_2_a != blank %}{% assign faq_2_a = ht.faq_2_a %}{% endif %}
+  {% if ht.faq_3_q != blank %}{% assign faq_3_q = ht.faq_3_q %}{% endif %}
+  {% if ht.faq_3_a != blank %}{% assign faq_3_a = ht.faq_3_a %}{% endif %}
+  {% if ht.faq_4_q != blank %}{% assign faq_4_q = ht.faq_4_q %}{% endif %}
+  {% if ht.faq_4_a != blank %}{% assign faq_4_a = ht.faq_4_a %}{% endif %}
+  {% if ht.faq_5_q != blank %}{% assign faq_5_q = ht.faq_5_q %}{% endif %}
+  {% if ht.faq_5_a != blank %}{% assign faq_5_a = ht.faq_5_a %}{% endif %}
+  {% if ht.faq_6_q != blank %}{% assign faq_6_q = ht.faq_6_q %}{% endif %}
+  {% if ht.faq_6_a != blank %}{% assign faq_6_a = ht.faq_6_a %}{% endif %}
+{% endif %}
+
+{% if shop.metafields.app.block_control.value %}
+<style>
+  #shopify-section-{{ section.id }} {
+    width: 100%;
+    max-width: none;
+  }
+    #cf-{{ section.id }} {
+  --c-ink: var(--color-foreground-heading, #111);
+  --c-ink-muted: var(--color-foreground-muted, rgba(0,0,0,0.55));
+  --c-surface: var(--color-background, #fff);
+  --c-accent: var(--color-accent, var(--color-primary-button-background, currentColor));
+  --c-accent-soft: var(--color-accent-soft, var(--color-background, #f5f5f5));
+  --c-on-accent: var(--color-on-accent, #fff);
+  --c-border: var(--color-border, rgba(0,0,0,0.08));
+  --c-heading-font: var(--section-heading-font, Georgia, 'Times New Roman', serif);
+  --c-body-font: var(--section-body-font, system-ui, sans-serif);  background: var(--c-accent-soft); }
+  #cf-{{ section.id }} .cf-inner { max-width: 800px; margin: 0 auto; padding: 64px 20px; }
+  #cf-{{ section.id }} .cf-head { text-align: center; }
+  #cf-{{ section.id }} .cf-eyebrow { margin: 0; font-size: 12px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: var(--c-accent); }
+  #cf-{{ section.id }} h2 {
+    margin: 12px 0 0; font-family: var(--c-heading-font); font-size: 2.25rem; color: var(--c-ink); font-weight: 400;
+  }
+  #cf-{{ section.id }} .cf-list {
+    margin-top: 48px; border-top: 1px solid var(--c-border); border-bottom: 1px solid var(--c-border);
+  }
+  #cf-{{ section.id }} details { border-bottom: 1px solid var(--c-border); padding: 20px 0; }
+  #cf-{{ section.id }} details:last-child { border-bottom: 0; }
+  #cf-{{ section.id }} summary {
+    list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; font-size: 15px; font-weight: 500; color: var(--c-ink);
+  }
+  #cf-{{ section.id }} summary::-webkit-details-marker { display: none; }
+  #cf-{{ section.id }} .cf-plus {
+    width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--c-border);
+    display: flex; align-items: center; justify-content: center; font-size: 18px; line-height: 1;
+    color: var(--c-ink); flex-shrink: 0; transition: transform .2s, border-color .2s, color .2s;
+  }
+  #cf-{{ section.id }} details[open] .cf-plus { transform: rotate(45deg); border-color: var(--c-accent); color: var(--c-accent); }
+  #cf-{{ section.id }} .cf-a { padding: 12px 48px 0 0; font-size: 14px; line-height: 1.75; color: var(--c-ink-muted); }
+  @media (min-width: 768px) {
+    #cf-{{ section.id }} .cf-inner { padding: 96px 32px; }
+    #cf-{{ section.id }} h2 { font-size: 3rem; }
+  }
+</style>
+<section id="cf-{{ section.id }}" class="color-{{ section_scheme }}">
+  <div class="cf-inner">
+    <div class="cf-head">
+      {% if faq_eyebrow != blank %}<p class="cf-eyebrow">{{ faq_eyebrow }}</p>{% endif %}
+      {% if faq_heading != blank %}<h2>{{ faq_heading }}</h2>{% endif %}
+    </div>
+    <div class="cf-list">
+      {% for i in (1..6) %}
+        {% case i %}
+          {% when 1 %}{% assign q = faq_1_q %}{% assign a = faq_1_a %}
+          {% when 2 %}{% assign q = faq_2_q %}{% assign a = faq_2_a %}
+          {% when 3 %}{% assign q = faq_3_q %}{% assign a = faq_3_a %}
+          {% when 4 %}{% assign q = faq_4_q %}{% assign a = faq_4_a %}
+          {% when 5 %}{% assign q = faq_5_q %}{% assign a = faq_5_a %}
+          {% when 6 %}{% assign q = faq_6_q %}{% assign a = faq_6_a %}
+        {% endcase %}
+        {% if q != blank %}
+          <details>
+            <summary><span>{{ q }}</span><span class="cf-plus" aria-hidden="true">+</span></summary>
+            {% if a != blank %}<div class="cf-a">{{ a }}</div>{% endif %}
+          </details>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Kluck AI - Cin FAQ",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_kluck_ai_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "faq_eyebrow",
+      "label": "Eyebrow",
+      "default": "FAQs"
+    },
+    {
+      "type": "text",
+      "id": "faq_heading",
+      "label": "Heading",
+      "default": "Questions, Answered"
+    },
+    {
+      "type": "text",
+      "id": "faq_1_q",
+      "label": "FAQ 1 question",
+      "default": "How fast will my order arrive?"
+    },
+    {
+      "type": "textarea",
+      "id": "faq_1_a",
+      "label": "FAQ 1 answer",
+      "default": "Most deliveries arrive within 3–5 business days."
+    },
+    {
+      "type": "text",
+      "id": "faq_2_q",
+      "label": "FAQ 2 question",
+      "default": "What is your return policy?"
+    },
+    {
+      "type": "textarea",
+      "id": "faq_2_a",
+      "label": "FAQ 2 answer",
+      "default": "You have 30 days from delivery to try them at home."
+    },
+    {
+      "type": "text",
+      "id": "faq_3_q",
+      "label": "FAQ 3 question",
+      "default": "How do I pair the product?"
+    },
+    {
+      "type": "textarea",
+      "id": "faq_3_a",
+      "label": "FAQ 3 answer",
+      "default": "Follow the quick-start guide included in the box."
+    },
+    {
+      "type": "text",
+      "id": "faq_4_q",
+      "label": "FAQ 4 question",
+      "default": "How long does the battery last?"
+    },
+    {
+      "type": "textarea",
+      "id": "faq_4_a",
+      "label": "FAQ 4 answer",
+      "default": "Built for a full day of listening."
+    },
+    {
+      "type": "text",
+      "id": "faq_5_q",
+      "label": "FAQ 5 question",
+      "default": "Are they comfortable for long wear?"
+    },
+    {
+      "type": "textarea",
+      "id": "faq_5_a",
+      "label": "FAQ 5 answer",
+      "default": "Yes. The lightweight design is made for all-day comfort."
+    },
+    {
+      "type": "text",
+      "id": "faq_6_q",
+      "label": "FAQ 6 question",
+      "default": "How can I get in touch?"
+    },
+    {
+      "type": "textarea",
+      "id": "faq_6_a",
+      "label": "FAQ 6 answer",
+      "default": "Use the contact page — we typically reply within one business day."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kluck AI - Cin FAQ"
+    }
+  ]
+}
+{% endschema %}

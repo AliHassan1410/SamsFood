@@ -1,0 +1,292 @@
+{%- assign section_scheme = section.settings.color_scheme | default: 'scheme-2' -%}
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+{% assign home = store_gen.home_page %}
+{% assign ht = home.text %}
+{% assign hi = home.images %}
+{% assign use_mf = section.settings.use_kluck_ai_metafields %}
+{% assign homeData = section.settings.homeData %}
+{% if ht == blank and homeData.text != blank %}{% assign ht = homeData.text %}{% endif %}
+{% if hi == blank and homeData.images != blank %}{% assign hi = homeData.images %}{% endif %}
+
+{% assign orbit_eyebrow = section.settings.orbit_eyebrow %}
+{% assign orbit_heading = section.settings.orbit_heading %}
+{% assign orbit_1_title = section.settings.orbit_1_title %}
+{% assign orbit_1_text = section.settings.orbit_1_text %}
+{% assign orbit_2_title = section.settings.orbit_2_title %}
+{% assign orbit_2_text = section.settings.orbit_2_text %}
+{% assign orbit_3_title = section.settings.orbit_3_title %}
+{% assign orbit_3_text = section.settings.orbit_3_text %}
+{% assign orbit_4_title = section.settings.orbit_4_title %}
+{% assign orbit_4_text = section.settings.orbit_4_text %}
+{% assign orbit_5_title = section.settings.orbit_5_title %}
+{% assign orbit_5_text = section.settings.orbit_5_text %}
+{% assign orbit_6_title = section.settings.orbit_6_title %}
+{% assign orbit_6_text = section.settings.orbit_6_text %}
+{% assign circle_feature_image = section.settings.circle_feature_image %}
+{% if use_mf %}
+  {% if ht.orbit_eyebrow != blank %}{% assign orbit_eyebrow = ht.orbit_eyebrow %}{% endif %}
+  {% if ht.orbit_heading != blank %}{% assign orbit_heading = ht.orbit_heading %}{% endif %}
+  {% if ht.orbit_1_title != blank %}{% assign orbit_1_title = ht.orbit_1_title %}{% endif %}
+  {% if ht.orbit_1_text != blank %}{% assign orbit_1_text = ht.orbit_1_text %}{% endif %}
+  {% if ht.orbit_2_title != blank %}{% assign orbit_2_title = ht.orbit_2_title %}{% endif %}
+  {% if ht.orbit_2_text != blank %}{% assign orbit_2_text = ht.orbit_2_text %}{% endif %}
+  {% if ht.orbit_3_title != blank %}{% assign orbit_3_title = ht.orbit_3_title %}{% endif %}
+  {% if ht.orbit_3_text != blank %}{% assign orbit_3_text = ht.orbit_3_text %}{% endif %}
+  {% if ht.orbit_4_title != blank %}{% assign orbit_4_title = ht.orbit_4_title %}{% endif %}
+  {% if ht.orbit_4_text != blank %}{% assign orbit_4_text = ht.orbit_4_text %}{% endif %}
+  {% if ht.orbit_5_title != blank %}{% assign orbit_5_title = ht.orbit_5_title %}{% endif %}
+  {% if ht.orbit_5_text != blank %}{% assign orbit_5_text = ht.orbit_5_text %}{% endif %}
+  {% if ht.orbit_6_title != blank %}{% assign orbit_6_title = ht.orbit_6_title %}{% endif %}
+  {% if ht.orbit_6_text != blank %}{% assign orbit_6_text = ht.orbit_6_text %}{% endif %}
+  {% if shop.metafields.kluck_ai.circle_feature_image.value != blank %}
+    {% assign circle_feature_image = shop.metafields.kluck_ai.circle_feature_image.value %}
+  {% elsif hi.circle_feature_image != blank %}
+    {% assign circle_feature_image = hi.circle_feature_image %}
+  {% endif %}
+{% endif %}
+
+{% if shop.metafields.app.block_control.value %}
+<style>
+  #shopify-section-{{ section.id }} {
+    width: 100%;
+    max-width: none;
+  }
+    #cfo-{{ section.id }} {
+  --c-ink: var(--color-foreground-heading, #111);
+  --c-ink-muted: var(--color-foreground-muted, rgba(0,0,0,0.55));
+  --c-surface: var(--color-background, #fff);
+  --c-accent: var(--color-accent, var(--color-primary-button-background, currentColor));
+  --c-accent-soft: var(--color-accent-soft, var(--color-background, #f5f5f5));
+  --c-on-accent: var(--color-on-accent, #fff);
+  --c-border: var(--color-border, rgba(0,0,0,0.08));
+  --c-heading-font: var(--section-heading-font, Georgia, 'Times New Roman', serif);
+  --c-body-font: var(--section-body-font, system-ui, sans-serif);  background: var(--c-accent-soft); }
+  #cfo-{{ section.id }} .cfo-inner { max-width: 1400px; margin: 0 auto; padding: 64px 20px; }
+  #cfo-{{ section.id }} .cfo-head { max-width: 720px; margin: 0 auto; text-align: center; }
+  #cfo-{{ section.id }} .cfo-eyebrow { margin: 0; font-size: 12px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase; color: var(--c-accent); }
+  #cfo-{{ section.id }} h2 {
+    margin: 12px 0 0; font-family: var(--c-heading-font); font-size: 2.25rem; color: var(--c-ink); font-weight: 400;
+  }
+  #cfo-{{ section.id }} .cfo-circle {
+    position: relative; margin: 40px auto 0; width: 224px; aspect-ratio: 1; border-radius: 50%; overflow: hidden;
+    box-shadow: 0 24px 50px -20px var(--c-ink-muted); background: var(--c-accent-soft);
+  }
+  #cfo-{{ section.id }} .cfo-circle img, #cfo-{{ section.id }} .cfo-circle svg { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #cfo-{{ section.id }} .cfo-mobile-cards {
+    display: flex; gap: 12px; overflow-x: auto; margin-top: 32px; padding-bottom: 8px;
+    -ms-overflow-style: none; scrollbar-width: none;
+  }
+  #cfo-{{ section.id }} .cfo-mobile-cards::-webkit-scrollbar { display: none; }
+  #cfo-{{ section.id }} .cfo-card {
+    border-radius: 16px; border: 1px solid var(--c-border); background: var(--c-surface); padding: 16px 20px; text-align: center;
+    box-shadow: 0 12px 30px -18px color-mix(in srgb, var(--c-ink) 35%, transparent);
+  }
+  #cfo-{{ section.id }} .cfo-mobile-cards .cfo-card { width: 70%; flex-shrink: 0; padding: 20px; }
+  #cfo-{{ section.id }} .cfo-card h3 {
+    margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-ink);
+  }
+  #cfo-{{ section.id }} .cfo-card p { margin: 4px 0 0; font-size: 12px; line-height: 1.5; color: var(--c-ink-muted); }
+  #cfo-{{ section.id }} .cfo-desktop { display: none; }
+  @media (min-width: 640px) {
+    #cfo-{{ section.id }} .cfo-circle { width: 256px; }
+    #cfo-{{ section.id }} .cfo-mobile-cards .cfo-card { width: 45%; }
+  }
+  @media (min-width: 1024px) {
+    #cfo-{{ section.id }} .cfo-inner { padding: 80px 32px; }
+    #cfo-{{ section.id }} h2 { font-size: 3rem; }
+    #cfo-{{ section.id }} .cfo-mobile { display: none; }
+    #cfo-{{ section.id }} .cfo-desktop {
+      display: grid; grid-template-columns: minmax(220px, 1fr) minmax(280px, 420px) minmax(220px, 1fr); gap: 28px; align-items: center; margin-top: 48px;
+    }
+    #cfo-{{ section.id }} .cfo-col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+    #cfo-{{ section.id }} .cfo-card { min-width: 0; }
+    #cfo-{{ section.id }} .cfo-card h3 { overflow-wrap: break-word; word-break: normal; hyphens: none; }
+    #cfo-{{ section.id }} .cfo-desktop .cfo-circle { margin: 0 auto; width: 100%; max-width: 420px; }
+  }
+</style>
+<section id="cfo-{{ section.id }}" class="color-{{ section_scheme }}">
+  <div class="cfo-inner">
+    <div class="cfo-head">
+      {% if orbit_eyebrow != blank %}<p class="cfo-eyebrow">{{ orbit_eyebrow }}</p>{% endif %}
+      {% if orbit_heading != blank %}<h2>{{ orbit_heading }}</h2>{% endif %}
+    </div>
+
+    {% capture circle_html %}
+      <div class="cfo-circle">
+        {% if circle_feature_image != blank %}
+          {% if circle_feature_image contains 'http' %}
+            <img src="{{ circle_feature_image }}" alt="{{ orbit_heading | escape }}" loading="lazy">
+          {% else %}
+            <img src="{{ circle_feature_image | image_url: width: 900 }}" alt="{{ orbit_heading | escape }}" loading="lazy">
+          {% endif %}
+        {% else %}
+          {{ 'product-1' | placeholder_svg_tag }}
+        {% endif %}
+      </div>
+    {% endcapture %}
+
+    {% capture cards_all %}
+      {% for i in (1..6) %}
+        {% case i %}
+          {% when 1 %}{% assign ot = orbit_1_title %}{% assign ob = orbit_1_text %}
+          {% when 2 %}{% assign ot = orbit_2_title %}{% assign ob = orbit_2_text %}
+          {% when 3 %}{% assign ot = orbit_3_title %}{% assign ob = orbit_3_text %}
+          {% when 4 %}{% assign ot = orbit_4_title %}{% assign ob = orbit_4_text %}
+          {% when 5 %}{% assign ot = orbit_5_title %}{% assign ob = orbit_5_text %}
+          {% when 6 %}{% assign ot = orbit_6_title %}{% assign ob = orbit_6_text %}
+        {% endcase %}
+        {% if ot != blank %}
+          <article class="cfo-card"><h3>{{ ot }}</h3>{% if ob != blank %}<p>{{ ob }}</p>{% endif %}</article>
+        {% endif %}
+      {% endfor %}
+    {% endcapture %}
+
+    <div class="cfo-mobile">
+      {{ circle_html }}
+      <div class="cfo-mobile-cards">{{ cards_all }}</div>
+    </div>
+
+    <div class="cfo-desktop">
+      <div class="cfo-col">
+        {% for i in (1..3) %}
+          {% case i %}
+            {% when 1 %}{% assign ot = orbit_1_title %}{% assign ob = orbit_1_text %}
+            {% when 2 %}{% assign ot = orbit_2_title %}{% assign ob = orbit_2_text %}
+            {% when 3 %}{% assign ot = orbit_3_title %}{% assign ob = orbit_3_text %}
+          {% endcase %}
+          {% if ot != blank %}
+            <article class="cfo-card"><h3>{{ ot }}</h3>{% if ob != blank %}<p>{{ ob }}</p>{% endif %}</article>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {{ circle_html }}
+      <div class="cfo-col">
+        {% for i in (4..6) %}
+          {% case i %}
+            {% when 4 %}{% assign ot = orbit_4_title %}{% assign ob = orbit_4_text %}
+            {% when 5 %}{% assign ot = orbit_5_title %}{% assign ob = orbit_5_text %}
+            {% when 6 %}{% assign ot = orbit_6_title %}{% assign ob = orbit_6_text %}
+          {% endcase %}
+          {% if ot != blank %}
+            <article class="cfo-card"><h3>{{ ot }}</h3>{% if ob != blank %}<p>{{ ob }}</p>{% endif %}</article>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Kluck AI - Cin Orbit",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_kluck_ai_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "circle_feature_image",
+      "label": "Circle feature image"
+    },
+    {
+      "type": "text",
+      "id": "orbit_eyebrow",
+      "label": "Eyebrow",
+      "default": "Key features"
+    },
+    {
+      "type": "text",
+      "id": "orbit_heading",
+      "label": "Heading",
+      "default": "Built around the way you move"
+    },
+    {
+      "type": "text",
+      "id": "orbit_1_title",
+      "label": "Feature 1 title",
+      "default": "Rich Sound"
+    },
+    {
+      "type": "text",
+      "id": "orbit_1_text",
+      "label": "Feature 1 text",
+      "default": "Clear, full audio in every track."
+    },
+    {
+      "type": "text",
+      "id": "orbit_2_title",
+      "label": "Feature 2 title",
+      "default": "Featherlight"
+    },
+    {
+      "type": "text",
+      "id": "orbit_2_text",
+      "label": "Feature 2 text",
+      "default": "A barely-there fit made for long hours."
+    },
+    {
+      "type": "text",
+      "id": "orbit_3_title",
+      "label": "Feature 3 title",
+      "default": "All-Day Battery"
+    },
+    {
+      "type": "text",
+      "id": "orbit_3_text",
+      "label": "Feature 3 text",
+      "default": "Work, study, and home."
+    },
+    {
+      "type": "text",
+      "id": "orbit_4_title",
+      "label": "Feature 4 title",
+      "default": "Instant Pairing"
+    },
+    {
+      "type": "text",
+      "id": "orbit_4_text",
+      "label": "Feature 4 text",
+      "default": "Open the case, connect, and go."
+    },
+    {
+      "type": "text",
+      "id": "orbit_5_title",
+      "label": "Feature 5 title",
+      "default": "Pocket Case"
+    },
+    {
+      "type": "text",
+      "id": "orbit_5_text",
+      "label": "Feature 5 text",
+      "default": "A compact home that slips into any bag."
+    },
+    {
+      "type": "text",
+      "id": "orbit_6_title",
+      "label": "Feature 6 title",
+      "default": "Everyday Ready"
+    },
+    {
+      "type": "text",
+      "id": "orbit_6_text",
+      "label": "Feature 6 text",
+      "default": "Work, study, travel, and play."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kluck AI - Cin Orbit"
+    }
+  ]
+}
+{% endschema %}

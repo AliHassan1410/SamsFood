@@ -1,0 +1,529 @@
+{%- comment -%}
+  Sam's Food - Luxury Editorial Product Page Section
+  Sticky gallery, gold badges, variant selector, delivery zone logic, WhatsApp direct order,
+  "Better in a bundle" upsell, "How to use" cards, accordions with nutrition table, and paired items.
+{%- endcomment -%}
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign featured_image = current_variant.featured_image | default: product.featured_image
+
+  assign delivery_zone = product.metafields.custom.delivery_zone | default: 'nationwide'
+  if product.tags contains 'lahore_only' or product.tags contains 'Lahore Only' or product.title contains 'Hummus' or product.title contains 'Falafel'
+    assign delivery_zone = 'lahore_only'
+  endif
+
+  assign badges = product.metafields.custom.badges.value
+  if badges == blank and product.metafields.custom.badges != blank
+    assign badges = product.metafields.custom.badges | split: ','
+  endif
+  if badges == blank
+    assign tag_badges = ''
+    for tag in product.tags
+      if tag contains 'badge:'
+        assign tag_clean = tag | remove: 'badge:'
+        assign tag_badges = tag_badges | append: tag_clean | append: ','
+      endif
+    endfor
+    if tag_badges != blank
+      assign badges = tag_badges | split: ','
+    endif
+  endif
+
+  if badges == blank
+    if product.title contains 'Tahina'
+      assign badges = 'Halal,Made from Sesame,Stone Ground' | split: ','
+    elsif product.title contains 'Flour'
+      assign badges = 'Halal,Stone Ground,High Fibre,9 Grains' | split: ','
+    elsif product.title contains 'Hummus'
+      assign badges = 'Halal,Vegetarian,Freshly Made,Chilled' | split: ','
+    elsif product.title contains 'Falafel'
+      assign badges = 'Halal,Gluten Free,Vegetarian,Keep Frozen' | split: ','
+    elsif product.title contains 'Molasses'
+      assign badges = 'Halal,100% Pure Reduction,Shelf-Stable' | split: ','
+    else
+      assign badges = 'Halal,100% Pure,PFA Licensed' | split: ','
+    endif
+  endif
+-%}
+
+<section
+  class="sams-product-detail-section"
+  style="padding-block-start: 40px; padding-block-end: 80px; background: var(--ivory);"
+  data-delivery-zone="{{ delivery_zone }}"
+  data-restrict-lahore="{% if delivery_zone == 'lahore_only' %}true{% else %}false{% endif %}"
+>
+  <div class="page-width" style="max-width: 1240px; margin: 0 auto; padding-inline: 20px;">
+    <!-- Breadcrumbs -->
+    <nav aria-label="Breadcrumb" style="font-family: var(--font-clean); font-size: 13px; color: var(--muted); margin-bottom: 28px;">
+      <a href="/" style="color: var(--muted); text-decoration: none;">Home</a>
+      <span style="margin: 0 8px; color: var(--gold);">/</span>
+      {%- if collection -%}
+        <a href="{{ collection.url }}" style="color: var(--muted); text-decoration: none;">{{ collection.title }}</a>
+        <span style="margin: 0 8px; color: var(--gold);">/</span>
+      {%- else -%}
+        <a href="/collections/all" style="color: var(--muted); text-decoration: none;">Pantry</a>
+        <span style="margin: 0 8px; color: var(--gold);">/</span>
+      {%- endif -%}
+      <span style="color: var(--espresso); font-weight: 500;">{{ product.title }}</span>
+    </nav>
+
+    <!-- Product Layout Grid -->
+    <div style="display: grid; grid-template-columns: 1fr; gap: 48px; align-items: start;" class="sams-product-grid-layout">
+      <!-- Left: Sticky Gallery -->
+      <div class="sams-product-gallery" style="position: sticky; top: 100px;">
+        <div class="sams-card sams-media-zoom" style="border-radius: 24px; overflow: hidden; background: var(--sesame); aspect-ratio: 1 / 1; margin-bottom: 16px; position: relative;">
+          {%- liquid
+            assign p_fallback_images = ''
+            if product.handle contains 'falafel' or product.title contains 'Falafel'
+              assign p_fallback_images = 'sams-falafel-box-front.jpg,sams-falafel-box-open-frozen.jpg,sams-falafel-herb-interior.jpg,sams-falafel-platter-topdown.jpg,sams-falafel-lifestyle-steaming.jpg,sams-falafel-dark-slate.jpg,sams-falafel-box-angle.jpg'
+            elsif product.handle contains 'hummus' or product.title contains 'Hummus'
+              assign p_fallback_images = 'sams-hummus-tub-open-front.jpg,sams-hummus-tub-topdown.jpg,sams-hummus-pita-dip.jpg,sams-hummus-infographic-creamy.jpg,sams-hummus-infographic-ways-to-enjoy.jpg,sams-hummus-family-dinner.jpg,sams-hummus-kitchen-counter.jpg'
+            elsif product.handle contains 'tahina' or product.title contains 'Tahina'
+              if product.handle contains 'bulk' or product.handle contains 'bucket' or product.title contains 'Bucket' or product.title contains 'Bulk' or product.title contains 'Wholesale'
+                assign p_fallback_images = 'sams-tahina-bucket-front.jpg,sams-tahina-bucket-ladle-pour.jpg,sams-tahina-bucket-infographic-real-tahina.jpg,sams-tahina-bucket-infographic-small-bucket.jpg,sams-tahina-bucket-table-sesame.jpg,sams-tahina-bucket-family-dining.jpg'
+              else
+                assign p_fallback_images = 'sams-tahina-jar-front.jpg,sams-tahina-spoon-scoop.jpg,sams-tahina-jar-sesame-scoop.jpg,sams-tahina-infographic-smooth-nutty.jpg,sams-tahina-infographic-uses.jpg,sams-tahina-drizzle-falafel.jpg,sams-tahina-shawarma-wrap.jpg,sams-tahina-mezze-board.jpg'
+              endif
+            elsif product.handle contains 'flour' or product.title contains 'Flour'
+              assign p_fallback_images = 'sams-flour-5kg-field.jpg,sams-flour-infographic-stone-ground.jpg'
+            endif
+            assign p_fallback_list = p_fallback_images | split: ','
+          -%}
+          {%- if featured_image != blank -%}
+            <img
+              id="SamsMainImage"
+              src="{{ featured_image | image_url: width: 1000 }}"
+              alt="{{ product.title | escape }}"
+              style="width: 100%; height: 100%; object-fit: cover; display: block;"
+              loading="eager"
+            >
+          {%- elsif p_fallback_list.size > 0 -%}
+            <img
+              id="SamsMainImage"
+              src="{{ p_fallback_list.first | asset_url }}"
+              alt="{{ product.title | escape }}"
+              style="width: 100%; height: 100%; object-fit: cover; display: block;"
+              loading="eager"
+            >
+          {%- else -%}
+            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, #FAF1E4 0%, #E6D7C2 100%);">
+              <span style="font-family: var(--font-editorial); font-size: 2rem; color: var(--gold); font-style: italic;">
+                {{ product.title }}
+              </span>
+            </div>
+          {%- endif -%}
+
+          <!-- Delivery Zone Badge Floating -->
+          <div style="position: absolute; top: 16px; inset-inline-start: 16px;">
+            {%- if delivery_zone == 'lahore_only' -%}
+              <span class="sams-badge sams-badge--lahore-only">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                Lahore Delivery Only
+              </span>
+            {%- else -%}
+              <span class="sams-badge sams-badge--nationwide">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Nationwide Delivery
+              </span>
+            {%- endif -%}
+          </div>
+        </div>
+
+        <!-- Thumbnails row -->
+        {%- if product.images.size > 1 -%}
+          <div style="display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px;">
+            {%- for img in product.images -%}
+              <button
+                type="button"
+                class="sams-thumb-btn {% if forloop.first %}active{% endif %}"
+                data-image-src="{{ img | image_url: width: 1000 }}"
+                style="border: 2px solid {% if forloop.first %}var(--gold){% else %}transparent{% endif %}; border-radius: 12px; overflow: hidden; width: 72px; height: 72px; padding: 0; background: var(--sesame); cursor: pointer; flex-shrink: 0;"
+              >
+                <img src="{{ img | image_url: width: 150 }}" alt="{{ img.alt | default: product.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- elsif p_fallback_list.size > 1 -%}
+          <div style="display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px;">
+            {%- for fb_img in p_fallback_list -%}
+              <button
+                type="button"
+                class="sams-thumb-btn {% if forloop.first %}active{% endif %}"
+                data-image-src="{{ fb_img | asset_url }}"
+                style="border: 2px solid {% if forloop.first %}var(--gold){% else %}transparent{% endif %}; border-radius: 12px; overflow: hidden; width: 72px; height: 72px; padding: 0; background: var(--sesame); cursor: pointer; flex-shrink: 0;"
+              >
+                <img src="{{ fb_img | asset_url }}" alt="{{ product.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <!-- Right: Product Details & Purchase Form -->
+      <div class="sams-product-info">
+        <!-- Eyebrow & Title -->
+        <span class="sams-eyebrow">{{ product.type | default: "Sam's Food · Lahore" }}</span>
+
+        <h1 style="font-size: clamp(2rem, 3.5vw, 2.8rem); line-height: 1.15; margin: 0 0 8px; color: var(--espresso); font-family: var(--font-editorial);">
+          {{ product.title }}
+        </h1>
+
+        <!-- Tagline -->
+        {%- assign tagline = product.metafields.custom.tagline -%}
+        {%- if tagline == blank -%}
+          {%- if product.title contains 'Tahina' -%}
+            {%- assign tagline = 'Pure sesame, slow-ground in Lahore' -%}
+          {%- elsif product.title contains 'Flour' -%}
+            {%- assign tagline = 'Nine grains & seeds in every roti' -%}
+          {%- elsif product.title contains 'Hummus' -%}
+            {%- assign tagline = 'Creamy, chilled, ready to scoop' -%}
+          {%- elsif product.title contains 'Falafel' -%}
+            {%- assign tagline = 'Crisp outside, herby inside' -%}
+          {%- elsif product.title contains 'Molasses' -%}
+            {%- assign tagline = 'Tangy, deep and glossy — 1000g' -%}
+          {%- endif -%}
+        {%- endif -%}
+
+        {%- if tagline != blank -%}
+          <p style="font-family: var(--font-editorial); font-style: italic; font-size: 1.15rem; color: var(--gold); margin: 0 0 16px;">
+            {{ tagline }}
+          </p>
+        {%- endif -%}
+
+        <!-- Badges Row -->
+        <div style="margin-bottom: 24px;">
+          {% render 'sams-badges', badges: badges %}
+        </div>
+
+        <!-- Price -->
+        <div style="margin-bottom: 24px; display: flex; align-items: baseline; gap: 12px;">
+          <span
+            id="SamsProductPrice"
+            style="font-family: var(--font-clean); font-size: 2rem; font-weight: 700; color: var(--espresso);"
+          >
+            {{ current_variant.price | money }}
+          </span>
+          {%- if current_variant.compare_at_price > current_variant.price -%}
+            <span style="font-size: 1.2rem; color: var(--muted); text-decoration: line-through;">
+              {{ current_variant.compare_at_price | money }}
+            </span>
+          {%- endif -%}
+          <span style="font-size: 12px; font-weight: 500; color: var(--olive); background: var(--olive-light); padding: 4px 10px; border-radius: var(--radius-pill);">
+            Tax Included
+          </span>
+        </div>
+
+        <!-- Add to Cart Form -->
+        <form method="post" action="/cart/add" id="SamsMainProductForm" style="margin-bottom: 24px;">
+          <input type="hidden" name="id" id="SamsVariantId" value="{{ current_variant.id }}">
+
+          <!-- Variant Selector Pills -->
+          {%- if product.variants.size > 1 -%}
+            <div style="margin-bottom: 22px;">
+              <label style="display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--espresso); margin-bottom: 10px;">
+                Select Size / Pack:
+              </label>
+              <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                {%- for variant in product.variants -%}
+                  <button
+                    type="button"
+                    class="sams-variant-pill {% if variant.id == current_variant.id %}active{% endif %}"
+                    data-variant-id="{{ variant.id }}"
+                    data-variant-price="{{ variant.price | money }}"
+                    data-available="{% if variant.available %}true{% else %}false{% endif %}"
+                    style="padding: 10px 18px; border-radius: var(--radius-pill); font-family: var(--font-clean); font-size: 13px; font-weight: 600; cursor: pointer; border: 1.5px solid {% if variant.id == current_variant.id %}var(--espresso){% else %}var(--line){% endif %}; background: {% if variant.id == current_variant.id %}var(--espresso){% else %}#FFFFFF{% endif %}; color: {% if variant.id == current_variant.id %}var(--ivory){% else %}var(--espresso){% endif %}; transition: all 0.25s ease;"
+                  >
+                    {{ variant.title }}
+                  </button>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+
+          <!-- Delivery Note -->
+          <div style="background: var(--sesame); padding: 14px 18px; border-radius: 14px; margin-bottom: 24px; border: 1px solid var(--line); display: flex; align-items: center; gap: 10px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+            <div style="font-size: 13px; color: var(--espresso);">
+              {%- if delivery_zone == 'lahore_only' -%}
+                <strong>Lahore Delivery Only:</strong> Delivered chilled/frozen via specialized local courier to maintain kitchen freshness.
+              {%- else -%}
+                <strong>Nationwide Delivery:</strong> Dispatched daily from Lahore with express courier (2–4 business days, COD available).
+              {%- endif -%}
+            </div>
+          </div>
+
+          <!-- Quantity & Buy Action -->
+          <div style="display: flex; gap: 14px; margin-bottom: 16px; flex-wrap: wrap;">
+            <!-- Quantity Box -->
+            <div style="display: flex; align-items: center; background: #FFFFFF; border: 1.5px solid var(--line); border-radius: var(--radius-pill); padding: 4px 8px;">
+              <button type="button" onclick="const q=document.getElementById('SamsQty'); if(q.value>1)q.value--;" style="border:none;background:transparent;cursor:pointer;font-size:18px;color:var(--espresso);padding:4px 8px;">−</button>
+              <input type="number" id="SamsQty" name="quantity" min="1" value="1" style="width:40px;border:none;text-align:center;font-weight:600;font-size:14px;background:transparent;">
+              <button type="button" onclick="const q=document.getElementById('SamsQty'); q.value++;" style="border:none;background:transparent;cursor:pointer;font-size:18px;color:var(--espresso);padding:4px 8px;">+</button>
+            </div>
+
+            <!-- Main Add to Cart Button -->
+            <button
+              type="submit"
+              name="add"
+              class="sams-btn-primary sams-main-atc-submit"
+              {% unless current_variant.available %}disabled{% endunless %}
+              style="flex-grow: 1; padding: 15px 32px; font-size: 14px;"
+            >
+              {%- if current_variant.available -%}
+                Add to Cart
+              {%- else -%}
+                Sold Out
+              {%- endif -%}
+            </button>
+          </div>
+
+          <!-- WhatsApp Direct Order Button -->
+          {%- capture wa_order_msg -%}Hi Sams Food, I would like to order: {{ product.title }} ({{ current_variant.title }}){%- endcapture -%}
+          <a
+            id="SamsWhatsAppOrderBtn"
+            href="https://wa.me/923454788888?text={{ wa_order_msg | url_encode }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="sams-btn-whatsapp"
+            style="width: 100%; padding: 14px; font-size: 13px;"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.8 14.13c-.25.7-1.45 1.34-2 1.43-.52.08-1.18.11-1.9-.12-.44-.14-1-.32-1.73-.64-3.04-1.31-5.03-4.37-5.18-4.57-.15-.2-1.24-1.65-1.24-3.15 0-1.5.78-2.23 1.06-2.54.28-.31.6-.38.8-.38.2 0 .4 0 .58.01.19.01.44-.07.69.53.25.6.85 2.08.93 2.23.07.15.12.33.02.53-.1.2-.15.32-.3.5-.15.17-.31.39-.45.52-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.03 1.12 1 2.07 1.31 2.36 1.46.3.15.47.13.64-.08.17-.2.74-.86.94-1.16.2-.3.4-.25.67-.15.27.1 1.73.82 2.02.97.3.15.5.22.57.35.08.12.08.72-.17 1.42z"/></svg>
+            Order Directly on WhatsApp
+          </a>
+        </form>
+
+        <!-- "Better in a Bundle" Highlight Box -->
+        <div style="background: rgba(168, 123, 50, 0.05); border: 1.5px dashed var(--gold); border-radius: 18px; padding: 20px; margin-bottom: 30px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.12em; color: var(--gold);">
+              Better in a Bundle
+            </span>
+            <span style="font-size: 11px; font-weight: 700; color: var(--saffron-deep); background: rgba(217,115,26,0.12); padding: 3px 8px; border-radius: var(--radius-pill);">
+              Save up to Rs 500
+            </span>
+          </div>
+          <p style="font-size: 0.95rem; color: var(--espresso); margin: 0 0 12px; font-family: var(--font-clean);">
+            Get this with paired items in our <strong>Mezze Night</strong> or <strong>Healthy Pantry Box</strong> with complimentary gift packaging.
+          </p>
+          <a href="/#sams-build-box" class="sams-btn-gold" style="width: 100%; font-size: 12px; padding: 9px 16px;">
+            Explore Mezze Bundles
+          </a>
+        </div>
+
+        <!-- Description -->
+        <div style="font-family: var(--font-clean); font-size: 1.02rem; line-height: 1.7; color: var(--espresso); opacity: 0.92; margin-bottom: 32px;">
+          {{ product.description }}
+        </div>
+
+        <!-- "How To Use" 3 Cards -->
+        <div style="margin-bottom: 36px;">
+          <h4 style="font-family: var(--font-editorial); font-size: 1.25rem; margin: 0 0 14px; color: var(--espresso);">
+            How to Enjoy:
+          </h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+            {%- if product.title contains 'Tahina' -%}
+              <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 14px; padding: 14px;">
+                <div style="font-weight: 600; font-size: 13px; color: var(--gold); margin-bottom: 4px;">Classic Hummus</div>
+                <div style="font-size: 12px; color: var(--muted); line-height: 1.4;">Blend with boiled chickpeas, fresh lemon & garlic.</div>
+              </div>
+              <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 14px; padding: 14px;">
+                <div style="font-weight: 600; font-size: 13px; color: var(--gold); margin-bottom: 4px;">Tahini Sauce</div>
+                <div style="font-size: 12px; color: var(--muted); line-height: 1.4;">Whisk with water, salt & lime; drizzle on shawarma.</div>
+              </div>
+              <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 14px; padding: 14px;">
+                <div style="font-weight: 600; font-size: 13px; color: var(--gold); margin-bottom: 4px;">Sweet Drizzle</div>
+                <div style="font-size: 12px; color: var(--muted); line-height: 1.4;">Swirl with honey or date molasses over warm toast.</div>
+              </div>
+            {%- elsif product.title contains 'Falafel' -%}
+              <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 14px; padding: 14px;">
+                <div style="font-weight: 600; font-size: 13px; color: var(--gold); margin-bottom: 4px;">Air Fryer</div>
+                <div style="font-size: 12px; color: var(--muted); line-height: 1.4;">Cook at 190°C for 10-12 mins until deep golden & crisp.</div>
+              </div>
+              <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 14px; padding: 14px;">
+                <div style="font-weight: 600; font-size: 13px; color: var(--gold); margin-bottom: 4px;">Falafel Wrap</div>
+                <div style="font-size: 12px; color: var(--muted); line-height: 1.4;">Roll in pita with tahini sauce, pickles and hummus.</div>
+              </div>
+              <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 14px; padding: 14px;">
+                <div style="font-weight: 600; font-size: 13px; color: var(--gold); margin-bottom: 4px;">Mezze Platter</div>
+                <div style="font-size: 12px; color: var(--muted); line-height: 1.4;">Serve hot with pomegranate dip and fresh salad.</div>
+              </div>
+            {%- else -%}
+              <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 14px; padding: 14px;">
+                <div style="font-weight: 600; font-size: 13px; color: var(--gold); margin-bottom: 4px;">Everyday Table</div>
+                <div style="font-size: 12px; color: var(--muted); line-height: 1.4;">Pure natural goodness made without compromises.</div>
+              </div>
+              <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 14px; padding: 14px;">
+                <div style="font-weight: 600; font-size: 13px; color: var(--gold); margin-bottom: 4px;">Artisan Dip / Spread</div>
+                <div style="font-size: 12px; color: var(--muted); line-height: 1.4;">Elevate breakfast, lunch rolls and dinner feasts.</div>
+              </div>
+              <div style="background: #FFFFFF; border: 1px solid var(--line); border-radius: 14px; padding: 14px;">
+                <div style="font-weight: 600; font-size: 13px; color: var(--gold); margin-bottom: 4px;">Storage</div>
+                <div style="font-size: 12px; color: var(--muted); line-height: 1.4;">Seal well after opening to retain aroma and flavor.</div>
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+
+        <!-- Accordions: Ingredients, Nutrition Table, Storage, Delivery -->
+        <div class="sams-accordions" style="border-top: 1px solid var(--line);">
+          <!-- 1. Ingredients -->
+          <details style="border-bottom: 1px solid var(--line); padding: 16px 0;" open>
+            <summary style="font-weight: 600; font-size: 15px; cursor: pointer; color: var(--espresso); display: flex; justify-content: space-between; align-items: center; list-style: none;">
+              <span>Ingredients & Artisanal Process</span>
+              <span style="font-size: 18px; color: var(--gold);">+</span>
+            </summary>
+            <div style="padding-top: 12px; font-size: 0.95rem; line-height: 1.6; color: var(--muted);">
+              {%- if product.title contains 'Tahina' -%}
+                100% slowly roasted pure sesame seeds. No added palm oil, no preservatives, no artificial emulsifiers. Natural oil separation is normal — simply stir before use.
+              {%- elsif product.title contains 'Flour' -%}
+                Stone-ground blend of 9 grains: Whole wheat, millet, barley, sorghum, moringa leaves, fenugreek seeds, flaxseed, black chickpeas, and quinoa.
+              {%- elsif product.title contains 'Hummus' -%}
+                Boiled chickpeas, Sam's roasted tahina, fresh lemon juice, garlic, extra virgin olive oil, and sea salt.
+              {%- elsif product.title contains 'Falafel' -%}
+                Soaked chickpeas, fresh coriander, parsley, garlic, onions, cumin, coriander seeds, and natural spices.
+              {%- elsif product.title contains 'Molasses' -%}
+                100% pure concentrated pomegranate juice reduction. Tart, glossy and naturally rich in antioxidants.
+              {%- else -%}
+                Artisanal recipe prepared in our Lahore kitchen under PFA license LHR/R-C/48356291.
+              {%- endif -%}
+            </div>
+          </details>
+
+          <!-- 2. Nutrition Table -->
+          <details style="border-bottom: 1px solid var(--line); padding: 16px 0;">
+            <summary style="font-weight: 600; font-size: 15px; cursor: pointer; color: var(--espresso); display: flex; justify-content: space-between; align-items: center; list-style: none;">
+              <span>Nutrition Facts (Per 100g)</span>
+              <span style="font-size: 18px; color: var(--gold);">+</span>
+            </summary>
+            <div style="padding-top: 12px;">
+              <table style="width: 100%; border-collapse: collapse; font-size: 13px; font-family: var(--font-clean);">
+                <tbody>
+                  {%- if product.title contains 'Flour' -%}
+                    <tr style="border-bottom: 1px solid var(--line);"><td style="padding: 6px 0; color: var(--espresso);">Energy</td><td style="text-align: right; font-weight: 600;">343.36 kcal</td></tr>
+                    <tr style="border-bottom: 1px solid var(--line);"><td style="padding: 6px 0; color: var(--espresso);">Crude Protein</td><td style="text-align: right; font-weight: 600;">13.40%</td></tr>
+                    <tr style="border-bottom: 1px solid var(--line);"><td style="padding: 6px 0; color: var(--espresso);">Crude Fibre</td><td style="text-align: right; font-weight: 600;">2.80%</td></tr>
+                    <tr style="border-bottom: 1px solid var(--line);"><td style="padding: 6px 0; color: var(--espresso);">Carbohydrates</td><td style="text-align: right; font-weight: 600;">72.08%</td></tr>
+                    <tr style="border-bottom: 1px solid var(--line);"><td style="padding: 6px 0; color: var(--espresso);">Moisture</td><td style="text-align: right; font-weight: 600;">8.12%</td></tr>
+                  {%- else -%}
+                    <tr style="border-bottom: 1px solid var(--line);"><td style="padding: 6px 0; color: var(--espresso);">Energy</td><td style="text-align: right; font-weight: 600;">595 kcal</td></tr>
+                    <tr style="border-bottom: 1px solid var(--line);"><td style="padding: 6px 0; color: var(--espresso);">Total Fat</td><td style="text-align: right; font-weight: 600;">54 g</td></tr>
+                    <tr style="border-bottom: 1px solid var(--line);"><td style="padding: 6px 0; color: var(--espresso);">Protein</td><td style="text-align: right; font-weight: 600;">18 g</td></tr>
+                    <tr style="border-bottom: 1px solid var(--line);"><td style="padding: 6px 0; color: var(--espresso);">Dietary Fibre</td><td style="text-align: right; font-weight: 600;">9.3 g</td></tr>
+                  {%- endif -%}
+                </tbody>
+              </table>
+            </div>
+          </details>
+
+          <!-- 3. Storage & Shelf Life -->
+          <details style="border-bottom: 1px solid var(--line); padding: 16px 0;">
+            <summary style="font-weight: 600; font-size: 15px; cursor: pointer; color: var(--espresso); display: flex; justify-content: space-between; align-items: center; list-style: none;">
+              <span>Storage Instructions</span>
+              <span style="font-size: 18px; color: var(--gold);">+</span>
+            </summary>
+            <div style="padding-top: 12px; font-size: 0.95rem; line-height: 1.6; color: var(--muted);">
+              {%- if product.title contains 'Hummus' -%}
+                Keep refrigerated between 2°C and 4°C at all times. Consume within 5-7 days after opening.
+              {%- elsif product.title contains 'Falafel' -%}
+                Keep frozen at -18°C. Do not refreeze once thawed. Cook straight from frozen in hot oil or air fryer.
+              {%- else -%}
+                Store in a cool, dry pantry away from direct sunlight. Seal airtight after each use.
+              {%- endif -%}
+            </div>
+          </details>
+
+          <!-- 4. Delivery & Guarantees -->
+          <details style="border-bottom: 1px solid var(--line); padding: 16px 0;">
+            <summary style="font-weight: 600; font-size: 15px; cursor: pointer; color: var(--espresso); display: flex; justify-content: space-between; align-items: center; list-style: none;">
+              <span>Delivery & Quality Guarantee</span>
+              <span style="font-size: 18px; color: var(--gold);">+</span>
+            </summary>
+            <div style="padding-top: 12px; font-size: 0.95rem; line-height: 1.6; color: var(--muted);">
+              Orders above Rs 3,000 enjoy <strong>Free Delivery in Lahore</strong>. Chilled and frozen items are transported using insulated cold packs. Cash on delivery available across all cities of Pakistan.
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Sticky ATC -->
+  {% render 'sams-sticky-atc', product: product %}
+</section>
+
+<script>
+  // Variant switcher & image gallery interactions
+  document.addEventListener('DOMContentLoaded', () => {
+    const mainImg = document.getElementById('SamsMainImage');
+    const thumbBtns = document.querySelectorAll('.sams-thumb-btn');
+    const variantPills = document.querySelectorAll('.sams-variant-pill');
+    const priceDisplay = document.getElementById('SamsProductPrice');
+    const variantInput = document.getElementById('SamsVariantId');
+    const stickyVariantInput = document.querySelector('.sams-sticky-variant-id');
+    const waBtn = document.getElementById('SamsWhatsAppOrderBtn');
+    const productTitle = {{ product.title | json }};
+
+    // Thumbnail click
+    thumbBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        thumbBtns.forEach(b => {
+          b.classList.remove('active');
+          b.style.borderColor = 'transparent';
+        });
+        btn.classList.add('active');
+        btn.style.borderColor = 'var(--gold)';
+        if (mainImg) mainImg.src = btn.dataset.imageSrc;
+      });
+    });
+
+    // Variant pills
+    variantPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        variantPills.forEach(p => {
+          p.classList.remove('active');
+          p.style.background = '#FFFFFF';
+          p.style.color = 'var(--espresso)';
+          p.style.borderColor = 'var(--line)';
+        });
+        pill.classList.add('active');
+        pill.style.background = 'var(--espresso)';
+        pill.style.color = 'var(--ivory)';
+        pill.style.borderColor = 'var(--espresso)';
+
+        const newId = pill.dataset.variantId;
+        const newPrice = pill.dataset.variantPrice;
+        if (variantInput) variantInput.value = newId;
+        if (stickyVariantInput) stickyVariantInput.value = newId;
+        if (priceDisplay) priceDisplay.innerText = newPrice;
+
+        // Update WhatsApp text
+        if (waBtn) {
+          const text = encodeURIComponent(`Hi Sam's Food! I would like to order: ${productTitle} (${pill.innerText.trim()})`);
+          waBtn.href = `https://wa.me/923454788888?text=${text}`;
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  @media (min-width: 900px) {
+    .sams-product-grid-layout {
+      grid-template-columns: 1.05fr 1.15fr !important;
+      gap: 60px !important;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Sams Main Product",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Sams Main Product"
+    }
+  ]
+}
+{% endschema %}

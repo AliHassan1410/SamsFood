@@ -1,0 +1,410 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top_mobile }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    background-color: {{ section.settings.bg_color }};
+    color: {{ section.settings.text_color }};
+  }
+
+  @media screen and (min-width: 769px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+    }
+  }
+
+  .minimal-faq-{{ section.id }} {
+    --border-color: {{ section.settings.border_color }};
+    max-width: {{ section.settings.container_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .minimal-faq__heading {
+    text-align: {{ section.settings.heading_alignment }};
+    font-size: {{ section.settings.heading_size_mobile }}px;
+    font-weight: 500;
+    margin-bottom: 40px;
+    letter-spacing: -0.02em;
+    color: inherit;
+  }
+
+  @media screen and (min-width: 769px) {
+    .minimal-faq__heading {
+      font-size: {{ section.settings.heading_size_desktop }}px;
+      margin-bottom: 60px;
+    }
+  }
+
+  .minimal-faq__list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .minimal-faq__item {
+    width: 100%;
+  }
+
+  .minimal-faq__question {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    padding: 24px 0;
+    cursor: pointer;
+    text-align: left;
+    color: inherit;
+    font-family: inherit;
+  }
+
+  .minimal-faq__question-text {
+    font-size: {{ section.settings.question_size }}px;
+    font-weight: 500;
+    padding-right: 20px;
+    line-height: 1.3;
+  }
+
+  /* Pure CSS Plus/Minus Icon */
+  .minimal-faq__icon {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .minimal-faq__icon::before,
+  .minimal-faq__icon::after {
+    content: "";
+    position: absolute;
+    background-color: currentColor;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  }
+
+  .minimal-faq__icon::before {
+    width: 100%;
+    height: 1px; /* Horizontal line */
+  }
+
+  .minimal-faq__icon::after {
+    width: 1px;
+    height: 100%; /* Vertical line */
+  }
+
+  /* State when open */
+  .minimal-faq__item.is-open .minimal-faq__icon::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+    opacity: 0;
+  }
+
+  .minimal-faq__item.is-open .minimal-faq__question {
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .minimal-faq__answer-wrapper {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .minimal-faq__answer-inner {
+    padding: 24px 0 32px 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: inherit;
+    opacity: 0.9;
+  }
+
+  .minimal-faq__answer-inner p {
+    margin: 0;
+  }
+  .minimal-faq__answer-inner p + p {
+    margin-top: 1em;
+  }
+{%- endstyle -%}
+
+<div class="section-{{ section.id }}-padding" id="FaqSection-{{ section.id }}">
+  <div class="minimal-faq-{{ section.id }}">
+    
+    {%- if section.settings.heading != blank -%}
+      <h2 class="minimal-faq__heading">{{ section.settings.heading | escape }}</h2>
+    {%- endif -%}
+
+    <div class="minimal-faq__list">
+      {%- for block in section.blocks -%}
+        <div class="minimal-faq__item {% if section.settings.open_first and forloop.first %}is-open{% endif %}" {{ block.shopify_attributes }}>
+          <button class="minimal-faq__question" aria-expanded="{% if section.settings.open_first and forloop.first %}true{% else %}false{% endif %}">
+            <span class="minimal-faq__question-text">{{ block.settings.title | escape }}</span>
+            <span class="minimal-faq__icon"></span>
+          </button>
+          
+          <div class="minimal-faq__answer-wrapper">
+            <div class="minimal-faq__answer-inner">
+              {{ block.settings.answer }}
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const section = document.getElementById('FaqSection-{{ section.id }}');
+    if (!section) return;
+
+    const faqItems = section.querySelectorAll('.minimal-faq__item');
+    const autoClose = {{ section.settings.auto_close | json }};
+
+    function setInitialHeights() {
+      faqItems.forEach(item => {
+        if (item.classList.contains('is-open')) {
+          const wrapper = item.querySelector('.minimal-faq__answer-wrapper');
+          const inner = item.querySelector('.minimal-faq__answer-inner');
+          wrapper.style.maxHeight = inner.scrollHeight + 'px';
+        }
+      });
+    }
+
+    setInitialHeights();
+
+    faqItems.forEach(item => {
+      const button = item.querySelector('.minimal-faq__question');
+      const wrapper = item.querySelector('.minimal-faq__answer-wrapper');
+      const inner = item.querySelector('.minimal-faq__answer-inner');
+
+      button.addEventListener('click', () => {
+        const isOpen = item.classList.contains('is-open');
+
+        // If Auto Close is enabled, close all others first
+        if (autoClose && !isOpen) {
+          faqItems.forEach(otherItem => {
+            if (otherItem !== item && otherItem.classList.contains('is-open')) {
+              otherItem.classList.remove('is-open');
+              otherItem.querySelector('.minimal-faq__answer-wrapper').style.maxHeight = '0px';
+              otherItem.querySelector('.minimal-faq__question').setAttribute('aria-expanded', 'false');
+            }
+          });
+        }
+
+        // Toggle current item
+        if (isOpen) {
+          item.classList.remove('is-open');
+          wrapper.style.maxHeight = '0px';
+          button.setAttribute('aria-expanded', 'false');
+        } else {
+          item.classList.add('is-open');
+          wrapper.style.maxHeight = inner.scrollHeight + 'px';
+          button.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+
+    // Recalculate heights on window resize so text wrapping doesn't cut off content
+    window.addEventListener('resize', () => {
+      faqItems.forEach(item => {
+        if (item.classList.contains('is-open')) {
+          const wrapper = item.querySelector('.minimal-faq__answer-wrapper');
+          const inner = item.querySelector('.minimal-faq__answer-inner');
+          wrapper.style.maxHeight = inner.scrollHeight + 'px';
+        }
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Minimal FAQ",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Questions check here"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Functionality"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_first",
+      "label": "Open first item by default",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_close",
+      "label": "Auto-close other items",
+      "info": "Closing one question when another is opened.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Layout & Typography"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 600,
+      "max": 1200,
+      "step": 50,
+      "unit": "px",
+      "label": "Container Width",
+      "default": 900
+    },
+    {
+      "type": "range",
+      "id": "heading_size_desktop",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Size (Desktop)",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Size (Mobile)",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "question_size",
+      "min": 16,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Question Text Size",
+      "default": 22
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border Color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0, "max": 100, "step": 5, "unit": "px",
+      "label": "Top Padding (Desktop)",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0, "max": 100, "step": 5, "unit": "px",
+      "label": "Bottom Padding (Desktop)",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0, "max": 100, "step": 5, "unit": "px",
+      "label": "Top Padding (Mobile)",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0, "max": 100, "step": 5, "unit": "px",
+      "label": "Bottom Padding (Mobile)",
+      "default": 50
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Question",
+          "default": "How long does shipping take?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Shipping typically takes 5–7 business days within the United States. For international orders, shipping can take 10–15 business days, depending on the destination and customs processing times. You will receive a tracking number once your order has shipped so you can monitor its progress.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Minimal FAQ",
+      "blocks": [
+        { "type": "faq_item" },
+        { 
+          "type": "faq_item",
+          "settings": {
+             "title": "Does my piece come in any packaging?",
+             "answer": "<p>Yes, all items arrive carefully packaged in our signature branded boxes.</p>"
+          }
+        },
+        { 
+          "type": "faq_item",
+          "settings": {
+             "title": "Do you ship internationally?",
+             "answer": "<p>Yes, we ship to over 50 countries worldwide. Shipping rates will be calculated at checkout.</p>"
+          }
+        },
+        { 
+          "type": "faq_item",
+          "settings": {
+             "title": "What payment methods do you accept?",
+             "answer": "<p>We accept all major credit cards, PayPal, Apple Pay, and Google Pay.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

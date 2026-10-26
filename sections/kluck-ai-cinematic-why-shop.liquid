@@ -1,0 +1,224 @@
+{%- assign section_scheme = section.settings.color_scheme | default: 'scheme-1' -%}
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+{% assign home = store_gen.home_page %}
+{% assign ht = home.text %}
+{% assign hi = home.images %}
+{% assign use_mf = section.settings.use_kluck_ai_metafields %}
+{% assign homeData = section.settings.homeData %}
+{% if ht == blank and homeData.text != blank %}{% assign ht = homeData.text %}{% endif %}
+{% if hi == blank and homeData.images != blank %}{% assign hi = homeData.images %}{% endif %}
+
+{% assign why_shop_heading = section.settings.why_shop_heading %}
+{% assign why_1_title = section.settings.why_1_title %}
+{% assign why_1_text = section.settings.why_1_text %}
+{% assign why_2_title = section.settings.why_2_title %}
+{% assign why_2_text = section.settings.why_2_text %}
+{% assign why_3_title = section.settings.why_3_title %}
+{% assign why_3_text = section.settings.why_3_text %}
+{% assign why_4_title = section.settings.why_4_title %}
+{% assign why_4_text = section.settings.why_4_text %}
+{% assign why_5_title = section.settings.why_5_title %}
+{% assign why_5_text = section.settings.why_5_text %}
+{% assign why_shop_image = section.settings.why_shop_image %}
+{% if use_mf %}
+  {% if ht.why_shop_heading != blank %}{% assign why_shop_heading = ht.why_shop_heading %}{% endif %}
+  {% if ht.why_1_title != blank %}{% assign why_1_title = ht.why_1_title %}{% endif %}
+  {% if ht.why_1_text != blank %}{% assign why_1_text = ht.why_1_text %}{% endif %}
+  {% if ht.why_2_title != blank %}{% assign why_2_title = ht.why_2_title %}{% endif %}
+  {% if ht.why_2_text != blank %}{% assign why_2_text = ht.why_2_text %}{% endif %}
+  {% if ht.why_3_title != blank %}{% assign why_3_title = ht.why_3_title %}{% endif %}
+  {% if ht.why_3_text != blank %}{% assign why_3_text = ht.why_3_text %}{% endif %}
+  {% if ht.why_4_title != blank %}{% assign why_4_title = ht.why_4_title %}{% endif %}
+  {% if ht.why_4_text != blank %}{% assign why_4_text = ht.why_4_text %}{% endif %}
+  {% if ht.why_5_title != blank %}{% assign why_5_title = ht.why_5_title %}{% endif %}
+  {% if ht.why_5_text != blank %}{% assign why_5_text = ht.why_5_text %}{% endif %}
+  {% if shop.metafields.kluck_ai.why_shop_image.value != blank %}
+    {% assign why_shop_image = shop.metafields.kluck_ai.why_shop_image.value %}
+  {% elsif hi.why_shop_image != blank %}
+    {% assign why_shop_image = hi.why_shop_image %}
+  {% endif %}
+{% endif %}
+
+{% if shop.metafields.app.block_control.value %}
+<style>
+  #shopify-section-{{ section.id }} {
+    width: 100%;
+    max-width: none;
+  }
+    #cws-{{ section.id }} {
+  --c-ink: var(--color-foreground-heading, #111);
+  --c-ink-muted: var(--color-foreground-muted, rgba(0,0,0,0.55));
+  --c-surface: var(--color-background, #fff);
+  --c-accent: var(--color-accent, var(--color-primary-button-background, currentColor));
+  --c-accent-soft: var(--color-accent-soft, var(--color-background, #f5f5f5));
+  --c-on-accent: var(--color-on-accent, #fff);
+  --c-border: var(--color-border, rgba(0,0,0,0.08));
+  --c-heading-font: var(--section-heading-font, Georgia, 'Times New Roman', serif);
+  --c-body-font: var(--section-body-font, system-ui, sans-serif);  background: var(--c-surface); }
+  #cws-{{ section.id }} .cws-inner { max-width: 1400px; margin: 0 auto; padding: 64px 20px; }
+  #cws-{{ section.id }} h2 {
+    margin: 0 0 40px; text-align: center; font-family: var(--c-heading-font);
+    font-size: 2.25rem; color: var(--c-ink); font-weight: 400;
+  }
+  #cws-{{ section.id }} .cws-card {
+    overflow: hidden; border-radius: 28px; border: 1px solid var(--c-border); background: var(--c-accent-soft);
+    box-shadow: 0 24px 60px -28px color-mix(in srgb, var(--c-ink) 35%, transparent); display: grid;
+  }
+  #cws-{{ section.id }} .cws-media { position: relative; aspect-ratio: 1 / 1; min-height: 280px; background: var(--c-accent-soft); }
+  #cws-{{ section.id }} .cws-media img, #cws-{{ section.id }} .cws-media svg { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #cws-{{ section.id }} .cws-acc { display: flex; flex-direction: column; justify-content: center; padding: 32px 28px; }
+  #cws-{{ section.id }} details { border-bottom: 1px solid var(--c-border); }
+  #cws-{{ section.id }} details:last-child { border-bottom: 0; }
+  #cws-{{ section.id }} summary {
+    list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 20px 0; font-size: 15px; font-weight: 500; color: var(--c-ink);
+  }
+  #cws-{{ section.id }} summary::-webkit-details-marker { display: none; }
+  #cws-{{ section.id }} .cws-chevron {
+    width: 16px; height: 16px; flex-shrink: 0; color: var(--c-ink-muted); transition: transform .2s;
+  }
+  #cws-{{ section.id }} details[open] .cws-chevron { transform: rotate(180deg); }
+  #cws-{{ section.id }} .cws-body { padding: 0 32px 20px 0; font-size: 14px; line-height: 1.75; color: var(--c-ink-muted); }
+  @media (min-width: 768px) {
+    #cws-{{ section.id }} .cws-inner { padding: 80px 32px; }
+    #cws-{{ section.id }} h2 { font-size: 3rem; }
+    #cws-{{ section.id }} .cws-card { grid-template-columns: 1fr 1fr; }
+    #cws-{{ section.id }} .cws-media { aspect-ratio: auto; min-height: 560px; }
+    #cws-{{ section.id }} .cws-acc { padding: 48px; }
+  }
+</style>
+<section id="cws-{{ section.id }}" class="color-{{ section_scheme }}">
+  <div class="cws-inner">
+    {% if why_shop_heading != blank %}<h2>{{ why_shop_heading }}</h2>{% endif %}
+    <div class="cws-card">
+      <div class="cws-media">
+        {% if why_shop_image != blank %}
+          {% if why_shop_image contains 'http' %}
+            <img src="{{ why_shop_image }}" alt="{{ why_shop_heading | escape }}" loading="lazy">
+          {% else %}
+            <img src="{{ why_shop_image | image_url: width: 1200 }}" alt="{{ why_shop_heading | escape }}" loading="lazy">
+          {% endif %}
+        {% else %}
+          {{ 'lifestyle-2' | placeholder_svg_tag }}
+        {% endif %}
+      </div>
+      <div class="cws-acc">
+        {% for i in (1..5) %}
+          {% case i %}
+            {% when 1 %}{% assign wt = why_1_title %}{% assign wb = why_1_text %}
+            {% when 2 %}{% assign wt = why_2_title %}{% assign wb = why_2_text %}
+            {% when 3 %}{% assign wt = why_3_title %}{% assign wb = why_3_text %}
+            {% when 4 %}{% assign wt = why_4_title %}{% assign wb = why_4_text %}
+            {% when 5 %}{% assign wt = why_5_title %}{% assign wb = why_5_text %}
+          {% endcase %}
+          {% if wt != blank %}
+            <details {% if forloop.first %}open{% endif %}>
+              <summary>
+                <span>{{ wt }}</span>
+                <svg class="cws-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              </summary>
+              {% if wb != blank %}<div class="cws-body">{{ wb }}</div>{% endif %}
+            </details>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Kluck AI - Cin Why Shop",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_kluck_ai_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "why_shop_image",
+      "label": "Why shop image"
+    },
+    {
+      "type": "text",
+      "id": "why_shop_heading",
+      "label": "Heading",
+      "default": "Why Shop With Us?"
+    },
+    {
+      "type": "text",
+      "id": "why_1_title",
+      "label": "Item 1 title",
+      "default": "Designed for real days"
+    },
+    {
+      "type": "textarea",
+      "id": "why_1_text",
+      "label": "Item 1 text",
+      "default": "Made for commutes, deadlines, playlists, and everything in between."
+    },
+    {
+      "type": "text",
+      "id": "why_2_title",
+      "label": "Item 2 title",
+      "default": "Shipped with care"
+    },
+    {
+      "type": "textarea",
+      "id": "why_2_text",
+      "label": "Item 2 text",
+      "default": "Every order is packed, tracked, and sent quickly."
+    },
+    {
+      "type": "text",
+      "id": "why_3_title",
+      "label": "Item 3 title",
+      "default": "Tried, then decided"
+    },
+    {
+      "type": "textarea",
+      "id": "why_3_text",
+      "label": "Item 3 text",
+      "default": "Live with them for 30 days. If they are not right, send them back."
+    },
+    {
+      "type": "text",
+      "id": "why_4_title",
+      "label": "Item 4 title",
+      "default": "People, not tickets"
+    },
+    {
+      "type": "textarea",
+      "id": "why_4_text",
+      "label": "Item 4 text",
+      "default": "Questions about fit, pairing, or an order? A real person answers."
+    },
+    {
+      "type": "text",
+      "id": "why_5_title",
+      "label": "Item 5 title",
+      "default": "Authentic quality"
+    },
+    {
+      "type": "textarea",
+      "id": "why_5_text",
+      "label": "Item 5 text",
+      "default": "Every pair is checked before it leaves."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kluck AI - Cin Why Shop"
+    }
+  ]
+}
+{% endschema %}

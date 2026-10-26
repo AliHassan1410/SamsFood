@@ -1,0 +1,145 @@
+{%- comment -%}
+  Sam's Food - 3 Steps "How It Works" Section
+  1. Choose your pantry · 2. We pack it fresh · 3. Delivered to your door (COD)
+{%- endcomment -%}
+
+<section
+  class="sams-steps-section"
+  style="padding-block-start: min({{ section.settings.pad_top }}px, 11vw); padding-block-end: min({{ section.settings.pad_bottom }}px, 11vw); background: {{ section.settings.bg_color }};"
+>
+  <div class="page-width" style="max-width: 1200px; margin: 0 auto; padding-inline: 20px;">
+    <!-- Section Header -->
+    <div style="text-align: center; margin-bottom: clamp(24px, 5vw, 50px);" class="sams-fade-up">
+      <span class="sams-eyebrow">{{ section.settings.eyebrow }}</span>
+      <h2 style="font-size: clamp(2rem, 3.5vw, 2.7rem); margin: 0 0 10px; color: var(--espresso); font-family: var(--font-editorial);">
+        {{ section.settings.heading }}
+      </h2>
+      <div class="sams-gold-divider"></div>
+      <p style="font-size: 1.05rem; color: var(--muted); margin: 0 auto; max-width: 540px; font-family: var(--font-clean);">
+        {{ section.settings.subheading }}
+      </p>
+    </div>
+
+    <!-- 3 Steps Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; position: relative;">
+      {%- for block in section.blocks -%}
+        <div
+          class="sams-card sams-fade-up"
+          style="padding: 36px 28px; background: #FFFFFF; border-radius: var(--radius-card); position: relative; text-align: center;"
+          {{ block.shopify_attributes }}
+        >
+          <!-- Step Number Pill -->
+          <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--sesame); border: 2px solid var(--gold); color: var(--espresso); font-family: var(--font-editorial); font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+            0{{ forloop.index }}
+          </div>
+
+          <h3 style="font-family: var(--font-editorial); font-size: 1.35rem; margin: 0 0 10px; color: var(--espresso);">
+            {{ block.settings.title }}
+          </h3>
+
+          <p style="font-family: var(--font-clean); font-size: 0.95rem; line-height: 1.6; color: var(--muted); margin: 0;">
+            {{ block.settings.text }}
+          </p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Sams Steps",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "SIMPLE & RELIABLE"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "How Sam's Food Works"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "From our artisanal kitchen in Lahore directly to your dining table."
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#F4E9DA"
+    },
+    {
+      "type": "range",
+      "id": "pad_top",
+      "label": "Padding Top",
+      "min": 40,
+      "max": 140,
+      "step": 4,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "pad_bottom",
+      "label": "Padding Bottom",
+      "min": 40,
+      "max": 140,
+      "step": 4,
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "1. Choose Your Pantry"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Description",
+          "default": "Select individual tahina jars, stone-ground flours, or customize your own mezze box."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sams Steps",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "title": "Choose Your Pantry",
+            "text": "Browse authentic tahina, multi-grain flours, or complete mezze dinner boxes."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "We Pack It Fresh",
+            "text": "Freshly prepared, sealed and chilled in our kitchen in Lahore under strict PFA food standards."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Delivered to Your Door",
+            "text": "Same-day/next-day cold-chain in Lahore, and fast insured nationwide courier with Cash On Delivery."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

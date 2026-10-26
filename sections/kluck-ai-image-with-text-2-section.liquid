@@ -1,0 +1,565 @@
+{% assign store_gen = shop.metafields.kluck_ai.store_generation.value %}
+
+{% if shop.metafields.app.block_control.value %}
+{%- style -%}
+  .img-acc-text-side--{{ section.id }} {
+    padding: 40px 20px;
+    width: 100%;
+  }
+
+  .theme-dark-text {
+    color: #484B4F !important;
+  }
+  .theme-dark-text .img-acc-trigger--{{ section.id }}, .img-acc-trigger--{{ section.id }} h4,
+  .theme-dark-text .img-acc-link--{{ section.id }} {
+    color: #484B4F !important;
+  }
+  .theme-dark-text .img-acc-desc--{{ section.id }}{
+    color: #484B4F !important;
+    opacity: 0.8;
+  }
+  .theme-light-text {
+    color: #ffffff !important;
+  }
+  .theme-light-text .img-acc-trigger--{{ section.id }},
+  .theme-light-text .img-acc-desc--{{ section.id }},
+  .theme-light-text .img-acc-link--{{ section.id }}, 
+  .theme-light-text .img-acc-trigger--{{ section.id }} h4{
+    color: #ffffff !important;
+  }
+
+  #shopify-section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top_mobile }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+  }
+
+  .img-acc-section-wrapper--{{ section.id }} {
+    width: 100%;
+    height: 100%;
+    padding: 1px 0;
+  }
+
+  .img-acc-main-title--{{ section.id }} {
+    text-align: center;
+    font-size: {{ section.settings.main_heading_size_mobile }}px;
+    margin-top: 0;
+    margin-bottom: {{ section.settings.title_spacing_mobile }}px;
+    line-height: 1.2;
+    border-radius: {{ section.settings.border_radius }}px;
+    overflow: hidden;
+  }
+
+  .img-acc-container--{{ section.id }} {
+    display: flex;
+    flex-direction: column;
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    width: 100%;
+    border-radius: {{ section.settings.border_radius }}px;
+    overflow: hidden;
+  }
+
+  .img-acc-text-side--{{ section.id }} {
+    padding: 40px 20px;
+    width: 100%;
+  }
+
+  .img-acc-image-side--{{ section.id }} {
+    width: 100%;
+    position: relative;
+    min-height: 350px;
+    display: flex;
+  }
+
+  .img-acc-image-side--{{ section.id }} img,
+  .img-acc-image-side--{{ section.id }} svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .img-acc-item--{{ section.id }} {
+    border-bottom: 1px solid {{ section.settings.border_color }};
+  }
+  .img-acc-item--{{ section.id }}:first-child {
+    border-top: none;
+  }
+  .img-acc-item--{{ section.id }} h4 {
+    font-size: 20px;
+  }
+
+  .img-acc-trigger--{{ section.id }} {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 10px 0 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    text-align: left;
+    font-size: {{ section.settings.acc_heading_size_mobile }}px;
+  }
+
+  .img-acc-trigger-icon {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.3s ease;
+  }
+  
+  .img-acc-trigger--{{ section.id }}.is-open .img-acc-trigger-icon {
+    transform: rotate(180deg);
+  }
+
+  .img-acc-content--{{ section.id }} {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+  }
+
+  .img-acc-content-inner {
+    padding-bottom: 30px;
+    padding-right: 20px;
+  }
+
+  .img-acc-desc--{{ section.id }} {
+    font-size: {{ section.settings.body_size_mobile }}px;
+    line-height: 1.6;
+    margin-top: 0;
+    margin-bottom: 25px;
+  }
+
+  .img-acc-link--{{ section.id }} {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 4px;
+    transition: opacity 0.3s ease;
+  }
+
+  .img-acc-link--{{ section.id }} svg {
+    width: 16px;
+    height: 16px;
+    margin-left: 10px;
+    fill: currentColor;
+    transition: transform 0.3s ease;
+  }
+
+  .img-acc-link--{{ section.id }}:hover {
+    opacity: 0.7;
+  }
+  .img-acc-link--{{ section.id }}:hover svg {
+    transform: translateX(5px);
+  }
+
+  @media screen and (min-width: 768px) {
+    #shopify-section-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+    }
+
+    .img-acc-main-title--{{ section.id }} {
+      font-size: {{ section.settings.main_heading_size_desktop }}px;
+      margin-bottom: {{ section.settings.title_spacing_desktop }}px;
+    }
+
+    .img-acc-container--{{ section.id }} {
+      flex-direction: {% if section.settings.desktop_layout == 'image_left' %}row-reverse{% else %}row{% endif %};
+    }
+
+    .img-acc-text-side--{{ section.id }} {
+      width: 50%;
+      padding: {% if section.settings.desktop_layout == 'image_left' %}60px 60px 60px 80px{% else %}60px 80px 60px 60px{% endif %};
+    }
+
+    .img-acc-image-side--{{ section.id }} {
+      width: 50%;
+    }
+
+    .img-acc-trigger--{{ section.id }} {
+      font-size: {{ section.settings.acc_heading_size_desktop }}px;
+      padding: 10px 0 0 0;
+    }
+
+    .img-acc-desc--{{ section.id }} {
+      font-size: {{ section.settings.body_size_desktop }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="img-acc-section-wrapper--{{ section.id }} color-{{ section.settings.section_color_scheme }} gradient">
+  {%- assign kluck_why_choose_us_heading = store_gen.home_page.text.why_choose_us_heading -%}
+  {%- if section.settings.use_kluck_ai_metafields -%}
+    {%- if kluck_why_choose_us_heading != blank -%}
+      <h2 class="img-acc-main-title--{{ section.id }}">{{ kluck_why_choose_us_heading }}</h2>
+    {%- elsif section.settings.main_heading != blank -%}
+      <h2 class="img-acc-main-title--{{ section.id }}">{{ section.settings.main_heading }}</h2>
+    {%- endif -%}
+  {%- else -%}
+    {%- if section.settings.main_heading != blank -%}
+      <h2 class="img-acc-main-title--{{ section.id }}">{{ section.settings.main_heading }}</h2>
+    {%- endif -%}
+  {%- endif -%}
+
+  <div class="img-acc-container--{{ section.id }}">
+    
+    <!-- Accordions Block -->
+    <div class="img-acc-text-side--{{ section.id }} color-{{ section.settings.container_color_scheme }} gradient">
+      {%- for block in section.blocks -%}
+        {%- assign reason_heading = blank -%}
+        {%- assign reason_description = blank -%}
+
+        {%- case forloop.index -%}
+          {%- when 1 -%}
+            {%- assign reason_heading = store_gen.home_page.text.why_choose_us_reason_1_heading -%}
+            {%- assign reason_description = store_gen.home_page.text.why_choose_us_reason_1_description -%}
+          {%- when 2 -%}
+            {%- assign reason_heading = store_gen.home_page.text.why_choose_us_reason_2_heading -%}
+            {%- assign reason_description = store_gen.home_page.text.why_choose_us_reason_2_description -%}
+          {%- when 3 -%}
+            {%- assign reason_heading = store_gen.home_page.text.why_choose_us_reason_3_heading -%}
+            {%- assign reason_description = store_gen.home_page.text.why_choose_us_reason_3_description -%}
+          {%- when 4 -%}
+            {%- assign reason_heading = store_gen.home_page.text.why_choose_us_reason_4_heading -%}
+            {%- assign reason_description = store_gen.home_page.text.why_choose_us_reason_4_description -%}
+        {%- endcase -%}
+
+        <div class="img-acc-item--{{ section.id }}" {{ block.shopify_attributes }}>
+          <button class="img-acc-trigger--{{ section.id }} {% if forloop.first %}is-open{% endif %}" data-index="{{ forloop.index0 }}">
+            {%- if section.settings.use_kluck_ai_metafields -%}
+              {%- if reason_heading != blank -%}
+                <h4>{{ reason_heading }}</h4>
+              {%- else -%}
+                <h4>{{ block.settings.title }}</h4>
+              {%- endif -%}
+            {%- else -%}
+              <h4>{{ block.settings.title }}</h4>
+            {%- endif -%}
+            <svg class="img-acc-trigger-icon" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 1L7 7L13 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          
+          <div class="img-acc-content--{{ section.id }}" {% if forloop.first %}style="max-height: 1000px;"{% endif %}>
+            <div class="img-acc-content-inner">
+              <div class="img-acc-desc--{{ section.id }}">
+                {%- if section.settings.use_kluck_ai_metafields -%}
+                  {%- if reason_description != blank -%}
+                    {{ reason_description }}
+                  {%- else -%}
+                    {{ block.settings.description }}
+                  {%- endif -%}
+                {%- else -%}
+                  {{ block.settings.description }}
+                {%- endif -%}
+              </div>
+              
+              {%- if block.settings.btn_label != blank -%}
+                <a href="{{ block.settings.btn_link }}" class="img-acc-link--{{ section.id }}">
+                  {{ block.settings.btn_label }}
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    <!-- Image Block -->
+    <div class="img-acc-image-side--{{ section.id }}">
+      {%- assign kluck_creative_image = shop.metafields.kluck_ai.creative_image.value -%}
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', alt: section.settings.main_heading | escape }}
+      {%- elsif section.settings.use_kluck_ai_metafields and kluck_creative_image != blank -%}
+        {{ kluck_creative_image | image_url: width: 1200 | image_tag: loading: 'lazy', alt: kluck_why_choose_us_heading | escape }}
+      {%- endif -%}
+    </div>
+
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const sectionWrapper = document.getElementById('shopify-section-{{ section.id }}');
+    if (!sectionWrapper) return;
+
+    const triggers = sectionWrapper.querySelectorAll('.img-acc-trigger--{{ section.id }}');
+    const contents = sectionWrapper.querySelectorAll('.img-acc-content--{{ section.id }}');
+
+    const setHeight = (element) => {
+      element.style.maxHeight = element.scrollHeight + "px";
+    };
+
+    if (contents.length > 0) {
+      setHeight(contents[0]);
+    }
+
+    triggers.forEach(trigger => {
+      trigger.addEventListener('click', function() {
+        const isOpen = this.classList.contains('is-open');
+        if (isOpen) return;
+
+        triggers.forEach(t => t.classList.remove('is-open'));
+        contents.forEach(c => c.style.maxHeight = null);
+
+        this.classList.add('is-open');
+        setHeight(this.nextElementSibling);
+      });
+    });
+    
+    window.addEventListener('resize', () => {
+      const activeContent = sectionWrapper.querySelector('.img-acc-trigger--{{ section.id }}.is-open + .img-acc-content--{{ section.id }}');
+      if (activeContent) setHeight(activeContent);
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const adjustContrast = () => {
+      const wrappers = document.querySelectorAll('.img-acc-section-wrapper--{{ section.id }}, .img-acc-text-side--{{ section.id }}');
+      
+      wrappers.forEach(el => {
+        const style = window.getComputedStyle(el);
+        const bg = style.backgroundColor;
+        const rgb = bg.match(/\d+/g);
+        if (rgb && rgb.length >= 3) {
+          const r = parseInt(rgb[0], 10);
+          const g = parseInt(rgb[1], 10);
+          const b = parseInt(rgb[2], 10);
+          const alpha = rgb.length >= 4 ? parseFloat(rgb[3]) : 1;
+          // Transparent / missing scheme → keep dark text (readable on white page bg)
+          if (!Number.isFinite(alpha) || alpha < 0.15) {
+            el.classList.add('theme-dark-text');
+            el.classList.remove('theme-light-text');
+            return;
+          }
+          const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+          if (yiq >= 150) {
+            el.classList.add('theme-dark-text');
+            el.classList.remove('theme-light-text');
+          } else {
+            el.classList.add('theme-light-text');
+            el.classList.remove('theme-dark-text');
+          }
+        }
+      });
+    };
+
+    adjustContrast();
+    window.addEventListener('resize', adjustContrast);
+  });
+</script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Multi-Purpose Accordion",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "use_kluck_ai_metafields",
+      "label": "Use Kluck AI metafields",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "select",
+      "id": "desktop_layout",
+      "label": "Desktop Image Position",
+      "options": [
+        { "value": "image_right", "label": "Text Left, Image Right" },
+        { "value": "image_left", "label": "Image Left, Text Right" }
+      ],
+      "default": "image_right"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 1000, "max": 1800, "step": 50, "unit": "px",
+      "label": "Section Max Width",
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0, "max": 50, "step": 1, "unit": "px",
+      "label": "Container Border Radius",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Section Image",
+      "info": "If set, this image will be used. Otherwise falls back to Kluck AI metafield image."
+    },
+    {
+      "type": "header",
+      "content": "Color Schemes"
+    },
+    {
+      "type": "color_scheme",
+      "id": "section_color_scheme",
+      "label": "Section Color Scheme (Page Background)",
+      "default": "background-1"
+    },
+    {
+      "type": "color_scheme",
+      "id": "container_color_scheme",
+      "label": "Accordion Box Color Scheme",
+      "default": "background-2"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Divider Line Color",
+      "default": "#c4c0b5"
+    },
+    {
+      "type": "header",
+      "content": "Main Heading"
+    },
+    {
+      "type": "text",
+      "id": "main_heading",
+      "label": "Heading Text",
+      "default": "Explore Features"
+    },
+    {
+      "type": "range",
+      "id": "main_heading_size_desktop",
+      "min": 24, "max": 64, "step": 1, "unit": "px",
+      "label": "Desktop Title Size", "default": 42
+    },
+    {
+      "type": "range",
+      "id": "main_heading_size_mobile",
+      "min": 20, "max": 48, "step": 1, "unit": "px",
+      "label": "Mobile Title Size", "default": 32
+    },
+    {
+      "type": "range",
+      "id": "title_spacing_desktop",
+      "min": 20, "max": 100, "step": 2, "unit": "px",
+      "label": "Space below title (Desktop)", "default": 50
+    },
+    {
+      "type": "range",
+      "id": "title_spacing_mobile",
+      "min": 10, "max": 60, "step": 1, "unit": "px",
+      "label": "Space below title (Mobile)", "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Accordion Typography"
+    },
+    {
+      "type": "range",
+      "id": "acc_heading_size_desktop",
+      "min": 16, "max": 40, "step": 1, "unit": "px",
+      "label": "Accordion Title Size (Desktop)", "default": 28
+    },
+    {
+      "type": "range",
+      "id": "acc_heading_size_mobile",
+      "min": 14, "max": 32, "step": 1, "unit": "px",
+      "label": "Accordion Title Size (Mobile)", "default": 22
+    },
+    {
+      "type": "range",
+      "id": "body_size_desktop",
+      "min": 12, "max": 24, "step": 1, "unit": "px",
+      "label": "Description Size (Desktop)", "default": 16
+    },
+    {
+      "type": "range",
+      "id": "body_size_mobile",
+      "min": 12, "max": 20, "step": 1, "unit": "px",
+      "label": "Description Size (Mobile)", "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0, "max": 120, "step": 5, "unit": "px",
+      "label": "Top Padding (Desktop)", "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0, "max": 120, "step": 5, "unit": "px",
+      "label": "Bottom Padding (Desktop)", "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0, "max": 80, "step": 5, "unit": "px",
+      "label": "Top Padding (Mobile)", "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0, "max": 80, "step": 5, "unit": "px",
+      "label": "Bottom Padding (Mobile)", "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "accordion_item",
+      "name": "Accordion Item",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Item Title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Add details about this specific item here."
+        },
+        {
+          "type": "text",
+          "id": "btn_label",
+          "label": "Link Label (Optional)",
+          "info": "Leave blank to hide link",
+          "default": "LEARN MORE"
+        },
+        {
+          "type": "url",
+          "id": "btn_link",
+          "label": "Link URL"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Multi-Purpose Image Accordion",
+      "blocks": [
+        { "type": "accordion_item", "settings": { "title": "Feature One" } },
+        { "type": "accordion_item", "settings": { "title": "Feature Two" } },
+        { "type": "accordion_item", "settings": { "title": "Feature Three" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

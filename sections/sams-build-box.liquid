@@ -1,0 +1,231 @@
+{%- comment -%}
+  Sam's Food - Interactive Build-Your-Own Box Section
+  Live calculator with + / - quantity pickers, threshold meter for free delivery, and single-click cart add
+{%- endcomment -%}
+
+<section
+  id="sams-build-box"
+  class="sams-build-box-section"
+  style="padding-block-start: min({{ section.settings.pad_top }}px, 11vw); padding-block-end: min({{ section.settings.pad_bottom }}px, 11vw); background: {{ section.settings.bg_color }};"
+>
+  <div class="page-width" style="max-width: 1100px; margin: 0 auto; padding-inline: 20px;">
+    <!-- Section Header -->
+    <div style="text-align: center; margin-bottom: clamp(24px, 5vw, 40px);" class="sams-fade-up">
+      <span class="sams-eyebrow">{{ section.settings.eyebrow }}</span>
+      <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 0 0 10px; color: var(--espresso); font-family: var(--font-editorial);">
+        {{ section.settings.heading }}
+      </h2>
+      <div class="sams-gold-divider"></div>
+      <p style="font-size: 1.05rem; color: var(--muted); margin: 0 auto; max-width: 580px; font-family: var(--font-clean);">
+        {{ section.settings.subheading }}
+      </p>
+    </div>
+
+    <!-- Build-a-Box Container -->
+    <div
+      class="sams-build-box sams-card sams-fade-up"
+      data-free-shipping-threshold="{{ section.settings.free_delivery_threshold | default: 3000 }}"
+      style="padding: clamp(20px, 4vw, 36px); background: #FFFFFF; border-radius: var(--radius-card);"
+    >
+      <!-- Free Delivery Progress Meter -->
+      <div style="background: var(--sesame); padding: 18px 22px; border-radius: 16px; margin-bottom: 30px; border: 1px solid var(--line);">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 14px; font-family: var(--font-clean);">
+          <span class="sams-meter-notice" style="color: var(--espresso);">
+            Add <strong>Rs {{ section.settings.free_delivery_threshold | default: 3000 }}</strong> more for <strong>FREE delivery</strong>
+          </span>
+          <span style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--gold); letter-spacing: 0.05em;">
+            Free Delivery Target: Rs {{ section.settings.free_delivery_threshold | default: 3000 }}
+          </span>
+        </div>
+
+        <div class="sams-free-shipping-bar" style="margin-top: 10px;">
+          <div class="sams-free-shipping-progress" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- Items List -->
+      <div class="sams-box-items-list" style="display: flex; flex-direction: column; gap: 16px;">
+        {%- assign collection_handle = section.settings.collection -%}
+        {%- assign box_collection = collections[collection_handle] | default: collections.all -%}
+
+        {%- if box_collection != blank and box_collection.products.size > 0 -%}
+          {%- for product in box_collection.products limit: 8 -%}
+            {%- assign variant = product.selected_or_first_available_variant -%}
+            <div
+              class="sams-box-item"
+              data-price="{{ variant.price | divided_by: 100 }}"
+              data-variant-id="{{ variant.id }}"
+              style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding: 14px 18px; border-radius: 14px; background: var(--ivory); border: 1px solid var(--line);"
+            >
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="width: 50px; height: 50px; border-radius: 10px; overflow: hidden; background: var(--sesame); flex-shrink: 0;">
+                  {%- if product.featured_image != blank -%}
+                    <img
+                      src="{{ product.featured_image | image_url: width: 100 }}"
+                      alt="{{ product.title | escape }}"
+                      style="width: 100%; height: 100%; object-fit: cover;"
+                      loading="lazy"
+                    >
+                  {%- endif -%}
+                </div>
+                <div>
+                  <h4 style="margin: 0 0 3px; font-family: var(--font-clean); font-size: 15px; font-weight: 600; color: var(--espresso);">
+                    {{ product.title }}
+                  </h4>
+                  <div style="font-size: 13px; font-weight: 600; color: var(--gold);">
+                    {{ variant.price | money }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quantity Selector -->
+              <div style="display: flex; align-items: center; background: #FFFFFF; border: 1px solid var(--line); border-radius: var(--radius-pill); padding: 4px;">
+                <button
+                  type="button"
+                  class="sams-box-qty-btn minus"
+                  aria-label="Decrease quantity"
+                  style="width: 32px; height: 32px; border: none; background: transparent; cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; color: var(--espresso);"
+                >
+                  −
+                </button>
+                <input
+                  type="number"
+                  class="sams-box-qty"
+                  min="0"
+                  max="10"
+                  value="0"
+                  readonly
+                  style="width: 36px; border: none; text-align: center; font-family: var(--font-clean); font-weight: 600; font-size: 14px; color: var(--espresso); background: transparent;"
+                >
+                <button
+                  type="button"
+                  class="sams-box-qty-btn plus"
+                  aria-label="Increase quantity"
+                  style="width: 32px; height: 32px; border: none; background: transparent; cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; color: var(--espresso);"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          <!-- Default Catalog Items Preview -->
+          {%- assign default_items = "Sam's Tahina 600g:1090,Sam's Falafel (16 pcs):770,Sam's Hummus (250g):390,Multigrain Flour 2kg:950,Pomegranate Molasses 1000g:2800" | split: ',' -%}
+          {%- for item_str in default_items -%}
+            {%- assign parts = item_str | split: ':' -%}
+            {%- assign name = parts[0] -%}
+            {%- assign pr = parts[1] -%}
+            <div
+              class="sams-box-item"
+              data-price="{{ pr }}"
+              data-variant-id="demo_{{ forloop.index }}"
+              style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding: 14px 18px; border-radius: 14px; background: var(--ivory); border: 1px solid var(--line);"
+            >
+              <div>
+                <h4 style="margin: 0 0 3px; font-family: var(--font-clean); font-size: 15px; font-weight: 600; color: var(--espresso);">
+                  {{ name }}
+                </h4>
+                <div style="font-size: 13px; font-weight: 600; color: var(--gold);">
+                  Rs {{ pr }}
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; background: #FFFFFF; border: 1px solid var(--line); border-radius: var(--radius-pill); padding: 4px;">
+                <button type="button" class="sams-box-qty-btn minus" style="width: 32px; height: 32px; border: none; background: transparent; cursor: pointer; font-size: 18px; color: var(--espresso);">−</button>
+                <input type="number" class="sams-box-qty" min="0" max="10" value="0" readonly style="width: 36px; border: none; text-align: center; font-weight: 600; background: transparent;">
+                <button type="button" class="sams-box-qty-btn plus" style="width: 32px; height: 32px; border: none; background: transparent; cursor: pointer; font-size: 18px; color: var(--espresso);">+</button>
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+
+      <!-- Live Total & Add Box To Cart Action -->
+      <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
+        <div>
+          <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 600;">Custom Box Total:</div>
+          <div class="sams-box-total" style="font-family: var(--font-clean); font-size: 1.8rem; font-weight: 700; color: var(--espresso);">
+            Rs 0
+          </div>
+        </div>
+
+        <div>
+          <button
+            type="button"
+            class="sams-btn-primary sams-box-add-btn"
+            disabled
+            style="padding: 15px 36px; font-size: 14px;"
+          >
+            Add Mezze Box to Cart
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Sams Build A Box",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "CUSTOMIZE YOUR TABLE"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Build Your Own Mezze Box"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Select your favorite spreads, flours, and mezze sides. Reach Rs 3,000 for automatic FREE delivery!"
+    },
+    {
+      "type": "number",
+      "id": "free_delivery_threshold",
+      "label": "Free Delivery Threshold (PKR)",
+      "default": 3000
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection Source"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#FBF6EE"
+    },
+    {
+      "type": "range",
+      "id": "pad_top",
+      "label": "Padding Top",
+      "min": 40,
+      "max": 140,
+      "step": 4,
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "pad_bottom",
+      "label": "Padding Bottom",
+      "min": 40,
+      "max": 140,
+      "step": 4,
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sams Build A Box"
+    }
+  ]
+}
+{% endschema %}
